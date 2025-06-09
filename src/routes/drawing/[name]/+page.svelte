@@ -3,9 +3,9 @@
 
 	let { data }: PageProps = $props();
 
-	console.log(data);
+	const Component = data.module.default;
 </script>
 
 <div class="flex items-center justify-center">
-	<svelte:component this={data.module.default} />
+	<Component />
 </div>
