@@ -24,5 +24,5 @@
 	<h1>TEST</h1>
 </header>
 <div class="flex h-full items-center justify-center">
-	<Component />
+	<Component name={data.name} />
 </div>
