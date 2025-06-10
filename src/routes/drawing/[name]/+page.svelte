@@ -6,6 +6,6 @@
 	const Component = data.module.default;
 </script>
 
-<div class="flex items-center justify-center">
+<div class="flex h-full items-center justify-center">
 	<Component />
 </div>
