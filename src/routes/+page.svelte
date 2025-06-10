@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { drawings } from '$lib/drawings.svelte';
-	console.log(drawings);
 </script>
 
 <div class="flex items-center justify-center">
