@@ -9,18 +9,17 @@
 		height: number;
 		children: any;
 	}
+	export type SerializedSvg = {
+		name: string;
+		body: string;
+	};
 	const { name, width = 1920, height = 1080, children }: Props = $props();
 	let svg: SVGSVGElement;
 
-	function extractSVG(svg: SVGSVGElement): string {
-		const svgText = new XMLSerializer().serializeToString(svg);
-		return svgText;
-	}
-
-	async function postSVG({ name, svgText }: { name: string; svgText: string }): Promise<void> {
+	async function postSVG({ name, body }: SerializedSvg) {
 		const response = await fetch('/api', {
 			method: 'POST',
-			body: JSON.stringify({ name, svgText }),
+			body: JSON.stringify({ name, body }),
 			headers: {
 				'content-type': 'application/json'
 			}
@@ -28,9 +27,8 @@
 		console.log(response.json());
 	}
 	onMount(() => {
-		const svgText = extractSVG(svg);
-		// console.log({ name, svgText });
-		postSVG({ name, svgText });
+		const body = new XMLSerializer().serializeToString(svg);
+		postSVG({ name, body });
 	});
 </script>
 
