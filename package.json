@@ -13,6 +13,9 @@
 		"format": "prettier --write .",
 		"lint": "prettier --check ."
 	},
+	"dependencies": {
+		"@dopplerreflect/geometry": "link:@dopplerreflect/geometry"
+	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^6.0.0",
 		"@sveltejs/kit": "^2.16.0",
