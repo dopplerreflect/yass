@@ -41,5 +41,4 @@
 	<g id="all" mask="url(#drsvg-clipped)">
 		{@render children()}
 	</g>
-	<text x={0} y={0} font-size="3em">dook</text>
 </svg>
