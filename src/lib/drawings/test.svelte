@@ -5,7 +5,7 @@
 	let width = 1920;
 	let height = 1920;
 	let r = (height / 2) * phi ** 2;
-	let radii = [...Array(3).keys()].map((n) => r * phi ** n);
+	let radii = [...Array(4).keys()].map((n) => r * phi ** n);
 	let angles = anglesArray(6);
 	let circles: Circle[] = [
 		{ r: radii[0] * Math.sqrt(3), x: 0, y: 0 },
