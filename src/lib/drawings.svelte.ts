@@ -1,12 +1,6 @@
-import type { SvelteComponent } from 'svelte';
+import type { Drawing } from "$lib/types.d"
 
 const modules = import.meta.glob('./drawings/*.svelte', { eager: true });
-
-export type Drawing = {
-	name: string;
-	path: string;
-	module: any;
-};
 
 export const drawings: Drawing[] = $state(
 	Object.entries(modules).map(([path, module]: any) => ({

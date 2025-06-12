@@ -1,13 +1,12 @@
 import type { RequestHandler } from './$types';
-import type { SerializedSvg } from '$lib/components/DrSvg.svelte';
-import fs from 'node:fs';
+import type { SerializedSvg } from '$lib/types.d';
 import { $ } from 'bun';
 
 export const POST: RequestHandler = async ({ request }) => {
 	const response: SerializedSvg = await request.json();
 	const { name, body } = response;
-	fs.writeFile(`./static/drawings/svg/${name}.svg`, body, () => {});
+	Bun.write(`./static/drawings/svg/${name}.svg`, body);
 	const result =
-		await $`magick ./static/drawings/svg/${name}.svg -resize 256x ./static/drawings/webp/${name}.webp`;
+		await $`magick ./static/drawings/svg/${name}.svg -resize 512x ./static/drawings/webp/${name}.webp`;
 	return new Response(JSON.stringify(response));
 };

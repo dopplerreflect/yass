@@ -2,7 +2,7 @@
 	import DrSvg from '$lib/components/DrSvg.svelte';
 	export let name: string;
 	let width = 1920;
-	let height = 108;
+	let height = 1080;
 </script>
 
 <DrSvg {...{ name, width, height }}>

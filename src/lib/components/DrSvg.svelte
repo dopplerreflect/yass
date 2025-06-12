@@ -1,6 +1,6 @@
-<svelte:options namespace="svg" />
-
+<svelte:options namespace="svg"/>
 <script lang="ts">
+	import type { SerializedSvg } from '$lib/types.d'
 	import { onMount } from 'svelte';
 
 	interface Props {
@@ -9,10 +9,6 @@
 		height: number;
 		children: any;
 	}
-	export type SerializedSvg = {
-		name: string;
-		body: string;
-	};
 	const { name, width = 1920, height = 1080, children }: Props = $props();
 	let svg: SVGSVGElement;
 
@@ -45,4 +41,5 @@
 	<g id="all" mask="url(#drsvg-clipped)">
 		{@render children()}
 	</g>
+	<text x={0} y={0} font-size="3em">dook</text>
 </svg>
