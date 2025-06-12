@@ -1,14 +1,16 @@
 <script lang="ts">
 	import DrSvg from '$lib/components/DrSvg.svelte';
-	import { anglesArray, phi, radialPoint, type Circle } from '@dopplerreflect/geometry';
+	import { anglesArray, PHI, phi, radialPoint, type Circle } from '@dopplerreflect/geometry';
 	export let name: string;
 	let width = 1920;
-	let height = 1080;
+	let height = 1920;
 	let r = (height / 2) * phi ** 2;
 	let radii = [...Array(3).keys()].map((n) => r * phi ** n);
 	let angles = anglesArray(6);
 	let circles: Circle[] = [
-		radii.map((r) => ({ r, x: 0, y: 0 })),
+		{ r: radii[0] * Math.sqrt(3), x: 0, y: 0 },
+		{ r: radii[0] * PHI, x: 0, y: 0 },
+		...radii.map((r) => ({ r, x: 0, y: 0 })),
 		...angles.map((a) => radii.map((r) => ({ r, ...radialPoint(a, radii[0]) })))
 	].flat();
 </script>
