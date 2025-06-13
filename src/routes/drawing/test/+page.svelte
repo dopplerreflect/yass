@@ -18,6 +18,6 @@
 <DrSvg {...{ name, width, height }}>
 	<rect x={-width / 2} y={-height / 2} {...{ width, height }} fill="black" />
 	{#each circles as c}
-		<circle r={c.r} cx={c.x} cy={c.y} stroke="white" fill="none" />
+		<circle r={c.r} cx={c.x} cy={c.y} stroke="green" fill="none" />
 	{/each}
 </DrSvg>
