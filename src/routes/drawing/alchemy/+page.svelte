@@ -2,8 +2,8 @@
 	import DrSvg from '$lib/components/DrSvg.svelte';
 	import { anglesArray, PHI, phi, radialPoint, type Circle } from '@dopplerreflect/geometry';
 
-	let width = 1080;
-	let height = 1080;
+	let width = 768;
+	let height = 768;
 	let r = (height / 2) * phi ** 2;
 	let radii = [...Array(4).keys()].map((n) => r * phi ** n);
 	let angles = anglesArray(6);
