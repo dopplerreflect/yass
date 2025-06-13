@@ -34,7 +34,6 @@
 	xmlns="http://www.w3.org/2000/svg"
 	viewBox={`${-width / 2} ${-height / 2} ${width} ${height}`}
 	color-interpolation-filters="sRGB"
-	{...{ width, height }}
 >
 	<mask id="drsvg-clipped">
 		<path d={`M${-width / 2} ${-height / 2}h${width}v${height}h${-width}Z`} fill="white" />
@@ -43,3 +42,11 @@
 		{@render children()}
 	</g>
 </svg>
+
+<style>
+	svg {
+		width: 100%;
+		height: 100%;
+		display: block;
+	}
+</style>

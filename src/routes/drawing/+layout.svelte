@@ -2,6 +2,10 @@
 	let { children } = $props();
 </script>
 
-<div class="flex h-full items-center justify-center">
+<!--
+<div class="flex max-h-screen items-center justify-center">
+-->
   {@render children()}
+<!--
 </div>
+-->
