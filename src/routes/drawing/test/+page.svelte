@@ -1,7 +1,8 @@
 <script lang="ts">
 	import DrSvg from '$lib/components/DrSvg.svelte';
 	import { anglesArray, PHI, phi, radialPoint, type Circle } from '@dopplerreflect/geometry';
-	export let name: string;
+	export let name: string = 'test';
+	console.log(name);
 	let width = 1920;
 	let height = 1920;
 	let r = (height / 2) * phi ** 2;
