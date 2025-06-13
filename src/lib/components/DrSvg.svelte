@@ -20,7 +20,8 @@
 				'content-type': 'application/json'
 			}
 		});
-		console.log(response.json());
+		const responseObj = await response.json();
+		// console.log(responseObj)
 	}
 	onMount(() => {
 		const body = new XMLSerializer().serializeToString(svg);
