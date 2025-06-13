@@ -6,6 +6,5 @@
 
 <DrSvg {...{ width, height }}>
 	<rect x={-width / 2} y={-height / 2} {...{ width, height }} fill="black" />
-	<text alignment-baseline="middle" text-anchor="middle" font-size="16em" fill="white">Template</text>
-		
+	<text dominant-baseline="middle" text-anchor="middle" font-size="16em" fill="white">Template</text>
 </DrSvg>

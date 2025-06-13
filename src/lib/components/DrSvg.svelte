@@ -19,8 +19,6 @@
 				'content-type': 'application/json'
 			}
 		});
-		const responseObj = await response.json();
-		// console.log(responseObj)
 	}
 	onMount(() => {
 		const pathname = document.location.pathname.split(/\//)
