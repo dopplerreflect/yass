@@ -4,12 +4,11 @@
 	import { onMount } from 'svelte';
 
 	interface Props {
-		name: string;
 		width: number;
 		height: number;
 		children: any;
 	}
-	const { name, width = 1920, height = 1080, children }: Props = $props();
+	const { width = 1920, height = 1080, children }: Props = $props();
 	let svg: SVGSVGElement;
 
 	async function postSVG({ name, body }: SerializedSvg) {
@@ -24,6 +23,8 @@
 		// console.log(responseObj)
 	}
 	onMount(() => {
+		const pathname = document.location.pathname.split(/\//)
+		const name = pathname[pathname.length-1]
 		const body = new XMLSerializer().serializeToString(svg);
 		postSVG({ name, body });
 	});
