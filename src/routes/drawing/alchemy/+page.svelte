@@ -20,4 +20,5 @@
 	{#each circles as c}
 		<circle r={c.r} cx={c.x} cy={c.y} stroke="green" fill="none" />
 	{/each}
+	<text font-size="3em" dominant-baseline="middle" text-anchor="middle" fill="white" >alchemy</text>
 </DrSvg>
