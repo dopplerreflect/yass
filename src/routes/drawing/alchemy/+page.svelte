@@ -15,13 +15,6 @@
 		...angles.map((a) => radii.map((r) => ({ r, ...radialPoint(a, radii[0]) })))
 	].flat();
 	const brightLines = createLines(angles, radii);
-	// extend lines from 2nd hex to outer hex
-	angles.forEach((_, i) => {
-		brightLines.splice(i + 36, 1, [
-			lineIntersection(brightLines[(i + 5) % 6], brightLines[(i + 36)], true) as Point,
-			lineIntersection(brightLines[(i + 1) % 6], brightLines[(i + 36)], true) as Point
-		])
-	});
 	// copy brighthLines to dimLines
 	const dimLines = [...brightLines];
 	arrayMap(8, (n) => n).forEach((n) => {

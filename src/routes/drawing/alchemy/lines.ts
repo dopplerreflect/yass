@@ -1,4 +1,4 @@
-import { radialPoint, type Line, type GeometryOptions } from "@dopplerreflect/geometry";
+import { lineIntersection, radialPoint, type Line, type GeometryOptions, type Point } from "@dopplerreflect/geometry";
 
 
 export function createLines(angles: number[], radii: number[]): Line[] {
@@ -57,5 +57,12 @@ export function createLines(angles: number[], radii: number[]): Line[] {
 		...angles.map((a) => [{x: 0, y: 0}, radialPoint(a, radii[0], centerAtRadius0(a))] as Line),
 	];
 
+	// extend lines from 2nd hex to outer hex
+	angles.forEach((_, i) => {
+		lines.splice(i + 36, 1, [
+			lineIntersection(lines[(i + 5) % 6], lines[(i + 36)], true) as Point,
+			lineIntersection(lines[(i + 1) % 6], lines[(i + 36)], true) as Point
+		])
+	});
 	return lines;
 }
