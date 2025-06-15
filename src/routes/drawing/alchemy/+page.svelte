@@ -3,10 +3,11 @@
 	import { width, height, radii, angles } from './setup';
 	import { createLines, linesExtendedToEdge } from "./lines";
 	import { getCircles } from './circles';
-	
+	import { getDots } from './dots';
 	const circles = getCircles(radii, angles);
 	const brightLines = createLines(angles, radii);
 	const dimLines = linesExtendedToEdge(brightLines, angles);
+	const dots = getDots(brightLines);
 </script>
 
 <DrSvg {...{ width, height }}>
@@ -19,5 +20,8 @@
 	{/each}
 	{#each brightLines as l}
 		<line x1={l[0].x} y1={l[0].y} x2={l[1].x} y2={l[1].y} stroke='white' />
+	{/each}
+	{#each dots as c}
+		<circle cx={c.x} cy={c.y} r={c.r} fill='white' />
 	{/each}
 </DrSvg>
