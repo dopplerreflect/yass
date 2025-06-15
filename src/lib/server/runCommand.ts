@@ -2,7 +2,7 @@ import { exec } from "node:child_process";
 import util from 'util';
 const execAsync = util.promisify(exec);
 
-export async function runCommand(command) {
+export async function runCommand(command: string) {
   try {
     const { stdout, stderr } = await execAsync(command);
     // console.log(`${command}`, 'stdout:', stdout);
