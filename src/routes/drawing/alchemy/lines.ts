@@ -8,8 +8,6 @@ export function createLines(angles: number[], radii: number[]): Line[] {
 	}
 	
 	const lines = [
-		// center to outside
-		...angles.map((a) => [{x: 0, y: 0}, radialPoint(a, radii[0], centerAtRadius0(a))] as Line),
 		// outermost
 		...angles.map((a, i) => [
 			radialPoint(a, radii[0], centerAtRadius0(a)),
@@ -55,6 +53,8 @@ export function createLines(angles: number[], radii: number[]): Line[] {
 			radialPoint(angles[(i + 1) % 6], radii[2], centerAtRadius0(a)),
 			radialPoint(angles[(i + 2) % 6], radii[2], centerAtRadius0(angles[(i + 3) % 6]))
 		] as Line),
+		// center to outside
+		...angles.map((a) => [{x: 0, y: 0}, radialPoint(a, radii[0], centerAtRadius0(a))] as Line),
 	];
 
 	return lines;

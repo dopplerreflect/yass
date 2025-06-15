@@ -1,6 +1,6 @@
 <script lang="ts">
 	import DrSvg from '$lib/components/DrSvg.svelte';
-	import { anglesArray, PHI, phi, radialPoint, type Circle, type GeometryOptions, type Line, type Point } from '@dopplerreflect/geometry';
+	import { anglesArray, midpoint, PHI, phi, radialPoint, type Circle, type GeometryOptions, type Line, type Point } from '@dopplerreflect/geometry';
 	import { createLines } from "./lines";
 	
 	const width = 768;
@@ -22,7 +22,8 @@
 	{#each circles as c}
 		<circle r={c.r} cx={c.x} cy={c.y} stroke="indigo" fill="none" />
 	{/each}
-	{#each lines as l}
+	{#each lines as l, i}
 		<line x1={l[0].x} y1={l[0].y} x2={l[1].x} y2={l[1].y} stroke='white' />
+		<text x={midpoint(l).x} y={midpoint(l).y} dominant-baseline='middle' text-anchor='middle' fill='yellow'>{i}</text>
 	{/each}
 </DrSvg>
