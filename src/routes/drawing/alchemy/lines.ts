@@ -1,4 +1,4 @@
-import { lineIntersection, radialPoint, type Line, type GeometryOptions, type Point } from "@dopplerreflect/geometry";
+import { arrayMap, lineIntersection, radialPoint, type Line, type GeometryOptions, type Point } from "@dopplerreflect/geometry";
 
 
 export function createLines(angles: number[], radii: number[]): Line[] {
@@ -66,3 +66,17 @@ export function createLines(angles: number[], radii: number[]): Line[] {
 	});
 	return lines;
 }
+
+
+	export function linesExtendedToEdge(lines: Line[], angles: number[]): Line[] {
+		const newLines = [...lines];
+		arrayMap(8, (n) => n).forEach((n) => {
+			angles.forEach((_, i) => {
+				newLines.splice(i + (n + 1) * 6, 1, [
+					lineIntersection(lines[(i + 5) % 6], lines[i + (n + 1) * 6], true) as Point,				
+					lineIntersection(lines[(i + 1) % 6], lines[i + (n + 1) * 6], true) as Point				
+				])	
+			});
+		});
+		return newLines;
+	}

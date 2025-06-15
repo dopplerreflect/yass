@@ -1,7 +1,7 @@
 <script lang="ts">
 	import DrSvg from '$lib/components/DrSvg.svelte';
-	import { anglesArray, arrayMap, lineIntersection, midpoint, PHI, phi, radialPoint, type Circle, type GeometryOptions, type Line, type Point } from '@dopplerreflect/geometry';
-	import { createLines } from "./lines";
+	import { anglesArray, midpoint, PHI, phi, radialPoint, type Circle, type GeometryOptions, type Line, type Point } from '@dopplerreflect/geometry';
+	import { createLines, linesExtendedToEdge } from "./lines";
 	
 	const width = 768;
 	const height = 768;
@@ -15,16 +15,7 @@
 		...angles.map((a) => radii.map((r) => ({ r, ...radialPoint(a, radii[0]) })))
 	].flat();
 	const brightLines = createLines(angles, radii);
-	// copy brighthLines to dimLines
-	const dimLines = [...brightLines];
-	arrayMap(8, (n) => n).forEach((n) => {
-		angles.forEach((_, i) => {
-			dimLines.splice(i + (n + 1) * 6, 1, [
-				lineIntersection(brightLines[(i + 5) % 6], brightLines[i + (n + 1) * 6], true) as Point,				
-				lineIntersection(brightLines[(i + 1) % 6], brightLines[i + (n + 1) * 6], true) as Point				
-			])	
-		});
-	});
+	const dimLines = linesExtendedToEdge(brightLines, angles);
 </script>
 
 <DrSvg {...{ width, height }}>
@@ -32,7 +23,7 @@
 	{#each circles as c}
 		<circle r={c.r} cx={c.x} cy={c.y} stroke="indigo" fill="none" />
 	{/each}
-	{#each dimLines as l, i}
+	{#each dimLines as l}
 		<line x1={l[0].x} y1={l[0].y} x2={l[1].x} y2={l[1].y} stroke='blue' stroke-width={1} />
 	{/each}
 	{#each brightLines as l, i}
