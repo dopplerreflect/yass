@@ -6,7 +6,7 @@ REV=$( echo "$LOG" | head -1 | cut -d' ' -f 2 | cut -c -8)
 #diff --git a/src/routes/drawing/sttest/+page.svelte b/src/routes/drawing/sttest/+page.svelte
 
 # look for diff in src/routes/drawing
-DIFFLINE_WITH_DRAWING=$( echo "$LOG" | grep diff | grep "src/routes/drawing")
+DIFFLINE_WITH_DRAWING=$( echo "$LOG" | grep diff | grep "src/routes/drawing" | head -1 )
 
 if [[ -n "$DIFFLINE_WITH_DRAWING" ]]; then
   # get drawing name from a/src/routes/drawing/here
