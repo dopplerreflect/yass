@@ -19,7 +19,7 @@ export function getDots(lines: Line[]): Circle[] {
   roundedIntersections.forEach((intersection) => {
     const i = JSON.stringify(intersection);
     if (!intersectionsWithMagnitudeMap.get(i)) {
-      intersectionsWithMagnitudeMap.set(i, 2);
+      intersectionsWithMagnitudeMap.set(i, 3);
     } else {
       intersectionsWithMagnitudeMap.set(i, intersectionsWithMagnitudeMap.get(i) + 1);
     }
