@@ -1,4 +1,4 @@
-import type { Drawing } from "$lib/types.d"
+import type { Drawing } from '$lib/types.d';
 
 const modules = import.meta.glob('../routes/drawing/**/+page.svelte', { eager: true });
 

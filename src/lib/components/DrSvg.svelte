@@ -1,6 +1,7 @@
-<svelte:options namespace="svg"/>
+<svelte:options namespace="svg" />
+
 <script lang="ts">
-	import type { SerializedSvg } from '$lib/types.d'
+	import type { SerializedSvg } from '$lib/types.d';
 	import { onMount } from 'svelte';
 
 	interface Props {
@@ -21,8 +22,8 @@
 		});
 	}
 	onMount(() => {
-		const pathname = document.location.pathname.split(/\//)
-		const name = pathname[pathname.length-1]
+		const pathname = document.location.pathname.split(/\//);
+		const name = pathname[pathname.length - 1];
 		const body = new XMLSerializer().serializeToString(svg);
 		postSVG({ name, body });
 	});
