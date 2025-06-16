@@ -1,6 +1,6 @@
 #!/bin/sh
 
-LOG=$(git log -1 -p)
+LOG=$(git log -1 -p --date=iso-strict)
 # get first 8 bytes of revision from git log
 REV=$( echo "$LOG" | head -1 | cut -d' ' -f 2 | cut -c -8)
 #diff --git a/src/routes/drawing/sttest/+page.svelte b/src/routes/drawing/sttest/+page.svelte
@@ -11,7 +11,7 @@ DIFFLINE_WITH_DRAWING=$( echo "$LOG" | grep diff | grep "src/routes/drawing" | h
 if [[ -n "$DIFFLINE_WITH_DRAWING" ]]; then
   # get drawing name from a/src/routes/drawing/here
   NAME=$(echo "$DIFFLINE_WITH_DRAWING" | cut -d'/' -f 5)
-  TIME=$(date +%s)
+  TIME=$(echo "$LOG" | grep Date | awk '{ print $2 }')
   echo "You changed '$NAME' at $TIME revision $REV"
   if [ ! -d "static/history/$NAME" ]; then
     mkdir -p "static/history/$NAME"
