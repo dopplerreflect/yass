@@ -1,5 +1,6 @@
 <script>
-	import { width, height, brightLines } from './setup';
+	import { width, height } from './setup';
+	import { brightLines } from './lines';
 	import { getDots } from './dots';
 	const dots = getDots(brightLines);
 </script>

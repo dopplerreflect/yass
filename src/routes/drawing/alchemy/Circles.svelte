@@ -1,7 +1,16 @@
-<script>
+<script lang="ts">
 	//@ts-ignore
 	import { oklch } from 'chroma-js';
-	import { width, height, circles } from './setup';
+	import { width, height, radii, angles } from './setup';
+
+	import { PHI, radialPoint, type Circle } from '@dopplerreflect/geometry';
+
+	const circles: Circle[] = [
+		{ r: radii[0] * Math.sqrt(3), x: 0, y: 0 },
+		{ r: radii[0] * PHI, x: 0, y: 0 },
+		...radii.map((r) => ({ r, x: 0, y: 0 })),
+		...angles.map((a) => radii.map((r) => ({ r, ...radialPoint(a, radii[0]) })))
+	].flat();
 </script>
 
 <defs>
