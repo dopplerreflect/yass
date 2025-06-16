@@ -2,8 +2,8 @@ import { anglesArray, phi } from "@dopplerreflect/geometry";
 import { createLines, linesExtendedToEdge } from "./lines";
 import { getCircles } from './circles';
 
-export const width = 768;
-export const height = 768;
+export const width = 1920;
+export const height = 1920;
 export const r = (height / 2) / Math.sqrt(3) * 0.75 ;
 export const radii = [...Array(4).keys()].map((n) => r * phi ** n);
 export const angles = anglesArray(6);

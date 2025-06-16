@@ -1,24 +1,22 @@
 <script>
   //@ts-ignore
   import { oklch } from 'chroma-js'
-  import BgGradient from './BgGradient.svelte';
   import { width, height, circles } from './setup';
 </script>
 
 <defs>
-  <BgGradient />
   <g id="circles">
 		{#each circles as c}
 			<circle r={c.r} cx={c.x} cy={c.y} fill="none" />
 		{/each}
   </g>
 	<mask id='circleMask'>
-	  <g stroke='white'>
+	  <g stroke='white' stroke-width={1.5}>
 	    <use href="#circles" />
 	  </g>
 	</mask>
 	<filter id="circleBlur">
-	  <feMorphology operator="dilate" radius={2} />
+	  <feMorphology operator="dilate" radius={3} />
 	  <feGaussianBlur stdDeviation={21} />
 	</filter>
 	<g id="circleGlow" filter="url(#circleBlur)">
@@ -26,6 +24,6 @@
 	</g>
 </defs>
 <use href="#circleGlow" />
-<g stroke={oklch(0.95, 0.11, 300).alpha(0.5).hex()}>
+<g stroke={oklch(0.95, 0.11, 300).alpha(0.5).hex()} stroke-width={1.5}>
   <use href='#circles'/>
 </g>

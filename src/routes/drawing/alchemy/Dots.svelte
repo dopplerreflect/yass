@@ -1,7 +1,6 @@
 <script>
   import { width, height, brightLines } from './setup'
 	import { getDots } from './dots';
-	import BgGradient from './BgGradient.svelte';
 	const dots = getDots(brightLines);
 </script>
 
@@ -12,10 +11,9 @@
 	</radialGradient>
 	<mask id='dotMask'>
 		{#each dots as c}
-			<circle cx={c.x} cy={c.y} r={c.r * 1.25} fill='url(#dotGradient)' />
+			<circle cx={c.x} cy={c.y} r={c.r * 1.5} fill='url(#dotGradient)' />
 		{/each}
 	</mask>
-	<BgGradient />
 	<g id='dots'>
 		<rect id='dotRect' mask='url(#dotMask)' x={-width / 2} y={-height / 2} {...{ width, height }} fill="url(#BgGradient)" />
 		<g>
