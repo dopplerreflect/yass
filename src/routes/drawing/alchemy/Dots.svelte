@@ -24,7 +24,15 @@
 			{...{ width, height }}
 			fill="url(#BgGradient)"
 		/>
-		<g>
+		<filter id="dotBlur">
+			<feMorphology operator="dilate" radius={1} />
+			<feGaussianBlur stdDeviation={3} />
+			<feMerge>
+				<feMergeNode />
+				<feMergeNode in="SourceGraphic" />
+			</feMerge>
+		</filter>
+		<g filter="url(#dotBlur)">
 			{#each dots as c}
 				<circle cx={c.x} cy={c.y} r={c.r * 0.33} fill="white" />
 			{/each}
