@@ -28,29 +28,18 @@
 		yOffset: 0
 	});
 
-	function increment() {
-		if (zoom.level >= 0.2) zoom.level -= 0.1;
-	}
-
-	function decrement() {
-		if (zoom.level <= 0.9) zoom.level += 0.1;
-	}
-
-	function reset() {
-		zoom.level = 1;
-	}
-
 	function handleKey(event: KeyboardEvent) {
 		event.preventDefault();
-		switch (event.key) {
-			case '+':
-				increment();
+		const { key } = event;
+		switch(true) {
+			case /\+/.test(key):
+				if (zoom.level >= 0.2) zoom.level -= 0.1;
 				break;
-			case '-':
-				decrement();
+			case /-/.test(key):
+				if (zoom.level <= 0.9) zoom.level += 0.1;
 				break;
-			case 'r':
-				reset();
+			case /[\d]/.test(key):
+				zoom.level = 1 - key / 10;
 				break;
 		}
 	}
