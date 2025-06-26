@@ -31,6 +31,7 @@
 	},
 	"dependencies": {
 		"@dopplerreflect/geometry": "^0.0.8",
-		"chroma-js": "^3.1.2"
+		"chroma-js": "^3.1.2",
+		"spectral.js": "^3.0.0"
 	}
 }
