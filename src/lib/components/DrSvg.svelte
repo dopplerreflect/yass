@@ -29,12 +29,12 @@
 	});
 
 	$effect(() => {
-		const savedZoom = localStorage.getItem('zoom');
+		const savedZoom = sessionStorage.getItem('zoom');
 		if (savedZoom) zoom = JSON.parse(savedZoom);
 	});
 
 	$effect(() => {
-		localStorage.setItem('zoom', JSON.stringify(zoom));
+		sessionStorage.setItem('zoom', JSON.stringify(zoom));
 	});
 
 	function handleKey(event: KeyboardEvent) {
