@@ -41,6 +41,9 @@
 		event.preventDefault();
 		const { key } = event;
 		switch (true) {
+			case /r/.test(key):
+				zoom = { level: 1, xOffset: 0, yOffset: 0 };
+				break;
 			case /\+/.test(key):
 				if (zoom.level >= 0.2) zoom.level -= 0.1;
 				break;
@@ -49,6 +52,22 @@
 				break;
 			case /[\d]/.test(key):
 				zoom.level = 1 - key / 10;
+				break;
+			case /h/.test(key):
+				zoom.xOffset -= 0.1;
+				break;
+			case /l/.test(key):
+				zoom.xOffset += 0.1;
+				break;
+			case /j/.test(key):
+				zoom.yOffset += 0.1;
+				break;
+			case /k/.test(key):
+				zoom.yOffset -= 0.1;
+				break;
+			case /c/.test(key):
+				zoom.xOffset = 0;
+				zoom.yOffset = 0;
 				break;
 		}
 	}
@@ -65,7 +84,7 @@
 <svg
 	bind:this={svg}
 	xmlns="http://www.w3.org/2000/svg"
-	viewBox={`${(-width / 2) * zoom.level} ${(-height / 2) * zoom.level} ${width * zoom.level} ${height * zoom.level}`}
+	viewBox={`${(-width / 2) * zoom.level + (width / 2) * zoom.xOffset} ${(-height / 2) * zoom.level + (height / 2) * zoom.yOffset} ${width * zoom.level} ${height * zoom.level}`}
 	color-interpolation-filters="sRGB"
 >
 	<mask id="drsvg-clipped">
