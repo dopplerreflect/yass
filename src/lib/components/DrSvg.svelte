@@ -22,16 +22,25 @@
 		});
 	}
 
-	const zoom = $state({
+	let zoom = $state({
 		level: 1,
 		xOffset: 0,
 		yOffset: 0
 	});
 
+	$effect(() => {
+		const savedZoom = localStorage.getItem('zoom');
+		if (savedZoom) zoom = JSON.parse(savedZoom);
+	});
+
+	$effect(() => {
+		localStorage.setItem('zoom', JSON.stringify(zoom));
+	});
+
 	function handleKey(event: KeyboardEvent) {
 		event.preventDefault();
 		const { key } = event;
-		switch(true) {
+		switch (true) {
 			case /\+/.test(key):
 				if (zoom.level >= 0.2) zoom.level -= 0.1;
 				break;
