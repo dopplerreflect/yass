@@ -1,6 +1,7 @@
 <svelte:options namespace="svg" />
 
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import type { SerializedSvg } from '$lib/types.d';
 	import { onMount, type Snippet } from 'svelte';
 
@@ -31,19 +32,22 @@
 		}
 	}
 
-	let zoom = $state({
+	const initialZoom = {
 		level: 1,
 		xOffset: 0,
 		yOffset: 0
-	});
+	};
+
+	let zoom = $state(
+		browser && sessionStorage.getItem('zoom')
+			? JSON.parse(sessionStorage.getItem('zoom')!)
+			: initialZoom
+	);
 
 	$effect(() => {
-		const savedZoom = sessionStorage.getItem('zoom');
-		if (savedZoom) zoom = JSON.parse(savedZoom);
-	});
-
-	$effect(() => {
-		sessionStorage.setItem('zoom', JSON.stringify(zoom));
+		if (browser) {
+			sessionStorage.setItem('zoom', JSON.stringify(zoom));
+		}
 	});
 
 	function handleKey(event: KeyboardEvent) {
