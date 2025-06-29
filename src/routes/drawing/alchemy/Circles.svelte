@@ -1,7 +1,7 @@
 <script lang="ts">
 	//@ts-ignore
 	import { oklch } from 'chroma-js';
-	import { width, height, radii, angles } from './setup';
+	import { width, height, radii, angles, scale } from './setup';
 
 	import { PHI, radialPoint, type Circle } from '@dopplerreflect/geometry';
 
@@ -20,13 +20,13 @@
 		{/each}
 	</g>
 	<mask id="circleMask">
-		<g stroke="white" stroke-width={1.5}>
+		<g stroke="white" stroke-width={1.5 * scale}>
 			<use href="#circles" />
 		</g>
 	</mask>
 	<filter id="circleBlur">
-		<feMorphology operator="dilate" radius={3} />
-		<feGaussianBlur stdDeviation={21} />
+		<feMorphology operator="dilate" radius={3 * scale} />
+		<feGaussianBlur stdDeviation={21 * scale} />
 	</filter>
 	<g id="circleGlow" filter="url(#circleBlur)">
 		<rect
@@ -39,6 +39,6 @@
 	</g>
 </defs>
 <use href="#circleGlow" />
-<g opacity={0.4} stroke={oklch(0.95, 0.11, 300).alpha(0.5).hex()} stroke-width={1.5}>
+<g opacity={0.4} stroke={oklch(0.95, 0.11, 300).alpha(0.5).hex()} stroke-width={1.5 * scale}>
 	<use href="#circles" />
 </g>

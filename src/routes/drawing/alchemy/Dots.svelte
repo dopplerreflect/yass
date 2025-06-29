@@ -1,5 +1,5 @@
 <script>
-	import { width, height } from './setup';
+	import { width, height, scale } from './setup';
 	import { brightLines } from './lines';
 	import { getDots } from './dots';
 	const dots = getDots(brightLines);
@@ -25,8 +25,8 @@
 			fill="url(#BgGradient)"
 		/>
 		<filter id="dotBlur">
-			<feMorphology operator="dilate" radius={1} />
-			<feGaussianBlur stdDeviation={3} />
+			<feMorphology operator="dilate" radius={1 * scale} />
+			<feGaussianBlur stdDeviation={3 * scale} />
 			<feMerge>
 				<feMergeNode />
 				<feMergeNode in="SourceGraphic" />
