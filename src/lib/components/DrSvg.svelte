@@ -1,8 +1,7 @@
 <svelte:options namespace="svg" />
 
 <script lang="ts">
-	import { browser } from '$app/environment';
-	import type { SerializedSvg } from '$lib/types.d';
+	import { createZoomState } from '$lib/zoom.svelte';
 	import { onMount, type Snippet } from 'svelte';
 
 	interface Props {
@@ -11,6 +10,8 @@
 		children: Snippet;
 	}
 	const { width = 1920, height = 1080, children } = $props<Props>();
+	const { zoom, zoomIn, zoomOut, center, pan, reset, setZoomLevel } = createZoomState();
+
 	let svgElement: SVGSVGElement;
 
 	async function postSVG() {
@@ -32,58 +33,28 @@
 		}
 	}
 
-	const initialZoom = {
-		level: 1,
-		xOffset: 0,
-		yOffset: 0
+	const keyMap: Record<string, () => void> = {
+		'+': zoomIn,
+		'-': zoomOut,
+		c: center,
+		r: reset,
+		h: () => pan(-0.1, 0),
+		l: () => pan(0.1, 0),
+		j: () => pan(0, 0.1),
+		k: () => pan(0, -0.1)
 	};
 
-	let zoom = $state(
-		browser && sessionStorage.getItem('zoom')
-			? JSON.parse(sessionStorage.getItem('zoom')!)
-			: initialZoom
-	);
-
-	$effect(() => {
-		if (browser) {
-			sessionStorage.setItem('zoom', JSON.stringify(zoom));
-		}
-	});
-
 	function handleKey(event: KeyboardEvent) {
-		event.preventDefault();
 		const { key } = event;
-		switch (true) {
-			case /r/.test(key):
-				zoom = { level: 1, xOffset: 0, yOffset: 0 };
-				break;
-			case /\+/.test(key):
-				if (zoom.level >= 0.2) zoom.level -= 0.1;
-				break;
-			case /-/.test(key):
-				if (zoom.level <= 0.9) zoom.level += 0.1;
-				break;
-			case /[\d]/.test(key):
-				zoom.level = 1 - key / 10;
-				break;
-			case /h/.test(key):
-				zoom.xOffset -= 0.1;
-				break;
-			case /l/.test(key):
-				zoom.xOffset += 0.1;
-				break;
-			case /j/.test(key):
-				zoom.yOffset += 0.1;
-				break;
-			case /k/.test(key):
-				zoom.yOffset -= 0.1;
-				break;
-			case /c/.test(key):
-				zoom.xOffset = 0;
-				zoom.yOffset = 0;
-				break;
+		if (keyMap[key]) {
+			event.preventDefault();
+			keyMap[key]();
+		}
+		if (/[\d]/.test(key)) {
+			setZoomLevel(Number(key));
 		}
 	}
+
 	onMount(() => {
 		postSVG();
 		document.addEventListener('keypress', handleKey);
