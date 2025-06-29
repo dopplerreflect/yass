@@ -60,13 +60,21 @@
 		document.addEventListener('keypress', handleKey);
 		return () => document.removeEventListener('keypress', handleKey);
 	});
+
+	const viewBox = $derived.by(() => {
+		const zoomedWidth = width * zoom.level;
+		const zoomedHeight = height * zoom.level;
+		const x = -(width / 2) * zoom.level + (width / 2) * zoom.xOffset;
+		const y = -(height / 2) * zoom.level + (height / 2) * zoom.yOffset;
+		return `${x} ${y} ${zoomedWidth} ${zoomedHeight}`;
+	});
 </script>
 
 <svg
 	bind:this={svgElement}
 	xmlns="http://www.w3.org/2000/svg"
-	viewBox={`${(-width / 2) * zoom.level + (width / 2) * zoom.xOffset} ${(-height / 2) * zoom.level + (height / 2) * zoom.yOffset} ${width * zoom.level} ${height * zoom.level}`}
 	color-interpolation-filters="sRGB"
+	{viewBox}
 >
 	<mask id="drsvg-clipped">
 		<path d={`M${-width / 2} ${-height / 2}h${width}v${height}h${-width}Z`} fill="white" />
