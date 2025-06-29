@@ -2,14 +2,14 @@
 
 <script lang="ts">
 	import type { SerializedSvg } from '$lib/types.d';
-	import { onMount } from 'svelte';
+	import { onMount, type Snippet } from 'svelte';
 
 	interface Props {
 		width: number;
 		height: number;
-		children: any;
+		children: Snippet;
 	}
-	const { width = 1920, height = 1080, children }: Props = $props();
+	const { width = 1920, height = 1080, children } = $props<Props>();
 	let svg: SVGSVGElement;
 
 	async function postSVG({ name, body }: SerializedSvg) {
