@@ -10,16 +10,25 @@
 		children: Snippet;
 	}
 	const { width = 1920, height = 1080, children } = $props<Props>();
-	let svg: SVGSVGElement;
+	let svgElement: SVGSVGElement;
 
-	async function postSVG({ name, body }: SerializedSvg) {
-		const response = await fetch('/api', {
-			method: 'POST',
-			body: JSON.stringify({ name, body }),
-			headers: {
-				'content-type': 'application/json'
+	async function postSVG() {
+		const pathname = document.location.pathname.split('/');
+		const name = pathname[pathname.length - 1];
+		const body = new XMLSerializer().serializeToString(svgElement);
+
+		try {
+			const response = await fetch('/api', {
+				method: 'POST',
+				body: JSON.stringify({ name, body }),
+				headers: { 'Content-Type': 'application/json' }
+			});
+			if (!response.ok) {
+				console.error('Failed to save SVG:', await response.text());
 			}
-		});
+		} catch (error) {
+			console.error('Error posting SVG:', error);
+		}
 	}
 
 	let zoom = $state({
@@ -72,17 +81,14 @@
 		}
 	}
 	onMount(() => {
-		const pathname = document.location.pathname.split(/\//);
-		const name = pathname[pathname.length - 1];
-		const body = new XMLSerializer().serializeToString(svg);
-		postSVG({ name, body });
+		postSVG();
 		document.addEventListener('keypress', handleKey);
 		return () => document.removeEventListener('keypress', handleKey);
 	});
 </script>
 
 <svg
-	bind:this={svg}
+	bind:this={svgElement}
 	xmlns="http://www.w3.org/2000/svg"
 	viewBox={`${(-width / 2) * zoom.level + (width / 2) * zoom.xOffset} ${(-height / 2) * zoom.level + (height / 2) * zoom.yOffset} ${width * zoom.level} ${height * zoom.level}`}
 	color-interpolation-filters="sRGB"
