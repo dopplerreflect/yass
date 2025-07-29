@@ -1,10 +1,13 @@
 <script lang="ts">
 	import { drawings } from '$lib/drawings.svelte';
+	console.log(drawings);
 </script>
 
-<div class="flex gap-2 flex-wrap">
+<div class="flex flex-wrap gap-2">
 	{#each drawings as drawing}
-		<div class="bg-violet-950 flex p-2 items-center justify-center border-violet-700 border-2 rounded-2xl drop-shadow-lg hover:drop-shadow-violet-300 drop-shadow-violet-700">
+		<div
+			class="flex items-center justify-center rounded-2xl border-2 border-violet-700 bg-violet-950 p-2 drop-shadow-lg drop-shadow-violet-700 hover:drop-shadow-violet-300"
+		>
 			<a href={`/drawing/${drawing.name}`}>
 				<img class="rounded-2xl" src={`/drawings/webp/${drawing.name}.webp`} alt="drawing" />
 				{drawing.name}
