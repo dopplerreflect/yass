@@ -7,7 +7,7 @@
 	type HexPatternProps = {
 		id: string;
 		size: number;
-		hue: number;
+		hue?: number;
 	};
 	type Props = HexPatternProps;
 	const { id, size, hue = 210 }: Props = $props();
