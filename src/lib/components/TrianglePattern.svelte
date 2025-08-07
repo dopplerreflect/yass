@@ -27,7 +27,7 @@
 	{height}
 	patternUnits="userSpaceOnUse"
 >
-	<g stroke={chroma.oklch(0.9, 0.37, hue).hex()} fill-opacity={0.5}>
+	<g stroke={chroma.oklch(0.9, 0.37, hue).hex()} fill-opacity={0.9}>
 		<g id="tri">
 			<path
 				d={`M${-w2} ${-h2}L${w2} ${-h2}L0 ${-ws3}Z`}
