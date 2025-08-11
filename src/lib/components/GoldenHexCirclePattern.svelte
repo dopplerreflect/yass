@@ -11,23 +11,37 @@
 		type Point,
 		pointToString,
 	} from '@dopplerreflect/geometry';
-	import chroma from 'chroma-js';
+
+	type Colors = {
+		circle?: string;
+		hex?: string;
+		g0?: string;
+		g1?: string;
+		g2?: string;
+	};
+
 	type Props = {
 		id: string;
+		colors?: Colors;
 		hexRadius?: number;
 		hexStrokeWidth?: number;
-		hexStroke?: string;
 		circleStrokeWidth?: number;
-		circleStroke?: string;
+	};
+
+	const defaultColors: Colors = {
+		circle: 'whitesmoke',
+		hex: 'gold',
+		g0: 'white',
+		g1: 'powderblue',
+		g2: 'goldenrod',
 	};
 
 	const {
 		id,
+		colors = defaultColors,
 		hexRadius = 50,
 		hexStrokeWidth = 1,
-		hexStroke = 'orange',
 		circleStrokeWidth = 1,
-		circleStroke = 'white',
 	}: Props = $props();
 	const hexWidth = hexRadius * Math.sqrt(3);
 
@@ -49,7 +63,6 @@
 
 	const ci: Point[] = findCircleIntersections(circles);
 
-	//  d={`M0 0A${r0} ${r0} 0 0 1 ${pointToString(ci[76])}A${r2} ${r2} 0 0 1 ${pointToString(ci[93])}A${r0} ${r0} 0 0 1 0 0Z`}
 	const p0 = [
 		'M 0 0',
 		`A${r0} ${r0} 0 0 1 `,
@@ -186,7 +199,7 @@
 				r={c.r}
 				cx={c.x}
 				cy={c.y}
-				stroke={circleStroke}
+				stroke={colors.circle}
 				stroke-width={circleStrokeWidth}
 				fill="none"
 			/>
@@ -195,13 +208,13 @@
 	<g id="hexLines" filter="url(#shadow2)">
 		<polygon
 			points={polygonPointString(polygon(6, hexRadius))}
-			stroke={hexStroke}
+			stroke={colors.hex}
 			stroke-width={hexStrokeWidth}
 			fill="none"
 		/>
 		<path
 			d={`M0 ${-hexRadius * 2}v${hexRadius}M0 ${hexRadius}v${hexRadius}`}
-			stroke={hexStroke}
+			stroke={colors.hex}
 			stroke-width={hexStrokeWidth}
 		/>
 	</g>
@@ -209,26 +222,27 @@
 		<text
 			x={p.x}
 			y={p.y}
-			font-size={6}
-			fill={chroma.oklch(0.75, 0.37, i, 0).hex()}
+			font-size={8}
+			fill={`hsla(${i} 100% 50% / 0)`}
 			dominant-baseline="middle"
 			text-anchor="middle">{i}</text
 		>
 	{/each}
+
 	<defs>
-		<path id="p0" d={p0} fill="white" stroke="none" />
+		<path id="p0" d={p0} fill={colors.g0} stroke="none" />
 		<g id="g0">
 			{#each angles as a}
 				<use href="#p0" transform={`rotate(${a})`} />
 			{/each}
 		</g>
-		<path id="p1" d={p1} fill="lightgreen" stroke="none" fill-rule="evenodd" />
+		<path id="p1" d={p1} fill={colors.g1} stroke="none" fill-rule="evenodd" />
 		<g id="g1">
 			{#each angles as a}
 				<use href="#p1" transform={`rotate(${a})`} />
 			{/each}
 		</g>
-		<path id="p2" d={p2} fill="red" stroke="none" />
+		<path id="p2" d={p2} fill={colors.g2} stroke="none" />
 		<g id="g2">
 			{#each angles as a}
 				<use href="#p2" transform={`rotate(${a})`} />
