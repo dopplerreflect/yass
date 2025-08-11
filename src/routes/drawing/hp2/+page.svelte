@@ -11,11 +11,9 @@
 		<GoldenHexCirclePattern
 			id="hp"
 			hexRadius={100}
-			circleStroke={chroma.oklch(1, 0.37, 150).hex()}
+			circleStroke={chroma.oklch(0.5, 0.37, 150).hex()}
 			circleStrokeWidth={2}
-			circleFill={chroma.oklch(0.25, 0.37, 270).hex()}
-			circleFillOpacity={0.12}
-			hexStroke={chroma.oklch(1, 0.37, 75).hex()}
+			hexStroke={chroma.oklch(1, 0.2, 75).hex()}
 			hexStrokeWidth={3}
 		/>
 	</defs>

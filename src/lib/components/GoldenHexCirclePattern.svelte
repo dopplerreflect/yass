@@ -19,8 +19,6 @@
 		hexStroke?: string;
 		circleStrokeWidth?: number;
 		circleStroke?: string;
-		circleFill?: string;
-		circleFillOpacity?: number;
 	};
 
 	const {
@@ -30,8 +28,6 @@
 		hexStroke = 'orange',
 		circleStrokeWidth = 1,
 		circleStroke = 'white',
-		circleFill = 'white',
-		circleFillOpacity = 0.1,
 	}: Props = $props();
 	const hexWidth = hexRadius * Math.sqrt(3);
 
@@ -184,11 +180,6 @@
 	<use href="#g0" />
 	<use href="#g1" />
 	<use href="#g2" />
-	<g id="filledCircles" style="display:none">
-		{#each circles as c}
-			<circle r={c.r} cx={c.x} cy={c.y} fill={circleFill} fill-opacity={circleFillOpacity} />
-		{/each}
-	</g>
 	<g id="strokedCircles" filter="url(#shadow)">
 		{#each circles as c}
 			<circle
@@ -244,8 +235,8 @@
 			{/each}
 		</g>
 		<filter id="shadow">
-			<feGaussianBlur result="blur" in="SourceAlpha" stdDeviation={hexStrokeWidth} />
-			<feOffset dx={0} dy={hexStrokeWidth * 2} result="blackOffset" />
+			<feGaussianBlur result="blur" in="SourceAlpha" stdDeviation={hexStrokeWidth / 2} />
+			<feOffset dx={0} dy={hexStrokeWidth * 1} result="blackOffset" />
 			<feColorMatrix
 				in="blur"
 				values="0 0 0 0 1
@@ -254,7 +245,7 @@
 								0 0 0 1 0"
 				result="white"
 			/>
-			<feOffset dx={0} dy={hexStrokeWidth * 0} result="whiteOffset" />
+			<feOffset dx={0} dy={-hexStrokeWidth * 1} result="whiteOffset" />
 
 			<feMerge>
 				<feMergeNode in="whiteOffset" />
@@ -263,8 +254,8 @@
 			</feMerge>
 		</filter>
 		<filter id="shadow2">
-			<feGaussianBlur in="SourceAlpha" stdDeviation={hexStrokeWidth * 2} />
-			<feOffset dx={0} dy={hexStrokeWidth * 3} />
+			<feGaussianBlur in="SourceAlpha" stdDeviation={hexStrokeWidth / 2} />
+			<feOffset dx={0} dy={hexStrokeWidth * 1} />
 			<feMerge>
 				<feMergeNode />
 				<feMergeNode in="SourceGraphic" />
