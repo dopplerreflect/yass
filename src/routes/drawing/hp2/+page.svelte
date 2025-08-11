@@ -4,20 +4,19 @@
 	import chroma from 'chroma-js';
 	const width = 1920;
 	const height = 1080;
-	const hue = 270;
 </script>
 
 <DrSvg {...{ width, height }}>
 	<defs>
 		<GoldenHexCirclePattern
 			id="hp"
-			hexRadius={90}
-			circleStroke={chroma.oklch(0.75, 0.02, hue + 120).hex()}
+			hexRadius={100}
+			circleStroke={chroma.oklch(1, 0.37, 150).hex()}
 			circleStrokeWidth={2}
-			circleFill={chroma.oklch(0.25, 0.37, hue).hex()}
+			circleFill={chroma.oklch(0.25, 0.37, 270).hex()}
 			circleFillOpacity={0.12}
-			hexStroke={chroma.oklch(0.85, 0.37, hue).hex()}
-			hexStrokeWidth={0}
+			hexStroke={chroma.oklch(1, 0.37, 75).hex()}
+			hexStrokeWidth={3}
 		/>
 	</defs>
 	<rect x={-width / 2} y={-height / 2} {...{ width, height }} fill="white" />
