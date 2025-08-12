@@ -17,7 +17,7 @@
 	<defs>
 		<GoldenHexCirclePattern
 			id="hp"
-			hexRadius={152}
+			hexRadius={96}
 			circleStrokeWidth={1}
 			hexStrokeWidth={2}
 			{colors}
