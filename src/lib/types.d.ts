@@ -9,8 +9,10 @@ export type SerializedSvg = {
 	body: string;
 };
 
-export type GoldenHexCirclePatternColors = {
-	circle: string;
+export type GoldenHexCirclePatternTheme = {
+	circleStrokeWidth: number;
+	hexStrokeWidth: number;
+	circle: string | [string, string, string, string];
 	hex: string;
 	g0: string;
 	g1: string;

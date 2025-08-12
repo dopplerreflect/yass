@@ -5,22 +5,21 @@
 		polygon,
 		polygonPointString,
 		radialPoint,
-		type Circle,
 		type AnnotatedCircle,
 		pointToString,
 		mapCircleIntersections,
 	} from '@dopplerreflect/geometry';
-	import type { GoldenHexCirclePatternColors } from '$lib/types';
+	import type { GoldenHexCirclePatternTheme } from '$lib/types';
 
 	type Props = {
 		id: string;
-		colors?: Colors;
+		theme?: GoldenHexCirclePatternTheme;
 		hexRadius?: number;
-		hexStrokeWidth?: number;
-		circleStrokeWidth?: number;
 	};
 
-	const defaultColors: GoldenHexCirclePatternColors = {
+	const defaultTheme: GoldenHexCirclePatternTheme = {
+		circleStrokeWidth: 2,
+		hexStrokeWidth: 2,
 		circle: 'whitesmoke',
 		hex: 'gold',
 		g0: 'white',
@@ -28,13 +27,7 @@
 		g2: 'goldenrod',
 	};
 
-	const {
-		id,
-		colors = defaultColors,
-		hexRadius = 50,
-		hexStrokeWidth = 1,
-		circleStrokeWidth = 1,
-	}: Props = $props();
+	const { id, theme = defaultTheme, hexRadius = 50 }: Props = $props();
 	const hexWidth = hexRadius * Math.sqrt(3);
 
 	const angles = anglesArray(6, 0);
@@ -190,8 +183,8 @@
 				r={c.r}
 				cx={c.x}
 				cy={c.y}
-				stroke={colors.circle}
-				stroke-width={circleStrokeWidth}
+				stroke={typeof theme.circle === 'string' ? theme.circle : theme.circle[c.ri]}
+				stroke-width={theme.circleStrokeWidth}
 				fill="none"
 			/>
 		{/each}
@@ -199,39 +192,39 @@
 	<g id="hexLines" filter="url(#shadow2)">
 		<polygon
 			points={polygonPointString(polygon(6, hexRadius))}
-			stroke={colors.hex}
-			stroke-width={hexStrokeWidth}
+			stroke={theme.hex}
+			stroke-width={theme.hexStrokeWidth}
 			fill="none"
 		/>
 		<path
 			d={`M0 ${-hexRadius * 2}v${hexRadius}M0 ${hexRadius}v${hexRadius}`}
-			stroke={colors.hex}
-			stroke-width={hexStrokeWidth}
+			stroke={theme.hex}
+			stroke-width={theme.hexStrokeWidth}
 		/>
 	</g>
 
 	<defs>
-		<path id="p0" d={p0} fill={colors.g0} stroke="none" />
+		<path id="p0" d={p0} fill={theme.g0} stroke="none" />
 		<g id="g0">
 			{#each angles as a}
 				<use href="#p0" transform={`rotate(${a})`} />
 			{/each}
 		</g>
-		<path id="p1" d={p1} fill={colors.g1} stroke="none" fill-rule="evenodd" />
+		<path id="p1" d={p1} fill={theme.g1} stroke="none" fill-rule="evenodd" />
 		<g id="g1">
 			{#each angles as a}
 				<use href="#p1" transform={`rotate(${a})`} />
 			{/each}
 		</g>
-		<path id="p2" d={p2} fill={colors.g2} stroke="none" />
+		<path id="p2" d={p2} fill={theme.g2} stroke="none" />
 		<g id="g2">
 			{#each angles as a}
 				<use href="#p2" transform={`rotate(${a})`} />
 			{/each}
 		</g>
 		<filter id="shadow">
-			<feGaussianBlur result="blur" in="SourceAlpha" stdDeviation={hexStrokeWidth / 2} />
-			<feOffset dx={0} dy={hexStrokeWidth * 1} result="blackOffset" />
+			<feGaussianBlur result="blur" in="SourceAlpha" stdDeviation={theme.hexStrokeWidth / 2} />
+			<feOffset dx={0} dy={theme.hexStrokeWidth * 1} result="blackOffset" />
 			<feColorMatrix
 				in="blur"
 				values="0 0 0 0 1
@@ -240,7 +233,7 @@
 								0 0 0 1 0"
 				result="white"
 			/>
-			<feOffset dx={0} dy={-hexStrokeWidth * 1} result="whiteOffset" />
+			<feOffset dx={0} dy={-theme.hexStrokeWidth * 1} result="whiteOffset" />
 
 			<feMerge>
 				<feMergeNode in="whiteOffset" />
@@ -249,8 +242,8 @@
 			</feMerge>
 		</filter>
 		<filter id="shadow2">
-			<feGaussianBlur in="SourceAlpha" stdDeviation={hexStrokeWidth / 2} />
-			<feOffset dx={0} dy={hexStrokeWidth * 1} />
+			<feGaussianBlur in="SourceAlpha" stdDeviation={theme.hexStrokeWidth / 2} />
+			<feOffset dx={0} dy={theme.hexStrokeWidth * 1} />
 			<feMerge>
 				<feMergeNode />
 				<feMergeNode in="SourceGraphic" />
