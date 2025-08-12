@@ -6,17 +6,11 @@
 		polygonPointString,
 		radialPoint,
 		type Circle,
+		type AnnotatedCircle,
 		pointToString,
 		mapCircleIntersections,
 	} from '@dopplerreflect/geometry';
-
-	type Colors = {
-		circle?: string;
-		hex?: string;
-		g0?: string;
-		g1?: string;
-		g2?: string;
-	};
+	import type { GoldenHexCirclePatternColors } from '$lib/types';
 
 	type Props = {
 		id: string;
@@ -26,7 +20,7 @@
 		circleStrokeWidth?: number;
 	};
 
-	const defaultColors: Colors = {
+	const defaultColors: GoldenHexCirclePatternColors = {
 		circle: 'whitesmoke',
 		hex: 'gold',
 		g0: 'white',
@@ -44,132 +38,138 @@
 	const hexWidth = hexRadius * Math.sqrt(3);
 
 	const angles = anglesArray(6, 0);
-	const radii = [...Array(3).keys()].map((k) => hexWidth * phi ** k);
+	const radii = [...Array(4).keys()].map((k) => hexWidth * phi ** k);
 	const [r0, r1, r2] = radii;
-	const circles: Circle[] = [
-		radii.map((r) => ({ r, x: 0, y: 0 })),
-		...angles.map((a) =>
-			radii.map((r) => ({
+	const circles: AnnotatedCircle[] = [
+		radii.map((r, ri) => ({ r, x: 0, y: 0, ai: 'c', ri })),
+		...angles.map((a, ai) =>
+			radii.map((r, ri) => ({
 				r,
 				...radialPoint(a, hexWidth / 2, { center: radialPoint(a, hexWidth / 2) }),
+				ai,
+				ri,
 			})),
 		),
-		{ r: hexWidth, x: 0, y: -hexRadius * 3 },
-		{ r: hexWidth, x: 0, y: hexRadius * 3 },
+		{ r: hexWidth, x: 0, y: -hexRadius * 3, ai: 't', ri: 0 },
+		{ r: hexWidth, x: 0, y: hexRadius * 3, ai: 'b', ri: 0 },
 	].flat();
 
 	const c = mapCircleIntersections(circles, 'y-asc');
 
+	const ar01 = `A${r0} ${r0} 0 0 1 `;
+	const ar11 = `A${r1} ${r1} 0 0 1 `;
+	const ar21 = `A${r2} ${r2} 0 0 1 `;
+	const ar00 = `A${r0} ${r0} 0 0 0 `;
+	const ar10 = `A${r1} ${r1} 0 0 0 `;
+	const ar20 = `A${r2} ${r2} 0 0 0 `;
+
+	function p(s: string) {
+		return pointToString(c.get(s)!);
+	}
 	const p0 = [
-		'M 0 0',
-		`A${r0} ${r0} 0 0 1 `,
-		pointToString(c.get('2.18.0')!),
+		`M 0 0${ar01}`,
+		p('c.2-5.0:0'),
 		`A${r2} ${r2} 0 0 1 `,
-		pointToString(c.get('2.12.0')!),
-		`A${r0} ${r0} 0 0 1 `,
-		`0 0`,
-		`M${pointToString(c.get('16.18.1')!)}`,
-		`A${r0} ${r0} 0 0 1 `,
-		pointToString(c.get('1.18.0')!),
-		`A${r1} ${r1} 0 0 1`,
-		pointToString(c.get('1.12.0')!),
-		`A${r0} ${r0} 0 0 1 `,
-		pointToString(c.get('12.16.1')!),
-		`A${r1} ${r1} 0 0 1 `,
-		pointToString(c.get('16.18.1')!),
-		`M${pointToString(c.get('17.18.1')!)}`,
-		`A${r0} ${r0} 0 0 1 `,
-		pointToString(c.get('0.18.0')!),
-		`A${r0} ${r0} 0 0 1 `,
-		pointToString(c.get('12.17.1')!),
-		`A${r2} ${r2} 0 0 1 `,
-		pointToString(c.get('17.18.1')!),
-		`M${pointToString(c.get('17.19.0')!)}`,
-		`A${r2} ${r2} 0 0 1 `,
-		pointToString(c.get('17.21.1')!),
-		`A${r0} ${r0} 0 0 1 `,
-		pointToString(c.get('0.18.0')!),
-		'Z',
-		`M${pointToString(c.get('17.19.0')!)}`,
-		`A${r1} ${r1} 0 0 0 `,
-		pointToString(c.get('19.21.1')!),
-		`A${r0} ${r0} 0 0 0 `,
-		pointToString(c.get('16.21.1')!),
-		`A${r1} ${r1} 0 0 0 `,
-		pointToString(c.get('16.20.0')!),
-		'Z',
-		`M${pointToString(c.get('16.20.1')!)}`,
-		`A${r2} ${r2} 0 0 0 `,
-		pointToString(c.get('20.21.1')!),
-		`A${r0} ${r0} 0 0 0 `,
-		pointToString(c.get('0.21.1')!),
-		'Z',
-		`M${pointToString(c.get('16.19.1')!)}`,
-		`A${r1} ${r1} 0 0 1 `,
-		pointToString(c.get('1.19.0')!),
-		`A${r1} ${r1} 0 0 1 `,
-		pointToString(c.get('1.16.0')!),
-		`A${r1} ${r1} 0 0 1 `,
-		pointToString(c.get('16.19.1')!),
+		p('c.2-3.0:0'),
+		ar01,
+		`0 0 ZM${p('4.1-5.0:1')}`,
+		ar01,
+		p('c.1-5.0:0'),
+		ar11,
+		p('c.1-3.0:0'),
+		ar01,
+		p('3.0-4.1:1'),
+		ar11,
+		p('4.1-5.0:1'),
+		`ZM${p('4.2-5.0:1')}`,
+		ar01,
+		p('c.0-t.0:0'),
+		ar01,
+		p('3.0-4.2:1'),
+		ar21,
+		p('4.2-5.0:1'),
+		`ZM${p('4.2-5.1:0')}`,
+		ar01,
+		p('4.2-t.0:1'),
+		ar01,
+		p('c.0-t.0:0'),
+		`ZM${p('4.1-5.2:0')}`,
+		ar11,
+		p('4.1-t.0:1'),
+		ar01,
+		p('5.1-t.0:1'),
+		ar11,
+		p('4.2-5.1:0'),
+		`ZM${p('c.0-t.0:1')}`,
+		ar01,
+		p('5.2-t.0:1'),
+		ar21,
+		p('4.1-5.2:0'),
+		`ZM${p('4.1-5.1:1')}`,
+		ar11,
+		p('c.1-5.1:0'),
+		ar11,
+		p('c.1-4.1:0'),
+		ar11,
+		p('4.1-5.1:1'),
+		`Z`,
 	].join('');
-
 	const p1 = [
-		`M0 0`,
-		`A${r0} ${r0} 0 0 0 `,
-		pointToString(c.get('0.21.0')!),
-		`A${r0} ${r0} 0 0 0 `,
-		pointToString(c.get('0.21.1')!),
-		`A${r0} ${r0} 0 0 0 `,
-		'0 0',
-		`M${pointToString(c.get('2.19.0')!)}`,
-		`A${r2} ${r2} 0 0 0 `,
-		pointToString(c.get('2.16.0')!),
-		`A${r1} ${r1} 0 0 0 `,
-		pointToString(c.get('16.20.0')!),
-		`A${r2} ${r2} 0 0 0 `,
-		pointToString(c.get('1.20.0')!),
-		`A${r1} ${r1} 0 0 0 `,
-		pointToString(c.get('1.17.1')!),
-		`A${r2} ${r2} 0 0 0 `,
-		pointToString(c.get('17.19.0')!),
-		`A${r1} ${r1} 0 0 0 `,
-		pointToString(c.get('2.19.0')!),
+		`M0 0${ar00}`,
+		p('c.0-t.0:0'),
+		ar00,
+		p('c.0-t.0:1'),
+		ar00,
+		`0 0ZM${p('c.2-5.1:0')}`,
+		ar20,
+		p('c.2-4.1:0'),
+		ar10,
+		p('4.1-5.2:0'),
+		ar20,
+		p('c.1-5.2:0'),
+		ar10,
+		p('c.1-4.2:0'),
+		ar20,
+		p('4.2-5.1:0'),
+		ar10,
+		p('c.2-5.1:0'),
+		`Z`,
 	].join('');
-
 	const p2 = [
-		`M${pointToString(c.get('2.12.0')!)}`,
-		`A${r0} ${r0} 0 0 0 `,
-		pointToString(c.get('12.16.1')!),
-		`A${r1} ${r1} 0 0 0 `,
-		pointToString(c.get('16.19.1')!),
-		`A${r1} ${r1} 0 0 0 `,
-		pointToString(c.get('3.19.1')!),
-		`A${r0} ${r0} 0 0 0 `,
-		pointToString(c.get('2.3.0')!),
-		`A${r2} ${r2} 0 0 0 `,
-		pointToString(c.get('2.12.0')!),
-		`M${pointToString(c.get('1.12.0')!)}`,
-		`A${r0} ${r0} 0 0 0 `,
-		pointToString(c.get('12.17.1')!),
-		`A${r2} ${r2} 0 0 0 `,
-		pointToString(c.get('17.21.1')!),
-		`A${r0} ${r0} 0 0 0 `,
-		pointToString(c.get('19.21.1')!),
-		`A${r1} ${r1} 0 0 0 `,
-		pointToString(c.get('1.19.0')!),
-		`A${r1} ${r1} 0 0 0 `,
-		pointToString(c.get('1.12.0')!),
-		`M${pointToString(c.get('1.16.0')!)}`,
-		`A${r1} ${r1} 0 0 0 `,
-		pointToString(c.get('16.21.1')!),
-		`A${r0} ${r0} 0 0 0 `,
-		pointToString(c.get('20.21.1')!),
-		`A${r2} ${r2} 0 0 0 `,
-		pointToString(c.get('3.20.1')!),
-		`A${r0} ${r0} 0 0 0 `,
-		pointToString(c.get('1.3.0')!),
-		`A${r1} ${r1} 0 0 0 `,
-		pointToString(c.get('1.16.0')!),
+		`M${p('c.2-0.0:0')}`,
+		ar20,
+		p('c.2-3.0:0'),
+		ar00,
+		p('3.0-4.1:1'),
+		ar10,
+		p('4.1-5.1:1'),
+		ar10,
+		p('0.0-5.1:1'),
+		ar00,
+		p('c.2-0.0:0'),
+		`ZM${p('c.1-5.1:0')}`,
+		ar10,
+		p('c.1-3.0:0'),
+		ar00,
+		p('3.0-4.2:1'),
+		ar20,
+		p('4.2-t.0:1'),
+		ar00,
+		p('5.1-t.0:1'),
+		ar10,
+		p('c.1-5.1:0'),
+		`ZM${p('c.1-4.1:0')}`,
+		ar10,
+		p('4.1-t.0:1'),
+		ar00,
+		p('5.2-t.0:1'),
+		ar20,
+		p('0.0-5.2:1'),
+		ar00,
+		p('c.1-0.0:0'),
+		ar10,
+		p('c.1-4.1:0'),
+		`Z`,
 	].join('');
 </script>
 
