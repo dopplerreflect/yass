@@ -4,12 +4,12 @@
 	import themes from './themes';
 	const width = 1920;
 	const height = 1080;
-	const theme = themes.C;
+	const theme = themes.e;
 </script>
 
 <DrSvg {...{ width, height }}>
 	<defs>
-		<GoldenHexCirclePattern id="hp" hexRadius={height / 12} {theme} />
+		<GoldenHexCirclePattern id="hp" hexRadius={height / 18} {theme} />
 	</defs>
 	<rect x={-width / 2} y={-height / 2} {...{ width, height }} fill="white" />
 	<rect x={-width / 2} y={-height / 2} {...{ width, height }} fill="url(#hp)" />

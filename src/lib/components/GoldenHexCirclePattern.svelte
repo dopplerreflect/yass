@@ -189,7 +189,7 @@
 			/>
 		{/each}
 	</g>
-	<g id="hexLines" filter="url(#shadow2)">
+	<g id="hexLines" filter="url(#shadow)">
 		<polygon
 			points={polygonPointString(polygon(6, hexRadius))}
 			stroke={theme.hex}
@@ -223,21 +223,16 @@
 			{/each}
 		</g>
 		<filter id="shadow">
-			<feGaussianBlur result="blur" in="SourceAlpha" stdDeviation={theme.hexStrokeWidth / 2} />
-			<feOffset dx={0} dy={theme.hexStrokeWidth * 1} result="blackOffset" />
+			<feGaussianBlur result="blur" in="SourceAlpha" stdDeviation={theme.hexStrokeWidth * 1} />
+			<feOffset dx={0} dy={theme.hexStrokeWidth * 3} result="blackOffset" />
 			<feColorMatrix
-				in="blur"
-				values="0 0 0 0 1
-								0 0 0 0 1
-								0 0 0 0 1
-								0 0 0 1 0"
-				result="white"
+				values="1 0 0 0.0  0
+								0 1 0 0.0  0
+								0 0 1 0.0  0
+								0 0 0 0.3  0"
 			/>
-			<feOffset dx={0} dy={-theme.hexStrokeWidth * 1} result="whiteOffset" />
-
 			<feMerge>
-				<feMergeNode in="whiteOffset" />
-				<feMergeNode in="blackOffset" />
+				<feMergeNode />
 				<feMergeNode in="SourceGraphic" />
 			</feMerge>
 		</filter>
