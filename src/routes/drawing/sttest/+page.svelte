@@ -3,49 +3,73 @@
 	import TrianglePattern from '$lib/components/TrianglePattern.svelte';
 	import { anglesArray, phi, radialPointString } from '@dopplerreflect/geometry';
 	import Chroma from 'chroma-js';
-	let dpi = 300;
-	let width = 6 * dpi;
-	let height = 9 * dpi;
-	let margin = 0.5 * dpi;
-	const r = (height * phi) / 2;
-	const r2 = r * phi;
-	const r3 = r2 + (r - r2) / 2;
-	const r4 = r2 + (r - r2) / 3;
-	const r5 = r2 + ((r - r2) / 3) * 2;
-	const angles = anglesArray(30);
+	const width = 1920;
+	const height = 1080;
+	const angles = anglesArray(10);
+	const angles2 = anglesArray(30);
+	const r = height / 2;
+	const radii = [...Array(6).keys()].map((k) => r * phi ** k);
+	const stars = radii.map(
+		(r) =>
+			`M${[...angles.map((a, i) => radialPointString(a, i % 2 === 0 ? r : r * phi ** 2))].join('L')}Z`,
+	);
+	const points = [
+		radialPointString(angles2[0], radii[0]),
+		radialPointString(angles2[1], radii[1]),
+		radialPointString(angles2[28], radii[3]),
+		radialPointString(angles2[25], radii[1]),
+		radialPointString(angles2[27], radii[2]),
+		radialPointString(angles2[0], radii[0]),
+	].join(' ');
 </script>
 
 <DrSvg {...{ width, height }}>
 	<defs>
-		<TrianglePattern id="tp" hue={300} size={dpi / 2} />
-		<path
-			id="arrow"
-			d={`M${radialPointString(angles[2], r)}L${radialPointString(angles[0], r3)}L${radialPointString(angles[2], r2)}L${radialPointString(angles[2], r4)}A${r4} ${r4} 0 0 1 ${radialPointString(angles[6], r2)}L${radialPointString(angles[5], r3)}L${radialPointString(angles[6], r)}A${r5} ${r5} 0 0 0 ${radialPointString(angles[2], r5)}`}
-			fill="white"
-		/>
+		<filter id="shadow">
+			<feGaussianBlur in="SourceAlpha" stdDeviation={5} />
+			<feOffset dy={6} />
+			<feMerge>
+				<feMergeNode />
+				<feMergeNode in="SourceGraphic" />
+			</feMerge>
+		</filter>
+		<mask id="mask0">
+			<path
+				d={`M${radialPointString(angles2[25], radii[1])}L${radialPointString(angles[0], radii[3])}L${radialPointString(angles[4], radii[5])}L0 0Z`}
+				fill="white"
+			/>
+		</mask>
 	</defs>
 	<rect x={-width / 2} y={-height / 2} {...{ width, height }} fill="black" />
-	<rect x={-width / 2} y={-height / 2} {...{ width, height }} fill="url(#tp)" />
-	<rect
-		x={-width / 2 + margin}
-		y={-height / 2 + margin}
-		width={width - margin * 2}
-		height={height - margin * 2}
-		stroke="white"
-		stroke-width={dpi / 32}
-		fill={Chroma.oklch(0, 0.17, 300, 0.85).hex()}
-	/>
-	<g stroke="white" fill="none">
-		<circle {r} />
-		<circle r={r2} />
-		<circle r={r3} />
-		<circle r={r4} />
-		<circle r={r5} />
-		{#each angles as a, i}
-			<path d={`M0 0L${radialPointString(a, r)}`} stroke="white" />
-		{/each}
-		{#each [0, 72, 144, 216, 288] as a}
-			<use href="#arrow" transform={`rotate(${a})`} />
+	{#each [...Array(5).keys()].map((k) => k) as a}
+		<g filter="url(#shadow)">
+			{#each [...Array(6).keys()].map((k) => k) as i}
+				<polygon
+					{points}
+					fill={Chroma.oklch(0.75 - (0.75 / 6) * (i - 1), 0.37 - (0.37 / 6) * i, 72 * a + 18).hex()}
+					transform={`scale(${phi ** i}) rotate(${72 * a + 12 * i})`}
+				/>
+			{/each}
+		</g>
+	{/each}
+	<g filter="url(#shadow)" mask="url(#mask0)">
+		{#each [...Array(6).keys()].map((k) => k) as i}
+			<polygon
+				{points}
+				fill={Chroma.oklch(0.75 - (0.75 / 6) * (i - 1), 0.37 - (0.37 / 6) * i, 72 * 0 + 18).hex()}
+				transform={`scale(${phi ** i}) rotate(${72 * 0 + 12 * i})`}
+			/>
 		{/each}
 	</g>
+	{#each stars as d, i}
+		<path {d} stroke="black" fill="none" fill-opacity={0.1} transform={`rotate(${i * 12})`} />
+	{/each}
+	<!--
+	{#each angles2 as a}
+		<path style="" d={`M0 0L${radialPointString(a, r)}`} stroke="white" />
+	{/each}
+	{#each radii as r}
+		<circle {r} fill="none" stroke="white" />
+	{/each}
+	-->
 </DrSvg>
