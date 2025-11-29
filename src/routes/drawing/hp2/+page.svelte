@@ -4,7 +4,7 @@
 	import themes from './themes';
 	const width = 1920;
 	const height = 1080;
-	const theme = themes.a;
+	const theme = themes.d;
 </script>
 
 <DrSvg {...{ width, height }}>

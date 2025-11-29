@@ -19,8 +19,6 @@ const themes: Record<string, GoldenHexCirclePatternTheme> = {
 			chroma.oklch(0.75, 0.36, 90).hex(),
 			chroma.oklch(0.5, 0.36, 90).hex(),
 			chroma.oklch(0.25, 0.36, 90).hex(),
-			210,
-			90,
 		],
 		hex: chroma.oklch(1, 0.37, 240).hex(),
 		g0: chroma.oklch(1, 0.12, 60).hex(),

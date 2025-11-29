@@ -6,7 +6,8 @@
 		findCentroid,
 		phylotaxis,
 		polygonPointString,
-		shrinkPolygon
+		shrinkPolygon,
+		type Point
 	} from '@dopplerreflect/geometry';
 	import chroma from 'chroma-js';
 	import Spectral from 'spectral.js';
@@ -31,11 +32,11 @@
 
 	const gradient = colors.map((c, i) => [c, (1 / 7) * i]);
 
-	function colorAtGradient(t) {
+	function colorAtGradient(t: number) {
 		return Spectral.gradient(t, ...gradient).toString();
 	}
 
-	function colorForPolygon(p) {
+	function colorForPolygon(p: Point[]) {
 		const center = findCentroid(p);
 		const { x, y } = center;
 		const f = 1 / r;
@@ -69,7 +70,7 @@
 		fill="url(#rGradient)"
 		mask="url(#polygonMask)"
 	/>
-	{#each polygons as p, i}
+	{#each polygons as p}
 		<polygon
 			points={polygonPointString(shrinkPolygon(p, 61))}
 			fill={colorForPolygon(p)}
@@ -83,9 +84,4 @@
 		<!-- /> -->
 	{/each}
 
-	{#each [] as p, i}
-		<text x={p.x} y={p.y} dominant-baseline="middle" text-anchor="middle" fill="white" font-size={5}
-			>{i}</text
-		>
-	{/each}
 </DrSvg>

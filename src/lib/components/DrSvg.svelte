@@ -9,7 +9,7 @@
 		height: number;
 		children: Snippet;
 	}
-	const { width = 1920, height = 1080, children } = $props<Props>();
+	let { width = 1920, height = 1080, children }: Props = $props();
 	const { zoom, zoomIn, zoomOut, center, pan, reset, setZoomLevel } = createZoomState();
 
 	let svgElement: SVGSVGElement;
