@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.w3.org/2000/svg http://www.w3.org/TR/2002/WD-SVG11-20020108/SVG.xsd"
+  viewBox="0 0 100 100">
+  <!-- Trigger autocomplete here -->
+  <defs>
+    <filter id="bluroffset">
+      <feGaussianBlur stdDeviation="3" />
+      <feOffset dy="-5" />
+    </filter>
+  </defs>
+</svg>
+

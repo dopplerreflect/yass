@@ -1,8 +1,16 @@
-<script>
+<script lang="ts">
+	import chroma from 'chroma-js'
 	import { width, height, scale } from './setup';
 	import { brightLines } from './lines';
 	import { getDots } from './dots';
+	import { Delaunay } from 'd3-delaunay';
+	
 	const dots = getDots(brightLines);
+
+	const delaunay = Delaunay.from(dots.map((d) => [d.x, d.y]))
+	const voronoi = delaunay.voronoi([-width / 2, -height / 2, width, height])
+	const voronoiPath = voronoi.render()
+	console.log(voronoiPath)
 </script>
 
 <defs>
@@ -15,7 +23,10 @@
 			<circle cx={c.x} cy={c.y} r={c.r * 1.5} fill="url(#dotGradient)" />
 		{/each}
 	</mask>
-	<g id="dots">
+	<mask id="voronoiMask">
+		<path d={voronoiPath} stroke="white" fill="none" stroke-width={1} filter="url(#dotBlur)"/>
+	</mask>	
+}	<g id="dots">
 		<rect
 			id="dotRect"
 			mask="url(#dotMask)"
@@ -40,3 +51,4 @@
 	</g>
 </defs>
 <use href="#dots" />
+<rect id="voronoiRect" mask="url(#voronoiMask)" fill="url(#BgGradient)" x={-width / 2} y={-height / 2} {...{width, height}} />

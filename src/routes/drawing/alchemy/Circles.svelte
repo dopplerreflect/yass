@@ -39,6 +39,6 @@
 	</g>
 </defs>
 <use href="#circleGlow" />
-<g opacity={0.4} stroke={oklch(0.95, 0.11, 300).alpha(0.5).hex()} stroke-width={1.5 * scale}>
+<g opacity={0.9} stroke={oklch(0.95, 0.11, 300).alpha(0.5).hex()} stroke-width={1.5 * scale}>
 	<use href="#circles" />
 </g>
