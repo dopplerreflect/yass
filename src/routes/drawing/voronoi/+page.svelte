@@ -9,13 +9,10 @@
 	const width = 1920;
 	const height = 1080;
 	const phylotaxicPoints = phylotaxis(2 ** 9, height / 2)
-		// .filter((p) => (Math.abs(p.x) < width / 2 && Math.abs(p.y) < height / 2))
-		.map((p) => [p.x, p.y])
 
 	//@ts-ignore
-	const delaunay = Delaunay.from(phylotaxicPoints)
-	const voronoi = delaunay.voronoi([-width / 2, -height / 2, width, height])
-	// const paths = voronoi.render()
+	const delaunay = Delaunay.from(phylotaxicPoints.map((p) => [p.x, p.y]))
+	const voronoi = delaunay.voronoi([-width / 2, -height / 2, width / 2, height / 2])
 	const paths: string[] = [];
 	for(let i = 0; i < phylotaxicPoints.length - 55; i++) {
 		paths.push(voronoi.cellPolygon(i).map(p => `${p[0]},${p[1]}`).join(' '))
@@ -26,11 +23,23 @@
 <DrSvg {...{ width, height }}>
   <defs>
   	{@html Filters}
+  	<g id="voronoiPolygons">
+			{#each paths as p}
+				<polygon points={p} filter="url(#shrink)" />
+			{/each}
+		</g>
+		<mask id="polys">
+			<use href="#voronoiPolygons" fill="white" />
+		</mask>
   </defs>
-	<rect x={-width / 2} y={-height / 2} {...{ width, height }} fill="black" />
-	{#each paths as p, i}
-		<polygon points={p} stroke="black" stroke-width="8" fill={chroma.oklch(0.9, 0.37, (i % 2 === 0 ? 270 : 30) + (120 / phylotaxicPoints.length * i)).hex()} />
-	{/each}
-	<path d={path} stroke="white" fill="none" stroke-width={3} />
-	<path d={path} stroke={chroma.oklch(0.2, 0.37, 300).hex()} fill="none" stroke-width={3} filter="url(#bluroffset)"/>
+	<rect x={-width / 2} y={-height / 2} {...{ width, height }} fill={chroma.oklch(0, 0.18, 300).hex()} />
+		<g transform="scale(2.4)">
+			{#each paths as p, i}
+				<mask id={`polygon-mask-${i}`}>
+					<polygon points={p} fill="white" filter="url(#shrink)" />
+				</mask>
+				<polygon points={p} fill={chroma.oklch(i % 5 === 0 ? 0.5 : 0.8, i % 2 === 0 ? 0.125 : 0.37, 30 + (180 / paths.length * i)).hex()} filter="url(#topLight)" mask={`url(#polygon-mask-${i})`} />
+			{/each}
+			<path d={path} stroke="#200040" />
+		</g>
 </DrSvg>
