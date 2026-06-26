@@ -83,15 +83,15 @@
 			<mask id={`polygon-mask-${i}`}>
 				<polygon points={p} fill="white" />
 			</mask>
-			<polygon points={p} fill={colorMap.get(circles[i].r)} filter="url(#topLight)" mask={`url(#polygon-mask-${i})`}/>
+			<polygon points={p} fill={chroma.oklch(0.85 - (0.75 / (width / 2) * Math.hypot(circles[i].x, circles[i].y)), 0.37, 30 + 300 / (width / 2) * Math.hypot(circles[i].x, circles[i].y)).hex()} filter="url(#topLight)" mask={`url(#polygon-mask-${i})`}/>
 		{/each}
 	</g>
-	<g display="none">
+	<g id="lines" display="none">
 		{#each lineArray as l, i}
 			<line x1={l[0].x} y1={l[0].y} x2={l[1].x} y2={l[1].y} stroke="white" />
 		{/each}
 	</g>
-	<g display="none">
+	<g id="circles" display="none">
 		{#each circles as c}
 			<circle cx={c.x} cy={c.y} r={c.r} fill="yellow" />
 		{/each}

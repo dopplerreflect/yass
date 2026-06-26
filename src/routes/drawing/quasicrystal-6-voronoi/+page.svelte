@@ -12,7 +12,7 @@
 	const angles = anglesArray(12);
 	const r = height * 0.33;
 	const lineArray: Line[] = [
-		...angles.map((a, i) => [radialPoint(a, r), { x: 0, y: 0 }]),
+		...angles.map((a, i) => [radialPoint(a, r), { x: 0, y: 0 }] as Line),
 		...angles.map((a, i) => [radialPoint(a, r), radialPoint(angles[(i + 2) % angles.length], r)] as Line),
 		...angles.map((a, i) => [radialPoint(a, r), radialPoint(angles[(i + 3) % angles.length], r)] as Line),
 		...angles.map((a, i) => [radialPoint(a, r), radialPoint(angles[(i + 4) % angles.length], r)] as Line),
