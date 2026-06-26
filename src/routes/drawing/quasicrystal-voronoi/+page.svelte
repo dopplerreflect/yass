@@ -7,6 +7,10 @@
 	import { anglesArray, lineIntersection2 as lineIntersection, phi, radialPoint, midpoint, PHI } from '@dopplerreflect/geometry';
 	import type { Line, Point, Circle } from '@dopplerreflect/geometry';
 	import { Delaunay } from "d3-delaunay";
+	import seedrandom from 'seedrandom';
+
+	const rng = seedrandom('quasicrystal-voronoi');
+	
 	const width = 1920;
 	const height = 1080;
 	const angles = anglesArray(10);
@@ -83,7 +87,17 @@
 			<mask id={`polygon-mask-${i}`}>
 				<polygon points={p} fill="white" />
 			</mask>
-			<polygon points={p} fill={chroma.oklch(0.85 - (0.75 / (width / 2) * Math.hypot(circles[i].x, circles[i].y)), 0.37, 30 + 300 / (width / 2) * Math.hypot(circles[i].x, circles[i].y)).hex()} filter="url(#topLight)" mask={`url(#polygon-mask-${i})`}/>
+			<polygon
+				points={p}
+				fill={
+					chroma.oklch(
+						0.75 - (0.75 / (width / 2) * Math.hypot(circles[i].x, circles[i].y)),
+						0.125 + rng() * 0.245,
+						60 + 360 / (width / 2) * Math.hypot(circles[i].x, circles[i].y)).hex()
+					}
+				filter="url(#topLight)"
+				mask={`url(#polygon-mask-${i})`}
+			/>
 		{/each}
 	</g>
 	<g id="lines" display="none">
@@ -96,5 +110,5 @@
 			<circle cx={c.x} cy={c.y} r={c.r} fill="yellow" />
 		{/each}
 	</g>
-	<path display="block" opacity={1} d={path} stroke={chroma.oklch(1, 0.37, 90).hex()} stroke-width={2} filter="url(#blur)"/>
+	<path display="block" opacity={1} d={path} stroke={chroma.oklch(0.0, 0.0, 90).hex()} stroke-width={2} filter="url(#blur)"/>
 </DrSvg>
