@@ -56,17 +56,6 @@
 		const c = JSON.parse(e[0]);
 		return { x: c.x, y: c.y, r: e[1]}
 	})
-	const magnitudes = new Set(circles.map((c) => c.r))
-	console.log([...magnitudes])
-
-	const colorMap = new Map();
-  // magnitudes are [ 14, 6, 5, 3, 1, 45 ]
-	colorMap.set(1,  chroma.oklch(0.00, 0.37, 300).hex());
-	colorMap.set(6,  chroma.oklch(0.70, 0.37, 90).hex());
-	colorMap.set(3,  chroma.oklch(0.15, 0.37, 300).hex());
-	colorMap.set(5,  chroma.oklch(0.90, 0.37, 90).hex());
-	colorMap.set(14, chroma.oklch(0.80, 0.37, 90).hex());
-	colorMap.set(45, chroma.oklch(1.00, 0.37, 90).hex());
 	
 	const delaunay = Delaunay.from(circles.map((c) => [c.x, c.y]))
 	const voronoi = delaunay.voronoi([-width , -height , width , height  ]);
