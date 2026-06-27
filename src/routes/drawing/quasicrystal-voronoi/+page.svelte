@@ -1,7 +1,6 @@
 <svelte:options namespace="svg" />
 
 <script lang="ts">
-	import Filters from './filters.svg?raw';
 	import DrSvg from "$lib/components/DrSvg.svelte";
 	import chroma from 'chroma-js'
 	import { anglesArray, lineIntersection2 as lineIntersection, phi, radialPoint, midpoint, PHI } from '@dopplerreflect/geometry';
@@ -11,8 +10,10 @@
 
 	const rng = seedrandom('quasicrystal-voronoi');
 	
-	const width = 1920;
-	const height = 1080;
+	const scale = 0.2;
+	
+	const width = 1920 * scale;
+	const height = 1080 * scale;
 	const angles = anglesArray(10);
 	const r = height * 0.33;
 	const lineArray: Line[] = [
@@ -42,6 +43,7 @@
 		x: Math.round(i.x),
 		y: Math.round(i.y)
 	})).filter((p) => Math.abs(p.x) < width  && Math.abs(p.y) < height )
+
 	const intersectionsWithMagnitudeMap = new Map();
 	roundedIntersections.forEach((intersection) => {
 		const i = JSON.stringify(intersection);
@@ -67,9 +69,26 @@
 </script>
 
 <DrSvg {...{width, height}}>
-	<defs>
-		{@html Filters}
-	</defs>
+  <defs>
+    <filter id="topLight" x="-20%" y="-20%" width="140%" height="140%">
+      <feMorphology in="SourceAlpha" operator="erode" radius={8 * scale}></feMorphology>
+      <feGaussianBlur stdDeviation={3 * scale} result="blur" />
+      <feDiffuseLighting in="blur" surfaceScale={3 * scale} diffuseConstant="4" lighting-color="#ffffff"
+        result="light">
+        <feDistantLight azimuth="-90" elevation="5" />
+      </feDiffuseLighting>
+      <feComposite in="SourceGraphic" in2="light" operator="arithmetic" k1="0" k2="1" k3="0.8"
+        k4="0" />
+    </filter>
+    <filter id="blur">
+      <feGaussianBlur stdDeviation={6 * scale} />
+      <feMerge>
+        <feMergeNode />
+        <feMergeNode />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
 	<rect x={-width / 2} y={-height / 2} {...{width, height}} fill={chroma.oklch(0.01, 0.2, 300).hex()} />
 	<g id="polygons" display="block">
 		{#each polygons as p, i}
@@ -99,5 +118,5 @@
 			<circle cx={c.x} cy={c.y} r={c.r} fill="yellow" />
 		{/each}
 	</g>
-	<path display="block" opacity={1} d={path} stroke={chroma.oklch(0.0, 0.0, 90).hex()} stroke-width={2} filter="url(#blur)"/>
+	<path display="block" opacity={1} d={path} stroke={chroma.oklch(0.0, 0.0, 90).hex()} stroke-width={2 * scale} filter="url(#blur)"/>
 </DrSvg>
