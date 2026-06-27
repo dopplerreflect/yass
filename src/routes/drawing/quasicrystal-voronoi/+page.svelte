@@ -80,9 +80,9 @@
 				points={p}
 				fill={
 					chroma.oklch(
-						0.75 - (0.75 / (width / 2) * Math.hypot(circles[i].x, circles[i].y)),
-						0.125 + rng() * 0.245,
-						60 + 360 / (width / 2) * Math.hypot(circles[i].x, circles[i].y)).hex()
+						0.85 - (0.85 / (width / 2) * Math.hypot(circles[i].x, circles[i].y)),
+						0.37, //0.185 + rng() * 0.185,
+						30 + 270 / (width / 2) * Math.hypot(circles[i].x, circles[i].y)).hex()
 					}
 				filter="url(#topLight)"
 				mask={`url(#polygon-mask-${i})`}
