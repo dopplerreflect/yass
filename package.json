@@ -10,8 +10,8 @@
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"format": "prettier --write .",
-		"lint": "prettier --check ."
+		"format": "yarn dlx -p prettier@~3.6.0 prettier --write .",
+		"lint": "yarn dlx -p prettier@~3.6.0 prettier --check ."
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^6.0.0",
@@ -37,5 +37,6 @@
 		"d3": "^7.9.0",
 		"seedrandom": "^3.0.5",
 		"spectral.js": "^3.0.0"
-	}
+	},
+	"packageManager": "yarn@4.17.0"
 }

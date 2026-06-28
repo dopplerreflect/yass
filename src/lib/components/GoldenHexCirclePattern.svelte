@@ -33,19 +33,21 @@
 	const angles = anglesArray(6, 0);
 	const radii = [...Array(4).keys()].map((k) => hexWidth * phi ** k);
 	const [r0, r1, r2] = radii;
-	const circles: AnnotatedCircle[] = $derived([
-		radii.map((r, ri) => ({ r, x: 0, y: 0, ai: 'c', ri })),
-		...angles.map((a, ai) =>
-			radii.map((r, ri) => ({
-				r,
-				...radialPoint(a, hexWidth / 2, { center: radialPoint(a, hexWidth / 2) }),
-				ai,
-				ri,
-			})),
-		),
-		{ r: hexWidth, x: 0, y: -hexRadius * 3, ai: 't', ri: 0 },
-		{ r: hexWidth, x: 0, y: hexRadius * 3, ai: 'b', ri: 0 },
-	].flat());
+	const circles: AnnotatedCircle[] = $derived(
+		[
+			radii.map((r, ri) => ({ r, x: 0, y: 0, ai: 'c', ri })),
+			...angles.map((a, ai) =>
+				radii.map((r, ri) => ({
+					r,
+					...radialPoint(a, hexWidth / 2, { center: radialPoint(a, hexWidth / 2) }),
+					ai,
+					ri,
+				})),
+			),
+			{ r: hexWidth, x: 0, y: -hexRadius * 3, ai: 't', ri: 0 },
+			{ r: hexWidth, x: 0, y: hexRadius * 3, ai: 'b', ri: 0 },
+		].flat(),
+	);
 
 	const c = $derived(mapCircleIntersections(circles, 'y-asc'));
 

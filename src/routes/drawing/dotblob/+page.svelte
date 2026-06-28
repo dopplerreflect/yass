@@ -8,7 +8,7 @@
 	const dotDefs = [
 		[3, Math.sqrt(3)],
 		[5, 1.176],
-		[8, 0.766]
+		[8, 0.766],
 	];
 </script>
 

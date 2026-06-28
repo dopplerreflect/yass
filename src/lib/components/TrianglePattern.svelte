@@ -12,12 +12,12 @@
 	type Props = HexPatternProps;
 	const { id, size, hue = 210 }: Props = $props();
 
-	const width = $derived( size * Math.sqrt(3) );
-	const height = $derived( size * 3 );
+	const width = $derived(size * Math.sqrt(3));
+	const height = $derived(size * 3);
 
-	const ws3 = $derived( width / SQRT3 );
-	const w2 = $derived( width / 2 );
-	const h2 = $derived( height / 2 );
+	const ws3 = $derived(width / SQRT3);
+	const w2 = $derived(width / 2);
+	const h2 = $derived(height / 2);
 </script>
 
 <pattern

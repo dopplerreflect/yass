@@ -7,7 +7,7 @@
 		phylotaxis,
 		polygonPointString,
 		shrinkPolygon,
-		type Point
+		type Point,
 	} from '@dopplerreflect/geometry';
 	import chroma from 'chroma-js';
 	import Spectral from 'spectral.js';
@@ -21,13 +21,13 @@
 		.slice(0, phyllotaxicPoints.length - 21)
 		.map((p, i) => [
 			[p, phyllotaxicPoints[i + 13], phyllotaxicPoints[i + 21]],
-			[p, phyllotaxicPoints[i + 8], phyllotaxicPoints[i + 21]]
+			[p, phyllotaxicPoints[i + 8], phyllotaxicPoints[i + 21]],
 		])
 		.flat()
 		.map((p) => shrinkPolygon(p, 21));
 
 	const colors = [...Array(7).keys()].map(
-		(i) => new Spectral.Color(chroma.oklch(1 - (1 / 7) * i, 0.37, 120 + (240 / 7) * i).hex())
+		(i) => new Spectral.Color(chroma.oklch(1 - (1 / 7) * i, 0.37, 120 + (240 / 7) * i).hex()),
 	);
 
 	const gradient = colors.map((c, i) => [c, (1 / 7) * i]);
@@ -83,5 +83,4 @@
 		<!-- stroke-width={2} -->
 		<!-- /> -->
 	{/each}
-
 </DrSvg>

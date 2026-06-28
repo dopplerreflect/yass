@@ -1,17 +1,24 @@
 <svelte:options namespace="svg" />
 
 <script lang="ts">
-	import DrSvg from "$lib/components/DrSvg.svelte";
-	import chroma from 'chroma-js'
-	import { anglesArray, lineIntersection2 as lineIntersection, phi, radialPoint, midpoint, PHI } from '@dopplerreflect/geometry';
+	import DrSvg from '$lib/components/DrSvg.svelte';
+	import chroma from 'chroma-js';
+	import {
+		anglesArray,
+		lineIntersection2 as lineIntersection,
+		phi,
+		radialPoint,
+		midpoint,
+		PHI,
+	} from '@dopplerreflect/geometry';
 	import type { Line, Point, Circle } from '@dopplerreflect/geometry';
-	import { Delaunay } from "d3-delaunay";
+	import { Delaunay } from 'd3-delaunay';
 	import seedrandom from 'seedrandom';
 
 	const rng = seedrandom('quasicrystal-voronoi');
-	
+
 	const scale = 0.2;
-	
+
 	const width = 1920 * scale;
 	const height = 1080 * scale;
 	const angles = anglesArray(10);
@@ -25,71 +32,95 @@
 	const r2i = lineIntersection(lineArray[10], lineArray[11]);
 	const r2 = Math.hypot(r2i!.x, r2i!.y);
 	angles.forEach((a, i) => {
-		lineArray.push([radialPoint(a + 18, r1), {x: 0, y: 0}]);
+		lineArray.push([radialPoint(a + 18, r1), { x: 0, y: 0 }]);
 		lineArray.push([radialPoint(a + 18, r1), radialPoint(angles[(i + 3) % 10] + 18, r1)]);
 		lineArray.push([radialPoint(a + 18, r2), radialPoint(angles[(i + 3) % 10] + 18, r2)]);
-	})
+	});
 
 	const rawIntersections: Point[] = [];
 	lineArray.forEach((_, i) => {
 		for (let n = i + 1; n < lineArray.length; n++) {
-			let int = lineIntersection(lineArray[i], lineArray[n])
-			if(int) {
+			let int = lineIntersection(lineArray[i], lineArray[n]);
+			if (int) {
 				rawIntersections.push(int);
 			}
 		}
-	})
-	const roundedIntersections = rawIntersections.map((i) => ({
-		x: Math.round(i.x),
-		y: Math.round(i.y)
-	})).filter((p) => Math.abs(p.x) < width  && Math.abs(p.y) < height )
+	});
+	const roundedIntersections = rawIntersections
+		.map((i) => ({
+			x: Math.round(i.x),
+			y: Math.round(i.y),
+		}))
+		.filter((p) => Math.abs(p.x) < width && Math.abs(p.y) < height);
 
 	const intersectionsWithMagnitudeMap = new Map();
 	roundedIntersections.forEach((intersection) => {
 		const i = JSON.stringify(intersection);
-		if(!intersectionsWithMagnitudeMap.get(i)) {
+		if (!intersectionsWithMagnitudeMap.get(i)) {
 			intersectionsWithMagnitudeMap.set(i, 1);
 		} else {
 			intersectionsWithMagnitudeMap.set(i, intersectionsWithMagnitudeMap.get(i) + 1);
 		}
-	})
-	
+	});
+
 	const circles: Circle[] = [...intersectionsWithMagnitudeMap].map((e) => {
 		const c = JSON.parse(e[0]);
-		return { x: c.x, y: c.y, r: e[1]}
-	})
-	
-	const delaunay = Delaunay.from(circles.map((c) => [c.x, c.y]))
-	const voronoi = delaunay.voronoi([-width , -height , width , height  ]);
+		return { x: c.x, y: c.y, r: e[1] };
+	});
+
+	const delaunay = Delaunay.from(circles.map((c) => [c.x, c.y]));
+	const voronoi = delaunay.voronoi([-width, -height, width, height]);
 	const path = voronoi.render();
 	const polygons: string[] = [];
 	for (let i = 0; i < circles.length; i++) {
-		polygons.push(voronoi.cellPolygon(i).map(p => `${p[0]},${p[1]}`).join(' '))
+		polygons.push(
+			voronoi
+				.cellPolygon(i)
+				.map((p) => `${p[0]},${p[1]}`)
+				.join(' '),
+		);
 	}
 </script>
 
-<DrSvg {...{width, height}}>
-  <defs>
-    <filter id="topLight" x="-20%" y="-20%" width="140%" height="140%">
-      <feMorphology in="SourceAlpha" operator="erode" radius={8 * scale}></feMorphology>
-      <feGaussianBlur stdDeviation={3 * scale} result="blur" />
-      <feDiffuseLighting in="blur" surfaceScale={3 * scale} diffuseConstant="4" lighting-color="#ffffff"
-        result="light">
-        <feDistantLight azimuth="-90" elevation="5" />
-      </feDiffuseLighting>
-      <feComposite in="SourceGraphic" in2="light" operator="arithmetic" k1="0" k2="1" k3="0.8"
-        k4="0" />
-    </filter>
-    <filter id="blur">
-      <feGaussianBlur stdDeviation={6 * scale} />
-      <feMerge>
-        <feMergeNode />
-        <feMergeNode />
-        <feMergeNode in="SourceGraphic" />
-      </feMerge>
-    </filter>
-  </defs>
-	<rect x={-width / 2} y={-height / 2} {...{width, height}} fill={chroma.oklch(0.01, 0.2, 300).hex()} />
+<DrSvg {...{ width, height }}>
+	<defs>
+		<filter id="topLight" x="-20%" y="-20%" width="140%" height="140%">
+			<feMorphology in="SourceAlpha" operator="erode" radius={8 * scale}></feMorphology>
+			<feGaussianBlur stdDeviation={3 * scale} result="blur" />
+			<feDiffuseLighting
+				in="blur"
+				surfaceScale={3 * scale}
+				diffuseConstant="4"
+				lighting-color="#ffffff"
+				result="light"
+			>
+				<feDistantLight azimuth="-90" elevation="5" />
+			</feDiffuseLighting>
+			<feComposite
+				in="SourceGraphic"
+				in2="light"
+				operator="arithmetic"
+				k1="0"
+				k2="1"
+				k3="0.8"
+				k4="0"
+			/>
+		</filter>
+		<filter id="blur">
+			<feGaussianBlur stdDeviation={6 * scale} />
+			<feMerge>
+				<feMergeNode />
+				<feMergeNode />
+				<feMergeNode in="SourceGraphic" />
+			</feMerge>
+		</filter>
+	</defs>
+	<rect
+		x={-width / 2}
+		y={-height / 2}
+		{...{ width, height }}
+		fill={chroma.oklch(0.01, 0.2, 300).hex()}
+	/>
 	<g id="polygons" display="block">
 		{#each polygons as p, i}
 			<mask id={`polygon-mask-${i}`}>
@@ -97,12 +128,13 @@
 			</mask>
 			<polygon
 				points={p}
-				fill={
-					chroma.oklch(
-						0.85 - (0.85 / (width / 2) * Math.hypot(circles[i].x, circles[i].y)),
+				fill={chroma
+					.oklch(
+						0.85 - (0.85 / (width / 2)) * Math.hypot(circles[i].x, circles[i].y),
 						0.37, //0.185 + rng() * 0.185,
-						30 + 270 / (width / 2) * Math.hypot(circles[i].x, circles[i].y)).hex()
-					}
+						30 + (270 / (width / 2)) * Math.hypot(circles[i].x, circles[i].y),
+					)
+					.hex()}
 				filter="url(#topLight)"
 				mask={`url(#polygon-mask-${i})`}
 			/>
@@ -118,5 +150,12 @@
 			<circle cx={c.x} cy={c.y} r={c.r} fill="yellow" />
 		{/each}
 	</g>
-	<path display="block" opacity={1} d={path} stroke={chroma.oklch(0.0, 0.0, 90).hex()} stroke-width={2 * scale} filter="url(#blur)"/>
+	<path
+		display="block"
+		opacity={1}
+		d={path}
+		stroke={chroma.oklch(0.0, 0.0, 90).hex()}
+		stroke-width={2 * scale}
+		filter="url(#blur)"
+	/>
 </DrSvg>

@@ -7,7 +7,7 @@ node_modules
 .wrangler
 /.svelte-kit
 /build
-./yarn
+.yarn
 
 # OS
 .DS_Store

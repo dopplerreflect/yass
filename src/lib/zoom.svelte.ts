@@ -4,14 +4,14 @@ export function createZoomState() {
 	const initialZoom = {
 		level: 1,
 		xOffset: 0,
-		yOffset: 0
+		yOffset: 0,
 	};
 
 	// Initialize state from sessionStorage or use defaults
 	const zoom = $state(
 		BROWSER && sessionStorage.getItem('zoom')
 			? JSON.parse(sessionStorage.getItem('zoom')!)
-			: initialZoom
+			: initialZoom,
 	);
 
 	// Persist zoom state to sessionStorage whenever it changes
@@ -40,13 +40,13 @@ export function createZoomState() {
 		center: () => {
 			zoom.xOffset = 0;
 			zoom.yOffset = 0;
-		}
+		},
 	};
 
 	return {
 		get zoom() {
 			return zoom;
 		},
-		...actions
+		...actions,
 	};
 }

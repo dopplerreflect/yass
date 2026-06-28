@@ -7,7 +7,7 @@ export const drawings: Drawing[] = $state(
 		return {
 			name: path.replace(/.*drawing\//, '').replace(/\/\+page\.svelte/, ''),
 			path,
-			module
+			module,
 		};
-	})
+	}),
 );

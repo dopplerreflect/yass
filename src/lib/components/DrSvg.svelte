@@ -23,7 +23,7 @@
 			const response = await fetch('/api', {
 				method: 'POST',
 				body: JSON.stringify({ name, body }),
-				headers: { 'Content-Type': 'application/json' }
+				headers: { 'Content-Type': 'application/json' },
 			});
 			if (!response.ok) {
 				console.error('Failed to save SVG:', await response.text());
@@ -41,7 +41,7 @@
 		h: () => pan(-0.1, 0),
 		l: () => pan(0.1, 0),
 		j: () => pan(0, 0.1),
-		k: () => pan(0, -0.1)
+		k: () => pan(0, -0.1),
 	};
 
 	function handleKey(event: KeyboardEvent) {
