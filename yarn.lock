@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@dopplerreflect/geometry@^0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@dopplerreflect/geometry/-/geometry-0.0.8.tgz#96ecca50f6ee3626b151f0697fc04e6798be5927"
-  integrity sha512-tAzrcWvwR253qciTN1Z+eQ2sR+CxTFYPAyY2RLI3GIhVAo5BpBiZIOgtQWpXX0Wm26TPcUrpybiFt7kWmAx9GA==
+"@dopplerreflect/geometry@^0.0.12":
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/@dopplerreflect/geometry/-/geometry-0.0.12.tgz#f75f8ed41da50e38b19fcf5da8e66ea7611f818c"
+  integrity sha512-8EqVuxFYs8fterIpYAvk/C4QnG6lzKbkqYqCMwPuZ6iQzN8NmG9/ISrsgiv4ZzcOYvFeBREDxDQM8A1wyBOvrw==
   dependencies:
     decimal.js "^10.4.3"
 
@@ -1297,9 +1297,9 @@ picomatch@^4.0.2, picomatch@^4.0.4:
   integrity sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==
 
 postcss@^8.5.3:
-  version "8.5.15"
-  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.5.15.tgz#d1eaf677a324e9ec02196da2d3fecf4a0b9a735c"
-  integrity sha512-FfR8sjd4em2T6fb3I2MwAJU7HWVMr9zba+enmQeeWFfCbm+UOC/0X4DS8XtpUTMwWMGbjKYP7xjfNekzyGmB3A==
+  version "8.5.16"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.5.16.tgz#1230ce0b5df354c24c0ea45f99ce5f6a88279d28"
+  integrity sha512-vuwillviilfKZsg0VGj5R/YwwcHx4SLsIOI/7K6mQkWx+l5cUHTjj5g0AasTBcyXsbfTgrwsUNmVUb5xVwyPwg==
   dependencies:
     nanoid "^3.3.12"
     picocolors "^1.1.1"
@@ -1316,9 +1316,9 @@ prettier-plugin-tailwindcss@^0.6.11:
   integrity sha512-pi2e/+ZygeIqntN+vC573BcW5Cve8zUB0SSAGxqpB4f96boZF4M3phPVoOFCeypwkpRYdi7+jQ5YJJUwrkGUAg==
 
 prettier@^3.9.0:
-  version "3.9.0"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.9.0.tgz#287fabfbf20161611aa3b2db8de2a7d8c88ecb2d"
-  integrity sha512-LjIqSIC5VYLzs9WedVmJ2ljNAGnU+DteIClbahu4L/DBeWjZ6iT/k1lAYyu9JUh+1xINxWadaPw/Pl63y/agAw==
+  version "3.9.1"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.9.1.tgz#5868bcf16456bfe145ddbfa107c623b6f39e332c"
+  integrity sha512-ppiDo2CSwexck1eyZUwJHg/N3nf1+6IRCv7W/VJ5vaLnVCmB7+3CdRfMwoCHBBX6xTrREDTksZ4OZl5SSf4zXA==
 
 readdirp@^4.0.1:
   version "4.1.2"

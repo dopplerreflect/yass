@@ -28,12 +28,12 @@
 	};
 
 	const { id, theme = defaultTheme, hexRadius = 50 }: Props = $props();
-	const hexWidth = hexRadius * Math.sqrt(3);
+	const hexWidth = $derived(hexRadius * Math.sqrt(3));
 
 	const angles = anglesArray(6, 0);
 	const radii = [...Array(4).keys()].map((k) => hexWidth * phi ** k);
 	const [r0, r1, r2] = radii;
-	const circles: AnnotatedCircle[] = [
+	const circles: AnnotatedCircle[] = $derived([
 		radii.map((r, ri) => ({ r, x: 0, y: 0, ai: 'c', ri })),
 		...angles.map((a, ai) =>
 			radii.map((r, ri) => ({
@@ -45,9 +45,9 @@
 		),
 		{ r: hexWidth, x: 0, y: -hexRadius * 3, ai: 't', ri: 0 },
 		{ r: hexWidth, x: 0, y: hexRadius * 3, ai: 'b', ri: 0 },
-	].flat();
+	].flat());
 
-	const c = mapCircleIntersections(circles, 'y-asc');
+	const c = $derived(mapCircleIntersections(circles, 'y-asc'));
 
 	const ar01 = `A${r0} ${r0} 0 0 1 `;
 	const ar11 = `A${r1} ${r1} 0 0 1 `;

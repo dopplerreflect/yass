@@ -13,17 +13,17 @@
 	};
 	const { id, size, stroke = 'white', strokeWidth = 1 }: Props = $props();
 
-	const psize = size * 3;
+	const psize = $derived(size * 3);
 
-	const r = size * SQRT3;
+	const r = $derived(size * SQRT3);
 	const angles = anglesArray(6);
-	const center = { x: psize / 2, y: psize / 2 / SQRT3 };
-	const circles: Circle[] = [
+	const center = $derived({ x: psize / 2, y: psize / 2 / SQRT3 });
+	const circles: Circle[] = $derived([
 		{ r, ...center },
 		...angles.map((a) => ({ r, ...radialPoint(a, r, { center: center }) })),
 		{ r, x: psize * 1.5, y: psize / 2 / SQRT3 },
 		{ r, x: -psize / 2, y: psize / 2 / SQRT3 },
-	];
+	]);
 </script>
 
 <pattern {id} width={psize} height={psize / SQRT3} patternUnits="userSpaceOnUse">

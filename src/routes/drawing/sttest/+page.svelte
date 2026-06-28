@@ -1,6 +1,5 @@
 <script lang="ts">
 	import DrSvg from '$lib/components/DrSvg.svelte';
-	import TrianglePattern from '$lib/components/TrianglePattern.svelte';
 	import { anglesArray, phi, radialPointString } from '@dopplerreflect/geometry';
 	import Chroma from 'chroma-js';
 	const width = 1920;
