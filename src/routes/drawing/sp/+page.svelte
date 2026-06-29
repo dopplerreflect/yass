@@ -7,7 +7,7 @@
 	import { anglesArray, phi, polygon, polygonPointString } from '@dopplerreflect/geometry';
 	import { pointInPolygon, type Point as GeometricPoint } from 'geometric'
 
-	const scale = 1.0;
+	const scale = 0.2;
 	const width = 1920 * scale;
 	const height = 1080 * scale;
 	
@@ -17,11 +17,8 @@
 	const radii = [...Array(4).keys()].map(k => r * phi ** k)
 
 	const lines = createLines(angles, radii);
-	// const lines2 = linesExtendedToEdge(lines, angles);
 	
 	const dots = getCirclesWithMagnitudeFromLineIntersections({lines, bounds: {x: -width / 2, y: -height / 2, width, height}});
-
-	const min = Math.min(...dots.map(d => d.r))
 
 	const delaunay = Delaunay.from(dots.map((c) => [c.x, c.y]));
 	const voronoi = delaunay.voronoi([-width / 2, -height / 2, width / 2, height / 2]);
@@ -37,13 +34,12 @@
 
 	const voronoiPolygons = voronoiPolygonMap.values();
 
-	// const voronoiPath = voronoi.render();
 </script>
 
 <DrSvg {...{ width, height }}>
 	<defs>
 		<mask id="hexMask">
-			<polygon points={polygonPointString(polygon(6, r * 2, { rotate: 30 }))} fill="white" />
+			<polygon points={polygonPointString(polygon(6, r * 2 + 2 * scale, { rotate: 30 }))} fill="white" />
 		</mask>
 		<filter id="topLight" x="-20%" y="-20%" width="140%" height="140%">
 			<feMorphology in="SourceAlpha" operator="erode" radius={3 * scale}></feMorphology>
@@ -86,13 +82,6 @@
 						.hex()}
 				/>
 			{/each}
-
-			<g display="block" id="dots">
-				{#each dots as c, i}
-					<circle display="none" cx={c.x} cy={c.y} r={c.r - (min - 1)} fill="white" />
-					<text display="none" x={c.x} y={c.y} fill="yellow" font-size="1.5em">{i}</text>
-				{/each}
-			</g>
 		</g>
 	</defs>
 

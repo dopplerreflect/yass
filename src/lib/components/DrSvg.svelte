@@ -18,7 +18,7 @@
 		const pathname = document.location.pathname.split('/');
 		const name = pathname[pathname.length - 1];
 		const body = new XMLSerializer().serializeToString(svgElement);
-
+		console.log(`Attempting to POST svg ${name} to /api`)
 		try {
 			const response = await fetch('/api', {
 				method: 'POST',
@@ -33,6 +33,10 @@
 		}
 	}
 
+	function fullscreen() {
+		svgElement.requestFullscreen().catch((error) => console.error(error));
+	}
+
 	const keyMap: Record<string, () => void> = {
 		'+': zoomIn,
 		'-': zoomOut,
@@ -42,6 +46,7 @@
 		l: () => pan(0.1, 0),
 		j: () => pan(0, 0.1),
 		k: () => pan(0, -0.1),
+		f: () => fullscreen(),
 	};
 
 	function handleKey(event: KeyboardEvent) {
