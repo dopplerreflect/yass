@@ -35,6 +35,7 @@
 		"@types/d3": "^7.4.3",
 		"chroma-js": "^3.1.2",
 		"d3": "^7.9.0",
+		"geometric": "^3.0.9",
 		"seedrandom": "^3.0.5",
 		"spectral.js": "^3.0.0"
 	},

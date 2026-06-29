@@ -1686,6 +1686,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"geometric@npm:^3.0.9":
+  version: 3.0.9
+  resolution: "geometric@npm:3.0.9"
+  checksum: 10c0/026de2d53a8c396ff955c188ccb0beed27d11aacb700cc904ed782409d43b285283e13543be046929dad247859336b7cf0b723d3bcd1162554f67deee73901cf
+  languageName: node
+  linkType: hard
+
 "graceful-fs@npm:^4.2.4, graceful-fs@npm:^4.2.6":
   version: 4.2.11
   resolution: "graceful-fs@npm:4.2.11"
@@ -2472,6 +2479,7 @@ __metadata:
     "@types/seedrandom": "npm:^3.0.8"
     chroma-js: "npm:^3.1.2"
     d3: "npm:^7.9.0"
+    geometric: "npm:^3.0.9"
     prettier: "npm:^3.9.0"
     prettier-plugin-svelte: "npm:^4.1.1"
     prettier-plugin-tailwindcss: "npm:^0.6.11"

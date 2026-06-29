@@ -4,15 +4,28 @@ import {
 	type Line,
 	type Point,
 } from '@dopplerreflect/geometry';
-import { height, width } from './setup';
 
-export function getDots(lines: Line[]): Circle[] {
+type Props = {
+	lines: Line[];
+	bounds?: { x: number; y: number; width: number; height: number } | undefined;
+};
+
+export function getCirclesWithMagnitudeFromLineIntersections({ lines, bounds }: Props): Circle[] {
 	const rawIntersections: Point[] = [];
-	lines.forEach((_, i) => {
-		for (let n = i + 1; n < lines.length; n++) {
-			let int = lineIntersection(lines[i], lines[n], true) as Point;
-			if (Math.abs(int.x) < width && Math.abs(int.y) < height) {
-				rawIntersections.push(int);
+	lines.forEach((_, a) => {
+		for (let b = a + 1; b < lines.length; b++) {
+			let i = lineIntersection(lines[a], lines[b], true) as Point;
+			if (bounds) {
+				if (
+					i.x > bounds.x &&
+					i.y > bounds.y &&
+					i.x < bounds.x + bounds.width &&
+					i.y < bounds.y + bounds.height
+				) {
+					rawIntersections.push(i);
+				}
+			} else {
+				rawIntersections.push(i);
 			}
 		}
 	});
