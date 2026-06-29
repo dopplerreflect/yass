@@ -66,7 +66,7 @@
 				k3="0.8"
 				k4="0"
 			/>
-			<feGaussianBlur stdDeviation={2} />
+			<feGaussianBlur stdDeviation={2 * scale} />
 		</filter>
 		<g display="block" id="polygons" mask="url(#hexMask)">
 			{#each voronoiPolygons as polygon, i}
@@ -75,14 +75,13 @@
 					<use href={`#polygon-${i}`} fill="white" />
 				</mask>
 				<use href={`#polygon-${i}`}
-					stroke={chroma.oklch(0.1, 0.37, 300).hex()}
 					filter="url(#topLight)"
 					mask={`url(#polygon-mask-${i})`}
 					fill={chroma
 						.oklch(
 							0.9 - (0.9 / r / 2) * Math.hypot(polygon.c.x, polygon.c.y),
-							0.37,
-							30 + (300 / r / 2) * Math.hypot(polygon.c.x, polygon.c.y),
+							0.37 - (0.37 / r / 2) * Math.hypot(polygon.c.x, polygon.c.y),
+							120 - (180 / r / 2) * Math.hypot(polygon.c.x, polygon.c.y),
 						)
 						.hex()}
 				/>
