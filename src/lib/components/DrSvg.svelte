@@ -68,9 +68,13 @@
 		const y = -(height / 2) * zoom.level + (height / 2) * zoom.yOffset;
 		return `${x} ${y} ${zoomedWidth} ${zoomedHeight}`;
 	});
+
+	const thumbnailRatio = $derived(512 / width);
 </script>
 
 <svg
+	data-thumbnail-width={width * thumbnailRatio}
+	data-thumbnail-height={height * thumbnailRatio}
 	bind:this={svgElement}
 	xmlns="http://www.w3.org/2000/svg"
 	color-interpolation-filters="sRGB"
