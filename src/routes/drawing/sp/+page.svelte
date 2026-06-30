@@ -7,7 +7,7 @@
 	import { anglesArray, phi, polygon, polygonPointString } from '@dopplerreflect/geometry';
 	import { pointInPolygon, type Point as GeometricPoint } from 'geometric'
 
-	const scale = 0.2;
+	const scale = 1;
 	const width = 1920 * scale;
 	const height = 1080 * scale;
 	
@@ -42,24 +42,24 @@
 			<polygon points={polygonPointString(polygon(6, r * 2 + 2 * scale, { rotate: 30 }))} fill="white" />
 		</mask>
 		<filter id="topLight" x="-20%" y="-20%" width="140%" height="140%">
-			<feMorphology in="SourceAlpha" operator="erode" radius={3 * scale}></feMorphology>
-			<feGaussianBlur stdDeviation={3 * scale} result="blur" />
+			<feMorphology in="SourceAlpha" operator="erode" radius={5 * scale}></feMorphology>
+			<feGaussianBlur stdDeviation={5 * scale} result="blur" />
 			<feDiffuseLighting
 				in="blur"
-				surfaceScale={8 * scale}
-				diffuseConstant="1"
+				surfaceScale={1 * scale}
+				diffuseConstant="3"
 				lighting-color="#ffffff"
 				result="light"
 			>
-				<feDistantLight azimuth="-90" elevation="5" />
+				<feDistantLight azimuth="-90" elevation="1" />
 			</feDiffuseLighting>
 			<feComposite
 				in="SourceGraphic"
 				in2="light"
 				operator="arithmetic"
-				k1="0"
+				k1="1"
 				k2="1"
-				k3="0.8"
+				k3="0.125"
 				k4="0"
 			/>
 		</filter>
@@ -76,7 +76,7 @@
 						.oklch(
 							0.9 - (0.9 / r / 2) * Math.hypot(polygon.c.x, polygon.c.y),
 							0.37 - (0.37 / r / 2) * Math.hypot(polygon.c.x, polygon.c.y),
-							120 - (180 / r / 2) * Math.hypot(polygon.c.x, polygon.c.y),
+							90 - (180 / r / 2) * Math.hypot(polygon.c.x, polygon.c.y),
 						)
 						.hex()}
 				/>
