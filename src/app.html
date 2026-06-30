@@ -7,6 +7,13 @@
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">
-		<div style="display: contents">%sveltekit.body%</div>
+		<div id="screen" style="display: contents">%sveltekit.body%</div>
 	</body>
+	<script>
+		const screen = document.getElementById("screen");
+		function handleKeys(event) {
+			if(event.key === 'f') screen.requestFullscreen().catch((error) => console.error(error));
+		}
+		document.addEventListener("keydown", handleKeys);
+	</script>
 </html>

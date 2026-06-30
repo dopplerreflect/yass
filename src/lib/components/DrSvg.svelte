@@ -33,10 +33,6 @@
 		}
 	}
 
-	function fullscreen() {
-		svgElement.requestFullscreen().catch((error) => console.error(error));
-	}
-
 	const keyMap: Record<string, () => void> = {
 		'+': zoomIn,
 		'-': zoomOut,
@@ -46,7 +42,6 @@
 		l: () => pan(0.1, 0),
 		j: () => pan(0, 0.1),
 		k: () => pan(0, -0.1),
-		f: () => fullscreen(),
 	};
 
 	function handleKey(event: KeyboardEvent) {
