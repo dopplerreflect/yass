@@ -62,7 +62,6 @@
 				k3="0.8"
 				k4="0"
 			/>
-			<feGaussianBlur stdDeviation={2 * scale} />
 		</filter>
 		<g display="block" id="polygons" mask="url(#hexMask)">
 			{#each voronoiPolygons as polygon, i}
