@@ -99,11 +99,11 @@
 			/>
 		</filter>
 		<filter id="shrink">
-			<feMorphology operator="erode" radius={1} />
+			<feMorphology operator="erode" radius={0} />
 		</filter>
 		<path
 			id="small-petal"
-			d={`M${radialPointString(90 + 22.5, radii[2], { center: radialPoint(0, radii[0]) })}A${radii[2]} ${radii[2]} 0 0 1 ${radialPointString(-90 - 22.5, radii[2], { center: radialPoint(0, radii[0]) })}L${radialPointString(-61, radii[1], { center: radialPoint(0, radii[0]) })}A${radii[1]} ${radii[1]} 0 0 1 ${radialPointString(61, radii[1], { center: radialPoint(0, radii[0]) })}ZM${radialPointString(0, radii[1])}A${radii[2]} ${radii[2]} 0 1 0 ${radialPointString(-1, radii[1])}ZM${radialPointString(0, radii[3], { center: radialPoint(0, radii[0]) })}A${radii[3]} ${radii[3]} 0 1 1 ${radialPointString(359, radii[3], { center: radialPoint(0, radii[0]) })}Z`}
+			d={`M${radialPointString(90 + 22.5, radii[2], { center: radialPoint(0, radii[0]) })}A${radii[2]} ${radii[2]} 1 0 1 ${radialPointString(-90 - 22.5, radii[2], { center: radialPoint(0, radii[0]) })}L${radialPointString(-61, radii[1], { center: radialPoint(0, radii[0]) })}A${radii[1]} ${radii[1]} 0 0 1 ${radialPointString(61, radii[1], { center: radialPoint(0, radii[0]) })}ZM${radialPointString(0, radii[1])}A${radii[2]} ${radii[2]} 0 1 0 ${radialPointString(359, radii[1])}ZM${radialPointString(0, radii[3], { center: radialPoint(0, radii[0]) })}A${radii[3]} ${radii[3]} 0 1 1 ${radialPointString(359, radii[3], { center: radialPoint(0, radii[0]) })}Z`}
 			fill-rule="evenodd"
 			filter="url(#shrink)"
 		/>
@@ -112,10 +112,14 @@
 				<use href="#small-petal" transform={`rotate(${a})`} />
 			{/each}
 		</g>
+		<filter id="small-ring-grow">
+			<feMorphology operator="dilate" radius="1" />
+		</filter>
 		<path
 			id="small-ring"
 			d={`M${radialPointString(0, radii[2])}A${radii[2]} ${radii[2]} 0 1 1 ${radialPointString(359, radii[2])}ZM${radialPointString(0, radii[3])}A${radii[3]} ${radii[3]} 0 1 1 ${radialPointString(359, radii[3])}Z`}
 			fill-rule="evenodd"
+			filter="url(#small-ring-grow)"
 		/>
 		<mask id="small-ring-mask">
 			<use href="#small-ring" fill="white" />
@@ -173,9 +177,10 @@
 			<feGaussianBlur stdDeviation={4} />
 			<feOffset dy={8} />
 		</filter>
-		<path id="all-small-petals" d={smallPetalOutlinePath} fill="white" />
+		<path id="all-small-petals" d={smallPetalOutlinePath} />
 		<mask id="small-petals-mask">
-			<use href="#all-small-petals" filter="url(#blur)" />
+			<use href="#all-small-petals" fill="white" />
+			<use href="#rings" fill="black" />
 			<circle r={radii[1]} fill="black" />
 		</mask>
 
@@ -191,6 +196,14 @@
 			<stop offset={0.25} stop-color={chroma.oklch(1, 0.37, 90).hex()} />
 			<stop offset={1} stop-color={chroma.oklch(0.25, 0.37, 60).hex()} />
 		</linearGradient>
+		<radialGradient id="rgradient">
+			<stop offset={0.25} stop-color={chroma.oklch(1, 0.37, 90).hex()} />
+			<stop offset={1} stop-color={chroma.oklch(0.25, 0.37, 60).hex()} />
+		</radialGradient>
+		<radialGradient id="rgradient2" r="80%">
+			<stop offset={0.25} stop-color={chroma.oklch(1, 0.37, 90).hex()} />
+			<stop offset={1} stop-color={chroma.oklch(0.25, 0.37, 60).hex()} />
+		</radialGradient>
 	</defs>
 	<rect x={-width / 2} y={-height / 2} {...{ width, height }} fill="black" />
 	<g id="poly-circle">
@@ -220,36 +233,36 @@
 		fill={chroma.oklch(0.5, 0.37, 300).hex()}
 	/>
 	<use
-		href="#small-petals"
-		filter="url(#topLight)"
-		mask="url(#small-petals-mask)"
-		fill="url(#gradient)"
-	/>
-	<use
 		href="#rings"
 		filter="url(#topLight)"
 		mask="url(#rings-mask)"
 		fill={chroma.oklch(0.0, 0.37, 300).hex()}
 	/>
+	<use
+		href="#small-petals"
+		filter="url(#topLight)"
+		mask="url(#small-petals-mask)"
+		fill="url(#gradient)"
+	/>
 
-	<g opacity={0.66}>
+	<g opacity={0.9}>
 		<use
 			href="#big-ring"
 			filter="url(#topLight)"
 			mask="url(#big-ring-mask)"
-			fill={chroma.oklch(0.0, 0.37, 300).hex()}
+			fill="url(#rgradient)"
 		/>
 		<use
 			href="#small-ring"
 			filter="url(#topLight)"
 			mask="url(#small-ring-mask)"
-			fill={chroma.oklch(0.1, 0.37, 150).hex()}
+			fill={chroma.oklch(0.0, 0.37, 300).hex()}
 		/>
 		<use
 			href="#center-circle"
 			filter="url(#topLight)"
 			mask="url(#center-circle-mask)"
-			fill={chroma.oklch(0.1, 0.37, 30).hex()}
+			fill="url(#rgradient2)"
 		/>
 	</g>
 </DrSvg>
