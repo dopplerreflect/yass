@@ -4,6 +4,7 @@
 	import DrSvg from '$lib/components/DrSvg.svelte';
 	import {
 		anglesArray,
+		goldenCircles,
 		phi,
 		phylotaxis,
 		radialPoint,
@@ -16,7 +17,8 @@
 	const radii = [...Array(4).keys()].map((k) => height * 0.25 * 0.94 * phi ** k);
 	const angles = anglesArray(8);
 
-	const bumpiness = radii[3] * phi ** 4;
+	const gCircles = goldenCircles(radii, angles);
+	const bumpiness = radii[3] * phi ** 6;
 
 	const circles2: Circle[] = [
 		...radii.slice(1, 4).map((r) => ({ x: 0, y: 0, r })),
@@ -173,10 +175,6 @@
 			<circle r={radii[1]} fill="black" />
 		</mask>
 
-		<filter id="blur">
-			<feGaussianBlur stdDeviation={4} />
-			<feOffset dy={8} />
-		</filter>
 		<path id="all-small-petals" d={smallPetalOutlinePath} />
 		<mask id="small-petals-mask">
 			<use href="#all-small-petals" fill="white" />
@@ -192,77 +190,110 @@
 		<mask id="center-circle-mask">
 			<use href="#center-circle" fill="white" />
 		</mask>
-		<linearGradient id="gradient">
+		<linearGradient id="gradient" x1="-100%" y1="">
 			<stop offset={0.25} stop-color={chroma.oklch(1, 0.37, 90).hex()} />
 			<stop offset={1} stop-color={chroma.oklch(0.25, 0.37, 60).hex()} />
 		</linearGradient>
-		<radialGradient id="rgradient">
+		<radialGradient id="rgradient" gradientTransform="scale(2)" cx="25%" cy="25%">
 			<stop offset={0.25} stop-color={chroma.oklch(1, 0.37, 90).hex()} />
 			<stop offset={1} stop-color={chroma.oklch(0.25, 0.37, 60).hex()} />
 		</radialGradient>
-		<radialGradient id="rgradient2" r="80%">
+		<radialGradient id="rgradient2">
 			<stop offset={0.25} stop-color={chroma.oklch(1, 0.37, 90).hex()} />
 			<stop offset={1} stop-color={chroma.oklch(0.25, 0.37, 60).hex()} />
+		</radialGradient>
+		<radialGradient id="bgGradient" gradientUnits="userSpaceOnUse" cx={0} cy={0} r={width / 2}>
+			<stop offset="0" stop-color={chroma.oklch(0.75, 0.37, 300).hex()} />
+			<stop offset="1" stop-color={chroma.oklch(0, 0.17, 300).hex()} />
 		</radialGradient>
 	</defs>
-	<rect x={-width / 2} y={-height / 2} {...{ width, height }} fill="black" />
-	<g id="poly-circle">
-		{#each phyloPolygons as points, i}
-			<polygon id={`poly-${i}`} {points} />
-			<mask id={`poly-mask-${i}`}>
-				<use href={`#poly-${i}`} fill="white" />
-			</mask>
-			<use
-				href={`#poly-${i}`}
-				mask={`url(#poly-mask-${i})`}
-				fill={chroma
-					.oklch(
-						1 - (1 / radii[1]) * Math.hypot(phyloPoints[i].x, phyloPoints[i].y),
-						0.37,
-						30 + (270 / phyloPoints.length) * i,
-					)
-					.hex()}
-				filter="url(#topLight2)"
-			/>
-		{/each}
-	</g>
-	<use
-		href="#big-petals"
-		filter="url(#topLight)"
-		mask="url(#big-petals-mask)"
-		fill={chroma.oklch(0.5, 0.37, 300).hex()}
-	/>
-	<use
-		href="#rings"
-		filter="url(#topLight)"
-		mask="url(#rings-mask)"
-		fill={chroma.oklch(0.0, 0.37, 300).hex()}
-	/>
-	<use
-		href="#small-petals"
-		filter="url(#topLight)"
-		mask="url(#small-petals-mask)"
-		fill="url(#gradient)"
-	/>
-
-	<g opacity={0.9}>
+	<rect x={-width / 2} y={-height / 2} {...{ width, height }} fill="url(#bgGradient)" />
+	<filter id="flower-drop-shadow">
+		<feDropShadow stdDeviation={8} dy={16} />
+	</filter>
+	<g id="flower" filter="url(#flower-drop-shadow)">
+		<g id="poly-circle">
+			{#each phyloPolygons as points, i}
+				<polygon id={`poly-${i}`} {points} />
+				<mask id={`poly-mask-${i}`}>
+					<use href={`#poly-${i}`} fill="white" />
+				</mask>
+				<use
+					href={`#poly-${i}`}
+					mask={`url(#poly-mask-${i})`}
+					fill={chroma
+						.oklch(
+							1 - (1 / radii[1]) * Math.hypot(phyloPoints[i].x, phyloPoints[i].y),
+							0.37,
+							30 + (270 / phyloPoints.length) * i,
+						)
+						.hex()}
+					filter="url(#topLight2)"
+				/>
+			{/each}
+		</g>
 		<use
-			href="#big-ring"
+			href="#big-petals"
 			filter="url(#topLight)"
-			mask="url(#big-ring-mask)"
-			fill="url(#rgradient)"
+			mask="url(#big-petals-mask)"
+			fill={chroma.oklch(0.5, 0.37, 300).hex()}
 		/>
 		<use
-			href="#small-ring"
+			href="#rings"
 			filter="url(#topLight)"
-			mask="url(#small-ring-mask)"
+			mask="url(#rings-mask)"
 			fill={chroma.oklch(0.0, 0.37, 300).hex()}
 		/>
 		<use
-			href="#center-circle"
+			href="#small-petals"
 			filter="url(#topLight)"
-			mask="url(#center-circle-mask)"
-			fill="url(#rgradient2)"
+			mask="url(#small-petals-mask)"
+			fill="url(#gradient)"
 		/>
+
+		<g opacity={0.8}>
+			<use
+				href="#big-ring"
+				filter="url(#topLight)"
+				mask="url(#big-ring-mask)"
+				fill="url(#rgradient)"
+			/>
+			<use
+				href="#small-ring"
+				filter="url(#topLight)"
+				mask="url(#small-ring-mask)"
+				fill={chroma.oklch(0.0, 0.37, 300).hex()}
+			/>
+			<use
+				href="#center-circle"
+				filter="url(#topLight)"
+				mask="url(#center-circle-mask)"
+				fill="url(#rgradient2)"
+			/>
+		</g>
+	</g>
+	<filter id="blur">
+		<feMorphology operator="dilate" radius="1" />
+		<feGaussianBlur stdDeviation={4} result="blur" />
+		<feColorMatrix
+			in="SourceGraphic"
+			values="
+				1 0 0 0 0
+				0 0.5 0 0 0
+				0 0 0 0 0
+				0 0 0 1 0
+			"
+			result="color"
+		/>
+		<feGaussianBlur stdDeviation="1" />
+		<feMerge>
+			<feMergeNode in="blur" />
+			<feMergeNode />
+		</feMerge>
+	</filter>
+	<g id="golden-circles" filter="url(#blur)" opacity={0.33}>
+		{#each gCircles as c}
+			<circle cx={c.x} cy={c.y} r={c.r} stroke={chroma.oklch(1, 0.17, 90).hex()} fill="none" />
+		{/each}
 	</g>
 </DrSvg>
