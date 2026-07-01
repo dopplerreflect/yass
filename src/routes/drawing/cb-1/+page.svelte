@@ -99,11 +99,11 @@
 			/>
 		</filter>
 		<filter id="shrink">
-			<feMorphology operator="erode" radius={radii[3] * phi ** 4} />
+			<feMorphology operator="erode" radius={1} />
 		</filter>
 		<path
 			id="small-petal"
-			d={`M${radialPointString(22.5, radii[1])}A${radii[1]} ${radii[1]} 0 0 0 ${radialPointString(-22.5, radii[1])}L${radialPointString(-61, radii[1], { center: radialPoint(0, radii[0]) })}A${radii[1]} ${radii[1]} 0 0 1 ${radialPointString(61, radii[1], { center: radialPoint(0, radii[0]) })}ZM${radialPointString(0, radii[1])}A${radii[2]} ${radii[2]} 0 1 0 ${radialPointString(-1, radii[1])}ZM${radialPointString(0, radii[3], { center: radialPoint(0, radii[0]) })}A${radii[3]} ${radii[3]} 0 1 1 ${radialPointString(359, radii[3], { center: radialPoint(0, radii[0]) })}Z`}
+			d={`M${radialPointString(90 + 22.5, radii[2], { center: radialPoint(0, radii[0]) })}A${radii[2]} ${radii[2]} 0 0 1 ${radialPointString(-90 - 22.5, radii[2], { center: radialPoint(0, radii[0]) })}L${radialPointString(-61, radii[1], { center: radialPoint(0, radii[0]) })}A${radii[1]} ${radii[1]} 0 0 1 ${radialPointString(61, radii[1], { center: radialPoint(0, radii[0]) })}ZM${radialPointString(0, radii[1])}A${radii[2]} ${radii[2]} 0 1 0 ${radialPointString(-1, radii[1])}ZM${radialPointString(0, radii[3], { center: radialPoint(0, radii[0]) })}A${radii[3]} ${radii[3]} 0 1 1 ${radialPointString(359, radii[3], { center: radialPoint(0, radii[0]) })}Z`}
 			fill-rule="evenodd"
 			filter="url(#shrink)"
 		/>
@@ -176,7 +176,7 @@
 		<path id="all-small-petals" d={smallPetalOutlinePath} fill="white" />
 		<mask id="small-petals-mask">
 			<use href="#all-small-petals" filter="url(#blur)" />
-			<circle r={radii[1] + radii[3] * phi} fill="black" />
+			<circle r={radii[1]} fill="black" />
 		</mask>
 
 		<mask id="rings-mask">
@@ -193,24 +193,26 @@
 		</linearGradient>
 	</defs>
 	<rect x={-width / 2} y={-height / 2} {...{ width, height }} fill="black" />
-	{#each phyloPolygons as points, i}
-		<polygon id={`poly-${i}`} {points} />
-		<mask id={`poly-mask-${i}`}>
-			<use href={`#poly-${i}`} fill="white" />
-		</mask>
-		<use
-			href={`#poly-${i}`}
-			mask={`url(#poly-mask-${i})`}
-			fill={chroma
-				.oklch(
-					1 - (1 / radii[1]) * Math.hypot(phyloPoints[i].x, phyloPoints[i].y),
-					0.37,
-					30 + (270 / phyloPoints.length) * i,
-				)
-				.hex()}
-			filter="url(#topLight2)"
-		/>
-	{/each}
+	<g id="poly-circle">
+		{#each phyloPolygons as points, i}
+			<polygon id={`poly-${i}`} {points} />
+			<mask id={`poly-mask-${i}`}>
+				<use href={`#poly-${i}`} fill="white" />
+			</mask>
+			<use
+				href={`#poly-${i}`}
+				mask={`url(#poly-mask-${i})`}
+				fill={chroma
+					.oklch(
+						1 - (1 / radii[1]) * Math.hypot(phyloPoints[i].x, phyloPoints[i].y),
+						0.37,
+						30 + (270 / phyloPoints.length) * i,
+					)
+					.hex()}
+				filter="url(#topLight2)"
+			/>
+		{/each}
+	</g>
 	<use
 		href="#big-petals"
 		filter="url(#topLight)"
