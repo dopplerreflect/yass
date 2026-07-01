@@ -98,10 +98,14 @@
 				k4="0"
 			/>
 		</filter>
+		<filter id="shrink">
+			<feMorphology operator="erode" radius={radii[3] * phi ** 4} />
+		</filter>
 		<path
 			id="small-petal"
 			d={`M${radialPointString(22.5, radii[1])}A${radii[1]} ${radii[1]} 0 0 0 ${radialPointString(-22.5, radii[1])}L${radialPointString(-61, radii[1], { center: radialPoint(0, radii[0]) })}A${radii[1]} ${radii[1]} 0 0 1 ${radialPointString(61, radii[1], { center: radialPoint(0, radii[0]) })}ZM${radialPointString(0, radii[1])}A${radii[2]} ${radii[2]} 0 1 0 ${radialPointString(-1, radii[1])}ZM${radialPointString(0, radii[3], { center: radialPoint(0, radii[0]) })}A${radii[3]} ${radii[3]} 0 1 1 ${radialPointString(359, radii[3], { center: radialPoint(0, radii[0]) })}Z`}
 			fill-rule="evenodd"
+			filter="url(#shrink)"
 		/>
 		<g id="small-petals">
 			{#each angles as a}
@@ -129,10 +133,30 @@
 				<use href="#small-ring" transform={`rotate(${a}) translate(${radii[0]} 0)`} />
 			{/each}
 		</g>
-		<path
-			id="big-petal"
-			d={`M${radialPointString(22.5, radii[1])}A${radii[1]} ${radii[1]} 0 0 0 ${radialPointString(-22.5, radii[1])}L${radialPointString(-45, radii[0], { center: radialPoint(0, radii[0]) })}A${radii[0]} ${radii[0]} 0 0 1 ${radialPointString(45, radii[0], { center: radialPoint(0, radii[0]) })}Z`}
-		/>
+		<filter id="big-petal-blur">
+			<feMorphology in="SourceAlpha" operator="dilate" radius="1" />
+			<feGaussianBlur stdDeviation={6} />
+			<feMerge>
+				<feMergeNode />
+				<feMergeNode />
+				<feMergeNode />
+				<feMergeNode in="SourceGraphic" />
+			</feMerge>
+		</filter>
+		<g id="big-petal">
+			<path
+				d={`M${radialPointString(22.5, radii[1])}A${radii[1]} ${radii[1]} 0 0 0 ${radialPointString(-22.5, radii[1])}L${radialPointString(-45, radii[0], { center: radialPoint(0, radii[0]) })}A${radii[0]} ${radii[0]} 0 0 1 ${radialPointString(45, radii[0], { center: radialPoint(0, radii[0]) })}Z`}
+			/>
+			<g filter="url(#big-petal-blur)">
+				{#each [...Array(14).keys()] as a}
+					<path
+						d={`M${radialPointString(0, 0)}L${radialPointString(-45 + (90 / 13) * a, radii[0], { center: radialPoint(0, radii[0]) })}`}
+						stroke={chroma.oklch(0.75, 0.37, 90).hex()}
+						stroke-width={2}
+					/>
+				{/each}
+			</g>
+		</g>
 		<g id="big-petals">
 			{#each angles as a}
 				<use href="#big-petal" transform={`rotate(${a})`} />
@@ -145,10 +169,14 @@
 			<circle r={radii[1]} fill="black" />
 		</mask>
 
+		<filter id="blur">
+			<feGaussianBlur stdDeviation={4} />
+			<feOffset dy={8} />
+		</filter>
 		<path id="all-small-petals" d={smallPetalOutlinePath} fill="white" />
 		<mask id="small-petals-mask">
-			<use href="#all-small-petals" />
-			<circle r={radii[1]} fill="black" />
+			<use href="#all-small-petals" filter="url(#blur)" />
+			<circle r={radii[1] + radii[3] * phi} fill="black" />
 		</mask>
 
 		<mask id="rings-mask">
@@ -159,6 +187,10 @@
 		<mask id="center-circle-mask">
 			<use href="#center-circle" fill="white" />
 		</mask>
+		<linearGradient id="gradient">
+			<stop offset={0.25} stop-color={chroma.oklch(1, 0.37, 90).hex()} />
+			<stop offset={1} stop-color={chroma.oklch(0.25, 0.37, 60).hex()} />
+		</linearGradient>
 	</defs>
 	<rect x={-width / 2} y={-height / 2} {...{ width, height }} fill="black" />
 	{#each phyloPolygons as points, i}
@@ -189,13 +221,13 @@
 		href="#small-petals"
 		filter="url(#topLight)"
 		mask="url(#small-petals-mask)"
-		fill={chroma.oklch(0.0, 0.37, 300).hex()}
+		fill="url(#gradient)"
 	/>
 	<use
 		href="#rings"
 		filter="url(#topLight)"
 		mask="url(#rings-mask)"
-		fill={chroma.oklch(0.75, 0.37, 90).hex()}
+		fill={chroma.oklch(0.0, 0.37, 300).hex()}
 	/>
 
 	<g opacity={0.66}>
