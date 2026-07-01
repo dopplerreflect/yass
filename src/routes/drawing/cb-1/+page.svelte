@@ -1,123 +1,221 @@
 <script lang="ts">
+	import chroma from 'chroma-js';
+	import { Delaunay } from 'd3';
 	import DrSvg from '$lib/components/DrSvg.svelte';
 	import {
 		anglesArray,
-		goldenCircles,
 		phi,
+		phylotaxis,
 		radialPoint,
 		radialPointString,
+		type Circle,
 	} from '@dopplerreflect/geometry';
-	const inch = 300;
-	const width = 8.5 * inch;
-	const height = 8.5 * inch;
-	const stroke = (1 / 32) * inch;
-	const radii = [...Array(4).keys()].map((k) => height * 0.24 * phi ** k);
-	const angles = anglesArray(10);
-	const angles60 = anglesArray(60);
-	const angles240 = anglesArray(240);
+	import type { Polygon } from 'geometric';
+	const width = 1920;
+	const height = 1080;
+	const radii = [...Array(4).keys()].map((k) => height * 0.25 * 0.94 * phi ** k);
+	const angles = anglesArray(8);
 
-	const commonPoint = { center: radialPoint(angles[0], radii[0]) };
-	const circles = goldenCircles(radii, angles);
-	angles.forEach((a) => circles.push({ r: radii[2], ...radialPoint(a, radii[0] + radii[3]) }));
-	const shape0 = [
-		`M0 ${-radii[0] - radii[1]}`,
-		`A${radii[0]} ${radii[0]} 0 0 1 `,
-		radialPointString(angles[2], radii[2], commonPoint),
-		`A${radii[2]} ${radii[2]} 0 0 0 `,
-		radialPointString(angles[3], radii[3], commonPoint),
-		`A${radii[2]} ${radii[2]} 0 0 1 `,
-		radialPointString(angles[7], radii[3], commonPoint),
-		`A${radii[2]} ${radii[2]} 0 0 0 `,
-		radialPointString(angles[8], radii[2], commonPoint),
-		`A${radii[0]} ${radii[0]} 0 0 1 `,
-		`0 ${-radii[0] - radii[1]}`,
-		`Z`,
-	].join('');
+	const bumpiness = radii[3] * phi ** 4;
 
-	const shape1 = [
-		`M${radialPointString(angles[7], radii[3], commonPoint)}`,
-		`A${radii[3]}, ${radii[3]} 0 1 1 `,
-		radialPointString(angles[3], radii[3], commonPoint),
-		`A${radii[2]} ${radii[2]} 0 0 1 `,
-		radialPointString(angles[7], radii[3], commonPoint),
-		'Z',
-	].join('');
+	const circles2: Circle[] = [
+		...radii.slice(1, 4).map((r) => ({ x: 0, y: 0, r })),
+		...angles.map((a) => radii.slice(2, 4).map((r) => ({ r, ...radialPoint(a, radii[0]) }))).flat(),
+	];
 
-	const shape2 = [
-		`M${radialPointString(angles[6], radii[2], commonPoint)}`,
-		...angles.map(
-			(a, i) =>
-				`A${radii[2]} ${radii[2]} 0 0 0 ${radialPointString(angles[(i + 4) % 10], radii[2], { center: radialPoint(a, radii[0]) })}`,
-		),
-		'Z',
-		`M${radialPointString(angles[6] - 24, radii[1], commonPoint)}`,
-		...angles.map(
-			(a, i) =>
-				`A${radii[1]} ${radii[1]} 0 0 0 ${radialPointString(angles[(i + 4) % 10] + 24, radii[1], { center: radialPoint(a, radii[0]) })}`,
-		),
-		'Z',
-	].join('');
+	const smallPetalPathOutlineParts: string[] = angles.map((a, i) => {
+		return `A${radii[1]} ${radii[1]} 0 0 1 ${radialPointString(a + 60, radii[1], { center: radialPoint(a, radii[0]) })}`;
+	});
 
-	const shape3 = [
-		`M${radialPointString(angles[8], radii[2], commonPoint)}`,
-		`A${radii[2]} ${radii[2]} 0 0 1 `,
-		radialPointString(angles[2], radii[2], commonPoint),
-		`A${radii[2]} ${radii[2]} 0 0 0 `,
-		radialPointString(angles[3], radii[3], commonPoint),
-		`A${radii[3]} ${radii[3]} 0 1 0 `,
-		radialPointString(angles[7], radii[3], commonPoint),
-		`A${radii[2]} ${radii[2]} 0 0 0 `,
-		radialPointString(angles[8], radii[2], commonPoint),
-		'Z',
-	].join('');
+	const smallPetalOutlinePath =
+		`M${radialPointString(angles[0] - 60, radii[1], { center: radialPoint(angles[0], radii[0]) })}` +
+		smallPetalPathOutlineParts.join('') +
+		'Z';
+
+	const bigPetalOutlinePathParts: string[] = angles.map((a, i) => {
+		return `A${radii[0]} ${radii[0]} 0 0 1 ${radialPointString(a + 45, radii[0], { center: radialPoint(a, radii[0]) })}`;
+	});
+
+	const bigPetalOutlinePath =
+		`M${radialPointString(angles[0] - 45, radii[0], { center: radialPoint(angles[0], radii[0]) })}` +
+		bigPetalOutlinePathParts.join('') +
+		'Z';
+
+	const phyloPoints = phylotaxis(89, radii[1]);
+
+	const delaunay = Delaunay.from(phyloPoints.map((p) => [p.x, p.y]));
+	const voronoi = delaunay.voronoi([-radii[1], -radii[1], radii[1], radii[1]]);
+	const phyloPolygons: Polygon[] = [];
+	for (let i = 0; i < phyloPoints.length; i++) {
+		phyloPolygons.push(voronoi.cellPolygon(i));
+	}
 </script>
 
 <DrSvg {...{ width, height }}>
 	<defs>
-		<path id="shape0" d={shape0} fill="none" stroke="black" stroke-width={stroke} />
-		<path id="shape1" d={shape1} fill="white" stroke="black" stroke-width={stroke} />
-		<g id="shape1-10">
-			{#each angles as a}
-				<use href="#shape1" transform={`rotate(${a - 18})`} />
-			{/each}
-		</g>
-		<mask id="mask1-10">
-			<use href="#shape1-10" />
-		</mask>
+		<filter id="topLight" x="-20%" y="-20%" width="140%" height="140%">
+			<feMorphology in="SourceAlpha" operator="erode" radius={bumpiness * 0.75}></feMorphology>
+			<feGaussianBlur stdDeviation={bumpiness * 0.75} result="blur" />
+			<feDiffuseLighting
+				in="blur"
+				surfaceScale={bumpiness * 0.75}
+				diffuseConstant="1"
+				lighting-color="#ffffff"
+				result="light"
+			>
+				<feDistantLight azimuth="-90" elevation="5" />
+			</feDiffuseLighting>
+			<feComposite
+				in="SourceGraphic"
+				in2="light"
+				operator="arithmetic"
+				k1="0"
+				k2="1"
+				k3="0.5"
+				k4="0"
+			/>
+		</filter>
 
-		<path id="shape3" d={shape3} fill="white" />
-		<mask id="shape3-mask">
-			<use href="#shape3" />
-		</mask>
-		<g id="shape3-rays" mask="url(#shape3-mask)">
-			{#each angles60 as a}
-				<path
-					d={`M${radialPointString(angles[0], radii[0])}L${radialPointString(a, radii[2], commonPoint)}`}
-					stroke="black"
-				/>
-			{/each}
-		</g>
-	</defs>
-
-	<rect x={-width / 2} y={-height / 2} {...{ width, height }} fill="white" />
-	{#each circles as c}
-		<circle r={c.r} cx={c.x} cy={c.y} fill="none" stroke="#F99" stroke-width={(1 / 64) * inch} />
-	{/each}
-	<use href="#shape1-10" />
-	{#each angles240 as a}
+		<filter id="topLight2" x="-20%" y="-20%" width="140%" height="140%">
+			<feMorphology in="SourceAlpha" operator="erode" radius={bumpiness * 0.25}></feMorphology>
+			<feGaussianBlur stdDeviation={bumpiness * 0.25} result="blur" />
+			<feDiffuseLighting
+				in="blur"
+				surfaceScale={bumpiness * 0.5}
+				diffuseConstant="2"
+				lighting-color="#ffffff"
+				result="light"
+			>
+				<feDistantLight azimuth="-90" elevation="5" />
+			</feDiffuseLighting>
+			<feComposite
+				in="SourceGraphic"
+				in2="light"
+				operator="arithmetic"
+				k1="0"
+				k2="1"
+				k3="0.5"
+				k4="0"
+			/>
+		</filter>
 		<path
-			d={`M0 0L${radialPointString(a, radii[0] * 2)}`}
-			stroke="black"
-			stroke-width={2}
-			mask="url(#mask1-10)"
+			id="small-petal"
+			d={`M${radialPointString(22.5, radii[1])}A${radii[1]} ${radii[1]} 0 0 0 ${radialPointString(-22.5, radii[1])}L${radialPointString(-61, radii[1], { center: radialPoint(0, radii[0]) })}A${radii[1]} ${radii[1]} 0 0 1 ${radialPointString(61, radii[1], { center: radialPoint(0, radii[0]) })}ZM${radialPointString(0, radii[1])}A${radii[2]} ${radii[2]} 0 1 0 ${radialPointString(-1, radii[1])}ZM${radialPointString(0, radii[3], { center: radialPoint(0, radii[0]) })}A${radii[3]} ${radii[3]} 0 1 1 ${radialPointString(359, radii[3], { center: radialPoint(0, radii[0]) })}Z`}
+			fill-rule="evenodd"
+		/>
+		<g id="small-petals">
+			{#each angles as a}
+				<use href="#small-petal" transform={`rotate(${a})`} />
+			{/each}
+		</g>
+		<path
+			id="small-ring"
+			d={`M${radialPointString(0, radii[2])}A${radii[2]} ${radii[2]} 0 1 1 ${radialPointString(359, radii[2])}ZM${radialPointString(0, radii[3])}A${radii[3]} ${radii[3]} 0 1 1 ${radialPointString(359, radii[3])}Z`}
+			fill-rule="evenodd"
+		/>
+		<mask id="small-ring-mask">
+			<use href="#small-ring" fill="white" />
+		</mask>
+		<path
+			id="big-ring"
+			d={`M${radialPointString(0, radii[1])}A${radii[1]} ${radii[1]} 0 1 1 ${radialPointString(359, radii[1])}ZM${radialPointString(0, radii[2])}A${radii[2]} ${radii[2]} 0 1 1 ${radialPointString(359, radii[2])}Z`}
+			fill-rule="evenodd"
+		/>
+		<mask id="big-ring-mask">
+			<use href="#big-ring" fill="white" />
+		</mask>
+		<g id="rings">
+			{#each angles as a}
+				<use href="#small-ring" transform={`rotate(${a}) translate(${radii[0]} 0)`} />
+			{/each}
+		</g>
+		<path
+			id="big-petal"
+			d={`M${radialPointString(22.5, radii[1])}A${radii[1]} ${radii[1]} 0 0 0 ${radialPointString(-22.5, radii[1])}L${radialPointString(-45, radii[0], { center: radialPoint(0, radii[0]) })}A${radii[0]} ${radii[0]} 0 0 1 ${radialPointString(45, radii[0], { center: radialPoint(0, radii[0]) })}Z`}
+		/>
+		<g id="big-petals">
+			{#each angles as a}
+				<use href="#big-petal" transform={`rotate(${a})`} />
+			{/each}
+		</g>
+
+		<path id="all-big-petals" d={bigPetalOutlinePath} fill="white" />
+		<mask id="big-petals-mask">
+			<use href="#all-big-petals" />
+			<circle r={radii[1]} fill="black" />
+		</mask>
+
+		<path id="all-small-petals" d={smallPetalOutlinePath} fill="white" />
+		<mask id="small-petals-mask">
+			<use href="#all-small-petals" />
+			<circle r={radii[1]} fill="black" />
+		</mask>
+
+		<mask id="rings-mask">
+			<use href="#rings" fill="white" />
+		</mask>
+
+		<circle id="center-circle" r={radii[3]} />
+		<mask id="center-circle-mask">
+			<use href="#center-circle" fill="white" />
+		</mask>
+	</defs>
+	<rect x={-width / 2} y={-height / 2} {...{ width, height }} fill="black" />
+	{#each phyloPolygons as points, i}
+		<polygon id={`poly-${i}`} {points} />
+		<mask id={`poly-mask-${i}`}>
+			<use href={`#poly-${i}`} fill="white" />
+		</mask>
+		<use
+			href={`#poly-${i}`}
+			mask={`url(#poly-mask-${i})`}
+			fill={chroma
+				.oklch(
+					1 - (1 / radii[1]) * Math.hypot(phyloPoints[i].x, phyloPoints[i].y),
+					0.37,
+					30 + (270 / phyloPoints.length) * i,
+				)
+				.hex()}
+			filter="url(#topLight2)"
 		/>
 	{/each}
-	{#each angles as a}
-		<use href="#shape0" transform={`rotate(${a - 18})`} style="display:inline;" />
-		<g transform={`rotate(${a - 18})`}>
-			<use href="#shape3" stroke="black" stroke-width={stroke} />
-			<use href="#shape3-rays" />
-		</g>
-	{/each}
-	<path d={shape2} stroke="black" stroke-width={stroke} fill="none" />
+	<use
+		href="#big-petals"
+		filter="url(#topLight)"
+		mask="url(#big-petals-mask)"
+		fill={chroma.oklch(0.5, 0.37, 300).hex()}
+	/>
+	<use
+		href="#small-petals"
+		filter="url(#topLight)"
+		mask="url(#small-petals-mask)"
+		fill={chroma.oklch(0.0, 0.37, 300).hex()}
+	/>
+	<use
+		href="#rings"
+		filter="url(#topLight)"
+		mask="url(#rings-mask)"
+		fill={chroma.oklch(0.75, 0.37, 90).hex()}
+	/>
+
+	<g opacity={0.66}>
+		<use
+			href="#big-ring"
+			filter="url(#topLight)"
+			mask="url(#big-ring-mask)"
+			fill={chroma.oklch(0.0, 0.37, 300).hex()}
+		/>
+		<use
+			href="#small-ring"
+			filter="url(#topLight)"
+			mask="url(#small-ring-mask)"
+			fill={chroma.oklch(0.1, 0.37, 150).hex()}
+		/>
+		<use
+			href="#center-circle"
+			filter="url(#topLight)"
+			mask="url(#center-circle-mask)"
+			fill={chroma.oklch(0.1, 0.37, 30).hex()}
+		/>
+	</g>
 </DrSvg>
