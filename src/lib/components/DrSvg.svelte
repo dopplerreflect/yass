@@ -3,6 +3,9 @@
 <script lang="ts">
 	import { createZoomState } from '$lib/zoom.svelte';
 	import { onMount, type Snippet } from 'svelte';
+	import { drawings } from '$lib/drawings.svelte';
+	import { goto } from '$app/navigation';
+	import type { Drawing } from '$lib/types';
 
 	interface Props {
 		width: number;
@@ -18,7 +21,7 @@
 		const pathname = document.location.pathname.split('/');
 		const name = pathname[pathname.length - 1];
 		const body = new XMLSerializer().serializeToString(svgElement);
-		console.log(`Attempting to POST svg ${name} to /api`)
+		console.log(`Attempting to POST svg ${name} to /api`);
 		try {
 			const response = await fetch('/api', {
 				method: 'POST',
@@ -33,15 +36,29 @@
 		}
 	}
 
+	function navigateToDrawing(direction: number) {
+		const pathname = document.location.pathname.split('/');
+		const name = pathname[pathname.length - 1];
+		const thisIndex = drawings.findIndex((d) => d.name === name);
+		let targetDrawing: Drawing;
+		if (thisIndex === 0 && direction === -1) targetDrawing = drawings[drawings.length - 1];
+		else if (thisIndex === drawings.length - 1 && direction === 1) targetDrawing = drawings[0];
+		else targetDrawing = drawings[thisIndex + direction];
+		goto(`/drawing/${targetDrawing.name}`).catch((error) => console.error(error));
+	}
+
 	const keyMap: Record<string, () => void> = {
 		'+': zoomIn,
 		'-': zoomOut,
 		c: center,
 		r: reset,
+		p: () => navigateToDrawing(-1),
+		n: () => navigateToDrawing(1),
 		h: () => pan(-0.1, 0),
 		l: () => pan(0.1, 0),
 		j: () => pan(0, 0.1),
 		k: () => pan(0, -0.1),
+		b: () => goto('/'),
 	};
 
 	function handleKey(event: KeyboardEvent) {

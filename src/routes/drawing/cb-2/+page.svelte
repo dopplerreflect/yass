@@ -186,7 +186,7 @@
 		<mask id="center-circle-mask">
 			<use href="#center-circle" fill="white" />
 		</mask>
-		<linearGradient id="gradient" x1="-100%" y1="">
+		<linearGradient id="gradient" x1="-100%">
 			<stop offset={0.25} stop-color={chroma.oklch(1, 0.37, 90).hex()} />
 			<stop offset={1} stop-color={chroma.oklch(0.25, 0.37, 60).hex()} />
 		</linearGradient>
