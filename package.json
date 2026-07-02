@@ -11,7 +11,8 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "yarn dlx -p prettier@~3.6.0 prettier --write .",
-		"lint": "yarn dlx -p prettier@~3.6.0 prettier --check ."
+		"lint": "yarn dlx -p prettier@~3.6.0 prettier --check .",
+	  "render": "sh -c 'CHANGEID=\"$(jj --color=never show -s | grep Change | cut -d\" \" -f 3)\"; magick static/drawings/svg/\"$0\".svg -set comment \"CHANGE ID $CHANGEID\" ~/Pictures/\"$0\"-\"$CHANGEID\".png'"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^6.0.0",

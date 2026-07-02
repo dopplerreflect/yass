@@ -12,7 +12,7 @@
 		type Circle,
 	} from '@dopplerreflect/geometry';
 	import type { Polygon } from 'geometric';
-	const width = 1080;
+	const width = 1920;
 	const height = 1080;
 	const radii = [...Array(4).keys()].map((k) => height * 0.25 * 0.94 * phi ** k);
 	const angles = anglesArray(8);
@@ -71,9 +71,9 @@
 				in="SourceGraphic"
 				in2="light"
 				operator="arithmetic"
-				k1="0"
-				k2="1"
-				k3="0.5"
+				k1="1"
+				k2="0.5"
+				k3="1.5"
 				k4="0"
 			/>
 		</filter>
