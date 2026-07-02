@@ -15,7 +15,7 @@
 	const width = 1080;
 	const height = 1080;
 	const radii = [...Array(4).keys()].map((k) => height * 0.25 * 0.94 * phi ** k);
-	const angles = anglesArray(8);
+	const angles = anglesArray(6);
 
 	const gCircles = goldenCircles(radii, angles);
 	const bumpiness = radii[3] * phi ** 3;
@@ -26,20 +26,20 @@
 	];
 
 	const smallPetalPathOutlineParts: string[] = angles.map((a, i) => {
-		return `A${radii[1]} ${radii[1]} 0 0 1 ${radialPointString(a + 60, radii[1], { center: radialPoint(a, radii[0]) })}`;
+		return `A${radii[1]} ${radii[1]} 0 0 1 ${radialPointString(a + 84, radii[1], { center: radialPoint(a, radii[0]) })}`;
 	});
 
 	const smallPetalOutlinePath =
-		`M${radialPointString(angles[0] - 60, radii[1], { center: radialPoint(angles[0], radii[0]) })}` +
+		`M${radialPointString(angles[0] - 84, radii[1], { center: radialPoint(angles[0], radii[0]) })}` +
 		smallPetalPathOutlineParts.join('') +
 		'Z';
 
 	const bigPetalOutlinePathParts: string[] = angles.map((a, i) => {
-		return `A${radii[0]} ${radii[0]} 0 0 1 ${radialPointString(a + 45, radii[0], { center: radialPoint(a, radii[0]) })}`;
+		return `A${radii[0]} ${radii[0]} 0 0 1 ${radialPointString(a + 360 / angles.length, radii[0], { center: radialPoint(a, radii[0]) })}`;
 	});
 
 	const bigPetalOutlinePath =
-		`M${radialPointString(angles[0] - 45, radii[0], { center: radialPoint(angles[0], radii[0]) })}` +
+		`M${radialPointString(angles[0] - 360 / angles.length, radii[0], { center: radialPoint(angles[0], radii[0]) })}` +
 		bigPetalOutlinePathParts.join('') +
 		'Z';
 
@@ -102,7 +102,7 @@
 		</filter>
 		<path
 			id="small-petal"
-			d={`M${radialPointString(90 + 22.5, radii[2], { center: radialPoint(0, radii[0]) })}A${radii[2]} ${radii[2]} 1 0 1 ${radialPointString(-90 - 22.5, radii[2], { center: radialPoint(0, radii[0]) })}L${radialPointString(-61, radii[1], { center: radialPoint(0, radii[0]) })}A${radii[1]} ${radii[1]} 0 0 1 ${radialPointString(61, radii[1], { center: radialPoint(0, radii[0]) })}ZM${radialPointString(0, radii[1])}A${radii[2]} ${radii[2]} 0 1 0 ${radialPointString(359, radii[1])}ZM${radialPointString(0, radii[3], { center: radialPoint(0, radii[0]) })}A${radii[3]} ${radii[3]} 0 1 1 ${radialPointString(359, radii[3], { center: radialPoint(0, radii[0]) })}Z`}
+			d={`M${radialPointString(120, radii[2], { center: radialPoint(0, radii[0]) })}A${radii[2]} ${radii[2]} 1 0 1 ${radialPointString(-120, radii[2], { center: radialPoint(0, radii[0]) })}A${radii[1]} ${radii[1]} 0 0 0 ${radialPointString(-84, radii[1], { center: radialPoint(0, radii[0]) })}A${radii[1]} ${radii[1]} 0 0 1 ${radialPointString(84, radii[1], { center: radialPoint(0, radii[0]) })}A${radii[1]} ${radii[1]} 0 0 0 ${radialPointString(120, radii[2], { center: radialPoint(0, radii[0]) })}ZM${radialPointString(0, radii[1])}A${radii[2]} ${radii[2]} 0 1 0 ${radialPointString(359, radii[1])}A${radii[1]} ${radii[1]} 0 0 1 ${radialPointString(120, radii[2], { center: radialPoint(0, radii[0]) })}ZM${radialPointString(0, radii[3], { center: radialPoint(0, radii[0]) })}A${radii[3]} ${radii[3]} 0 1 1 ${radialPointString(359, radii[3], { center: radialPoint(0, radii[0]) })}Z`}
 			fill-rule="evenodd"
 		/>
 		<g id="small-petals">
@@ -147,12 +147,12 @@
 		</filter>
 		<g id="big-petal">
 			<path
-				d={`M${radialPointString(22.5, radii[1])}A${radii[1]} ${radii[1]} 0 0 0 ${radialPointString(-22.5, radii[1])}L${radialPointString(-45, radii[0], { center: radialPoint(0, radii[0]) })}A${radii[0]} ${radii[0]} 0 0 1 ${radialPointString(45, radii[0], { center: radialPoint(0, radii[0]) })}Z`}
+				d={`M${radialPointString(360 / angles.length / 2, radii[1])}A${radii[1]} ${radii[1]} 0 0 0 ${radialPointString(-360 / angles.length / 2, radii[1])}L${radialPointString(-360 / angles.length, radii[0], { center: radialPoint(0, radii[0]) })}A${radii[0]} ${radii[0]} 0 0 1 ${radialPointString(360 / angles.length, radii[0], { center: radialPoint(0, radii[0]) })}Z`}
 			/>
 			<g filter="url(#big-petal-blur)">
 				{#each [...Array(14).keys()] as a}
 					<path
-						d={`M${radialPointString(0, 0)}L${radialPointString(-45 + (90 / 13) * a, radii[0], { center: radialPoint(0, radii[0]) })}`}
+						d={`M${radialPointString(0, 0)}L${radialPointString(-360 / angles.length + (((360 / angles.length) * 2) / 13) * a, radii[0], { center: radialPoint(0, radii[0]) })}`}
 						stroke={chroma.oklch(0.75, 0.37, 90).hex()}
 						stroke-width={2}
 					/>
