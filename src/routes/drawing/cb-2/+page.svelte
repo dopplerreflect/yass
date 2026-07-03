@@ -71,9 +71,9 @@
 				in="SourceGraphic"
 				in2="light"
 				operator="arithmetic"
-				k1="1"
-				k2="0.5"
-				k3="1.5"
+				k1="0"
+				k2="1"
+				k3="0.8"
 				k4="0"
 			/>
 		</filter>
