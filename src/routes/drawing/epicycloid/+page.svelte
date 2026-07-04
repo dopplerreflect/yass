@@ -1,31 +1,25 @@
 <script lang="ts">
 	import DrSvg from '$lib/components/DrSvg.svelte';
-	import {
-		anglesArray,
-		pointToString,
-		radialPoint,
-		type Line,
-		type Point,
-	} from '@dopplerreflect/geometry';
-	import { findLineIntersections } from '$lib/geometry/intersection';
-	import chroma from 'chroma-js';
+	import { pointToString, type Line, type Point } from '@dopplerreflect/geometry';
+	import { findLineIntersections } from './intersection';
+
 	const width = 1920;
 	const height = 1080;
 
 	const R = (height / 2) * 0.3;
 
 	const n = 5;
-	const d = 8;
+	const d = 6;
 	const k = n / d;
 
 	const angles: number[] = [];
-	for (let x = 0; x <= Math.PI * d * 2; x += 0.1) {
+	for (let x = 0; x <= Math.PI * d * 2; x += 0.13) {
 		angles.push(x);
 	}
 
 	const epicycloidPoint = (angle: number): Point => ({
-		x: Number((R * (k + 1) * Math.cos(angle) - R * Math.cos((k + 1) * angle)).toFixed(2)),
-		y: Number((R * (k + 1) * Math.sin(angle) - R * Math.sin((k + 1) * angle)).toFixed(2)),
+		x: Number((R * (k + 1) * Math.cos(angle) - R * Math.cos((k + 1) * angle)).toFixed(1)),
+		y: Number((R * (k + 1) * Math.sin(angle) - R * Math.sin((k + 1) * angle)).toFixed(1)),
 	});
 
 	const epicycloidPoints: Point[] = angles.map((a) => epicycloidPoint(a));
@@ -34,16 +28,17 @@
 		.slice(0, -1)
 		.map((p, i) => [p, epicycloidPoints[i + 1]]);
 
-	const lineSegmentIntersections = findLineIntersections(epicycloidLineSegments).values();
-
-	// get first point radius to determine approximate intersections of other innermost line segments
-	const innermostRadius = Math.hypot(epicycloidPoints[0].x, epicycloidPoints[0].y);
+	const lineSegmentIntersections = findLineIntersections(
+		epicycloidLineSegments,
+		epicycloidPoints,
+		n,
+	).values();
 
 	const epicycloidPath: string =
 		`M${pointToString(epicycloidPoints[0])}` +
 		epicycloidPoints
 			.slice(1, -1)
-			.map((p, i) => `L${pointToString(p)}`)
+			.map((p) => `L${pointToString(p)}`)
 			.join('') +
 		'Z';
 </script>
@@ -56,8 +51,6 @@
 		<text x={c.x} y={c.y} fill="yellow">{i}</text>
 	{/each}
 	{#each epicycloidPoints as p, i}
-		<circle cx={p.x} cy={p.y} r={1} fill="orange" stroke="white" stroke-width="0.25" />
+		<circle cx={p.x} cy={p.y} r={1} fill="orange" stroke="black" stroke-width="0.25" />
 	{/each}
-
-	<circle r={R} stroke="blue" fill="none" />
 </DrSvg>

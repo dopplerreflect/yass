@@ -1,6 +1,7 @@
-import type { Line, Point } from '@dopplerreflect/geometry';
+import { anglesArray, radialPoint, type Line, type Point } from '@dopplerreflect/geometry';
+import { nearestPointIndex } from './nearestPointIndex';
 
-export function findLineIntersections(lines: Line[]) {
+export function findLineIntersections(lines: Line[], epicycloidPoints: Point[], n: number) {
 	type IntersectionSegmentIndices = string;
 
 	const lineSectionIntersectionMap = new Map<IntersectionSegmentIndices, Point>();
@@ -18,10 +19,20 @@ export function findLineIntersections(lines: Line[]) {
 		}
 	}
 
+	// get first point radius to determine approximate intersections of other innermost line segments
+	const innermostRadius = Math.hypot(epicycloidPoints[0].x, epicycloidPoints[0].y);
+
+	const innermostPoints = anglesArray(n, 0).map((a) => radialPoint(a, innermostRadius));
+	const pointIndicesToKeep: string[] = [];
+	innermostPoints.forEach((p, i) => {
+		const targetPoint = { x: Number(p.x.toFixed(1)), y: Number(p.y.toFixed(1)) };
+		pointIndicesToKeep.push(nearestPointIndex(targetPoint, lineSectionIntersectionMap));
+	});
+
 	lineSectionIntersectionMap.keys().forEach((k) => {
 		const [i, j] = JSON.parse(k);
 		const previous = JSON.stringify([i - 1, j - 1]);
-		lineSectionIntersectionMap.delete(previous);
+		if (!pointIndicesToKeep.includes(previous)) lineSectionIntersectionMap.delete(previous);
 	});
 
 	const mapKeys = [...lineSectionIntersectionMap.keys()];
@@ -29,10 +40,6 @@ export function findLineIntersections(lines: Line[]) {
 	lineSectionIntersectionMap.delete(lastKey);
 
 	return lineSectionIntersectionMap;
-}
-
-function round(value: number): number {
-	return Number(value.toFixed(9)); // Reduced precision to avoid duplicates
 }
 
 export function lineIntersection(
@@ -59,26 +66,4 @@ export function lineIntersection(
 	}
 
 	return null; // Lines don't intersect within the segments
-}
-
-/* This one goes beyond actual line boundaries
- *
- */
-export function lineIntersection2(line1: Line, line2: Line, avoidNulls = false): Point {
-	const [{ x: x1, y: y1 }, { x: x2, y: y2 }] = line1;
-	const [{ x: x3, y: y3 }, { x: x4, y: y4 }] = line2;
-	const denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-
-	let x = Number(
-		(((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / denominator).toFixed(1),
-	);
-
-	let y = Number(
-		(((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / denominator).toFixed(1),
-	);
-
-	// if (x === -0) x = 0;
-	// if (y === -0) y = 0;
-
-	return { x, y };
 }
