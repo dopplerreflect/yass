@@ -3,7 +3,7 @@
 </script>
 
 <div class="flex flex-wrap gap-2">
-	{#each drawings as drawing}
+	{#each drawings.filter((d) => !d.archived) as drawing}
 		<div
 			class="flex items-center justify-center rounded-2xl border-2 border-violet-700 bg-violet-950 p-2 drop-shadow-lg drop-shadow-violet-700 hover:drop-shadow-violet-300"
 		>

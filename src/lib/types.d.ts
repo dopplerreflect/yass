@@ -2,6 +2,7 @@ export type Drawing = {
 	name: string;
 	path: string;
 	module: any;
+	archived: boolean;
 };
 
 export type SerializedSvg = {
