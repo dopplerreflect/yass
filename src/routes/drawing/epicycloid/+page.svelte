@@ -34,13 +34,10 @@
 		.slice(0, -1)
 		.map((p, i) => [p, epicycloidPoints[i + 1]]);
 
-	const lineSegmentIntersections: Point[] = findLineIntersections(epicycloidLineSegments);
+	const lineSegmentIntersections = findLineIntersections(epicycloidLineSegments).values();
 
 	// get first point radius to determine approximate intersections of other innermost line segments
 	const innermostRadius = Math.hypot(epicycloidPoints[0].x, epicycloidPoints[0].y);
-	anglesArray(n, 0).forEach((a, i) =>
-		lineSegmentIntersections.push(radialPoint(a, innermostRadius)),
-	);
 
 	const epicycloidPath: string =
 		`M${pointToString(epicycloidPoints[0])}` +

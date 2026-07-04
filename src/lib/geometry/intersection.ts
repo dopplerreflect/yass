@@ -1,23 +1,28 @@
 import type { Line, Point } from '@dopplerreflect/geometry';
 
-export function findLineIntersections(lines: Line[]): Point[] {
-	const intersections: Point[] = [];
-	const seen = new Set<string>();
+export function findLineIntersections(lines: Line[]) {
+	type IntersectionSegmentIndices = string;
+
+	const lineSectionIntersectionMap = new Map<IntersectionSegmentIndices, Point>();
 
 	for (let i = 0; i < lines.length; i++) {
-		for (let j = i + 6; j < lines.length; j++) {
+		for (let j = i + 1; j < lines.length; j++) {
 			const intersection = lineIntersection(lines[i], lines[j]);
 			if (intersection) {
-				const key = `${round(intersection.x)},${round(intersection.y)}`;
-				if (!seen.has(key)) {
-					intersections.push(intersection);
-					seen.add(key);
+				const intersectionSegmentIndices: IntersectionSegmentIndices = JSON.stringify([i, j]);
+				if (!lineSectionIntersectionMap.get(intersectionSegmentIndices)) {
+					lineSectionIntersectionMap.set(intersectionSegmentIndices, intersection);
 				}
 			}
 		}
 	}
 
-	return intersections;
+	lineSectionIntersectionMap.keys().forEach((k) => {
+		const [i, j] = JSON.parse(k);
+		const previous = JSON.stringify([i - 1, j - 1]);
+		lineSectionIntersectionMap.delete(previous);
+	});
+	return lineSectionIntersectionMap;
 }
 
 function round(value: number): number {
