@@ -50,15 +50,15 @@
 	const keyMap: Record<string, () => void> = {
 		'+': zoomIn,
 		'-': zoomOut,
-		c: center,
-		r: reset,
+		Enter: center,
+		End: reset,
 		p: () => navigateToDrawing(-1),
 		n: () => navigateToDrawing(1),
-		h: () => pan(-0.1, 0),
-		l: () => pan(0.1, 0),
-		j: () => pan(0, 0.1),
-		k: () => pan(0, -0.1),
-		b: () => goto('/'),
+		ArrowLeft: () => pan(-0.1, 0),
+		ArrowRight: () => pan(0.1, 0),
+		ArrowDown: () => pan(0, 0.1),
+		ArrowUp: () => pan(0, -0.1),
+		Home: () => goto('/'),
 	};
 
 	function handleKey(event: KeyboardEvent) {
@@ -74,8 +74,8 @@
 
 	onMount(() => {
 		postSVG();
-		document.addEventListener('keypress', handleKey);
-		return () => document.removeEventListener('keypress', handleKey);
+		document.addEventListener('keydown', handleKey);
+		return () => document.removeEventListener('keydown', handleKey);
 	});
 
 	const viewBox = $derived.by(() => {
