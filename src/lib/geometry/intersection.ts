@@ -5,6 +5,7 @@ export function findLineIntersections(lines: Line[]) {
 
 	const lineSectionIntersectionMap = new Map<IntersectionSegmentIndices, Point>();
 
+	lineSectionIntersectionMap.set(JSON.stringify([0, lines.length - 1]), lines[0][0]);
 	for (let i = 0; i < lines.length; i++) {
 		for (let j = i + 1; j < lines.length; j++) {
 			const intersection = lineIntersection(lines[i], lines[j]);
@@ -22,6 +23,11 @@ export function findLineIntersections(lines: Line[]) {
 		const previous = JSON.stringify([i - 1, j - 1]);
 		lineSectionIntersectionMap.delete(previous);
 	});
+
+	const mapKeys = [...lineSectionIntersectionMap.keys()];
+	const lastKey = mapKeys[mapKeys.length - 1];
+	lineSectionIntersectionMap.delete(lastKey);
+
 	return lineSectionIntersectionMap;
 }
 
