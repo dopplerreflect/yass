@@ -2,16 +2,14 @@ import { anglesArray, radialPoint, type Line, type Point } from '@dopplerreflect
 import { nearestPointIndex } from './nearestPointIndex';
 
 export function findLineIntersections(lines: Line[], epicycloidPoints: Point[], n: number) {
-	type IntersectionSegmentIndices = string;
-
-	const lineSectionIntersectionMap = new Map<IntersectionSegmentIndices, Point>();
+	const lineSectionIntersectionMap = new Map();
 
 	lineSectionIntersectionMap.set(JSON.stringify([0, lines.length - 1]), lines[0][0]);
 	for (let i = 0; i < lines.length; i++) {
 		for (let j = i + 1; j < lines.length; j++) {
 			const intersection = lineIntersection(lines[i], lines[j]);
 			if (intersection) {
-				const intersectionSegmentIndices: IntersectionSegmentIndices = JSON.stringify([i, j]);
+				const intersectionSegmentIndices = JSON.stringify([i, j]);
 				if (!lineSectionIntersectionMap.get(intersectionSegmentIndices)) {
 					lineSectionIntersectionMap.set(intersectionSegmentIndices, intersection);
 				}
@@ -24,7 +22,7 @@ export function findLineIntersections(lines: Line[], epicycloidPoints: Point[], 
 
 	const innermostPoints = anglesArray(n, 0).map((a) => radialPoint(a, innermostRadius));
 	const pointIndicesToKeep: string[] = [];
-	innermostPoints.forEach((p, i) => {
+	innermostPoints.forEach((p) => {
 		const targetPoint = { x: Number(p.x.toFixed(1)), y: Number(p.y.toFixed(1)) };
 		pointIndicesToKeep.push(nearestPointIndex(targetPoint, lineSectionIntersectionMap));
 	});
