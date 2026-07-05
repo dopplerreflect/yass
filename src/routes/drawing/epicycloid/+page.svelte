@@ -81,7 +81,7 @@
 	<path d={epicycloidPath} stroke="red" fill="none" />
 	{#each petalPaths as d, i}
 		<path
-			{d}
+			d={`M${d.map((p) => pointToString(p)).join(' ')}Z`}
 			stroke="black"
 			fill={i === 0
 				? chroma.oklch(0.2, 0.37, 150).hex()

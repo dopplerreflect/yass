@@ -5,7 +5,7 @@ export function petalPath(
 	pathIntersectionIndices: PathIntersectionIndices,
 	lineSegmentIntersections: Map<string, Point>,
 	epicycloidLineSegments: Line[],
-): string {
+): Point[] {
 	const pointsToGoThrough = pathIntersectionIndices.map(
 		(i) => [...lineSegmentIntersections.entries()][i],
 	);
@@ -14,7 +14,7 @@ export function petalPath(
 	let fromIndex = JSON.parse(pointsToGoThrough[0][0])[0];
 	let toIndex = findClosest(JSON.parse(pointsToGoThrough[1][0]), fromIndex);
 	// console.log(fromIndex, toIndex);
-	const pathSegments = [`M${pointToString(pointsToGoThrough[0][1])}`];
+	const pathSegments = [pointsToGoThrough[0][1]];
 	pointsToGoThrough.forEach((currentPoint, i) => {
 		const nextTarget = pointsToGoThrough[i + 1];
 		if (nextTarget) {
@@ -27,19 +27,18 @@ export function petalPath(
 			for (let i = fromIndex; i !== toIndex + step; i += step) {
 				// console.log(fromIndex, toIndex, i, step);
 				if (i === 0) {
-					pathSegments.push(pointToString(currentPoint[1]));
+					pathSegments.push(currentPoint[1]);
 				} else if (nextLineSegmentIntersectionIndices.includes(i)) {
-					pathSegments.push(pointToString(nextTarget[1]));
+					pathSegments.push(nextTarget[1]);
 					// console.log('nextLineSegmentIntersectionIndices');
 				} else {
-					pathSegments.push(pointToString(epicycloidLineSegments[i][fromIndex < toIndex ? 1 : 0]));
+					pathSegments.push(epicycloidLineSegments[i][fromIndex < toIndex ? 1 : 0]);
 				}
 			}
 			fromIndex = nextLineSegmentIntersectionIndices.find((d) => d !== toIndex);
 		}
 	});
-	const path = pathSegments.join(' ');
-	return path;
+	return pathSegments;
 }
 
 function findClosest(arr: number[], target: number): number {
