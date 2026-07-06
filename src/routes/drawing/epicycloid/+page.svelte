@@ -5,7 +5,7 @@
 	import { petalPath, type PathIntersectionIndices } from './petalPath';
 	import chroma from 'chroma-js';
 
-	const scale = 0.1;
+	const scale = 1;
 	const width = 1920 * scale;
 	const height = 1080 * scale;
 
@@ -80,12 +80,12 @@
 
 		const thisRadius = outermostRadius - Math.hypot(pathPoints[0].x, pathPoints[0].y);
 
-		let l = 0.0 + (0.35 / radiusDelta) * thisRadius;
-		if (i === 0) l = 0.4;
+		let l = 0.5 + (0.35 / radiusDelta) * thisRadius;
+		if (i === 0) l = 0.9;
 
 		let c = 0.185 + (0.185 / radiusDelta) * thisRadius;
 
-		const fill = chroma.oklch(l, c, 300).hex();
+		const fill = chroma.oklch(l, c, 90).hex();
 		return { d, fill };
 	});
 </script>
@@ -93,20 +93,20 @@
 <DrSvg {...{ width, height }}>
 	<defs>
 		<filter id="glow">
-			<feMorphology operator="dilate" radius={1 * scale} />
-			<feGaussianBlur stdDeviation={4 * scale} />
+			<feMorphology operator="dilate" radius={2 * scale} />
+			<feGaussianBlur stdDeviation={3 * scale} />
 			<feMerge>
 				<feMergeNode />
 				<feMergeNode in="SourceGraphic" />
 			</feMerge>
 		</filter>
 		<filter id="topLight" x="-20%" y="-20%" width="140%" height="140%">
-			<feMorphology in="SourceAlpha" operator="erode" radius={3 * scale} />
-			<feGaussianBlur stdDeviation={10 * scale} result="blur" />
+			<feMorphology in="SourceAlpha" operator="erode" radius={8 * scale} />
+			<feGaussianBlur stdDeviation={5 * scale} result="blur" />
 			<feDiffuseLighting
 				in="blur"
-				surfaceScale={1 * scale}
-				diffuseConstant={2}
+				surfaceScale={5 * scale}
+				diffuseConstant={1.5}
 				lighting-color="#ffffff"
 				result="light"
 			>
@@ -128,20 +128,41 @@
 				<use href={`#path-${i}`} fill="white" />
 			</mask>
 		{/each}
+		<radialGradient
+			id="bgGradient"
+			gradientUnits="userSpaceOnUse"
+			cx={0}
+			cy={0}
+			r={Math.hypot(width / 2, height / 2)}
+		>
+			<stop offset="0" stop-color={chroma.oklch(0.75, 0.37, 300).hex()} />
+			<stop offset="1" stop-color={chroma.oklch(0, 0.185, 300).hex()} />
+		</radialGradient>
+		<filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+			<feDropShadow stdDeviation={8} dy={8} />
+		</filter>
 	</defs>
-	<rect x={-width / 2} y={-height / 2} {...{ width, height }} fill="oklch(0% 0% 300)" />
-	{#each petalPaths as { d, fill }, i}
-		<use href={`#path-${i}`} {fill} filter="url(#topLight)" mask={`url(#mask-path-${i})`} />
-	{/each}
-	<g filter="url(#glo)" display="block">
+	<rect x={-width / 2} y={-height / 2} {...{ width, height }} fill="url(#bgGradient)" />
+	<g filter="url(#shadow)">
+		{#each petalPaths as { d, fill }, i}
+			<use
+				href={`#path-${i}`}
+				{fill}
+				stroke={chroma.oklch(0.5, 0.37, 90).hex()}
+				filter="url(#topLight)"
+				mask={`url(#mask-path-${i})`}
+			/>
+		{/each}
+	</g>
+	<g filter="url(#glow)" display="block">
 		{#each lineSegmentIntersections as [lineSegmentIndexPair, point], i}
 			<circle cx={point.x} cy={point.y} r={2 * scale} fill="yellow" />
-			<text display="inline" x={point.x} y={point.y} fill="yellow" font-size={`${1 * scale}em`}
+			<text display="none" x={point.x} y={point.y} fill="yellow" font-size={`${1 * scale}em`}
 				>{i}{lineSegmentIndexPair}</text
 			>
 		{/each}
 		{#each epicycloidPoints as point, i}
-			<circle cx={point.x} cy={point.y} r={1 * scale} fill={chroma.oklch(1, 0.37, 210).hex()} />
+			<circle cx={point.x} cy={point.y} r={1 * scale} fill={chroma.oklch(1, 0.0925, 90).hex()} />
 			<text display="none" x={point.x} y={point.y} fill="yellow" font-size="0.5em">{i}</text>
 		{/each}
 	</g>
