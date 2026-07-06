@@ -3,10 +3,11 @@
 	import { pointToString, type Line, type Point } from '@dopplerreflect/geometry';
 	import { findLineIntersections } from './intersection';
 	import { petalPath, type PathIntersectionIndices } from './petalPath';
-
 	import chroma from 'chroma-js';
-	const width = 1920;
-	const height = 1080;
+
+	const scale = 0.5;
+	const width = 1920 * scale;
+	const height = 1080 * scale;
 
 	const R = (height / 2) * 0.3;
 
@@ -35,14 +36,6 @@
 		epicycloidPoints,
 		n,
 	);
-
-	const epicycloidPath: string =
-		`M${pointToString(epicycloidPoints[0])}` +
-		epicycloidPoints
-			.slice(1, -1)
-			.map((p) => `L${pointToString(p)}`)
-			.join('') +
-		'Z';
 
 	const petalPathsPoints = [
 		[0, 1, 10, 11, 18, 19, 24, 25, 28, 29],
@@ -100,19 +93,19 @@
 <DrSvg {...{ width, height }}>
 	<defs>
 		<filter id="glow">
-			<feMorphology operator="dilate" radius={1} />
-			<feGaussianBlur stdDeviation={4} />
+			<feMorphology operator="dilate" radius={1 * scale} />
+			<feGaussianBlur stdDeviation={4 * scale} />
 			<feMerge>
 				<feMergeNode />
 				<feMergeNode in="SourceGraphic" />
 			</feMerge>
 		</filter>
 		<filter id="topLight" x="-20%" y="-20%" width="140%" height="140%">
-			<feMorphology in="SourceAlpha" operator="erode" radius={3} />
-			<feGaussianBlur stdDeviation={10} result="blur" />
+			<feMorphology in="SourceAlpha" operator="erode" radius={3 * scale} />
+			<feGaussianBlur stdDeviation={10 * scale} result="blur" />
 			<feDiffuseLighting
 				in="blur"
-				surfaceScale={1}
+				surfaceScale={1 * scale}
 				diffuseConstant={2}
 				lighting-color="#ffffff"
 				result="light"
@@ -140,13 +133,15 @@
 	{#each petalPaths as { d, fill }, i}
 		<use href={`#path-${i}`} {fill} filter="url(#topLight)" mask={`url(#mask-path-${i})`} />
 	{/each}
-	<g filter="url(#glow)" display="none">
+	<g filter="url(#glo)" display="block">
 		{#each lineSegmentIntersections as [lineSegmentIndexPair, point], i}
-			<circle cx={point.x} cy={point.y} r={2} fill="yellow" />
-			<text display="none" x={point.x} y={point.y} fill="yellow">{i} {lineSegmentIndexPair}</text>
+			<circle cx={point.x} cy={point.y} r={2 * scale} fill="yellow" />
+			<text display="inline" x={point.x} y={point.y} fill="yellow" font-size={`${1 * scale}em`}
+				>{i}{lineSegmentIndexPair}</text
+			>
 		{/each}
 		{#each epicycloidPoints as point, i}
-			<circle cx={point.x} cy={point.y} r={1} fill={chroma.oklch(1, 0.37, 210).hex()} />
+			<circle cx={point.x} cy={point.y} r={1 * scale} fill={chroma.oklch(1, 0.37, 210).hex()} />
 			<text display="none" x={point.x} y={point.y} fill="yellow" font-size="0.5em">{i}</text>
 		{/each}
 	</g>
