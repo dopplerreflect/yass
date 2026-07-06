@@ -5,7 +5,7 @@
 	import { petalPath, type PathIntersectionIndices } from './petalPath';
 	import chroma from 'chroma-js';
 
-	const scale = 1;
+	const scale = 1.0;
 	const width = 1920 * scale;
 	const height = 1080 * scale;
 
@@ -86,7 +86,10 @@
 		let c = 0.185 + (0.185 / radiusDelta) * thisRadius;
 
 		const fill = chroma.oklch(l, c, 90).hex();
-		return { d, fill };
+
+		const stroke = chroma.oklch(l - 0.5, c - 0.0925, 300).hex();
+
+		return { d, fill, stroke };
 	});
 </script>
 
@@ -144,17 +147,18 @@
 	</defs>
 	<rect x={-width / 2} y={-height / 2} {...{ width, height }} fill="url(#bgGradient)" />
 	<g filter="url(#shadow)">
-		{#each petalPaths as { d, fill }, i}
+		{#each petalPaths as { fill, stroke }, i}
 			<use
 				href={`#path-${i}`}
-				{fill}
-				stroke={chroma.oklch(0.5, 0.37, 90).hex()}
+				{...{ fill, stroke }}
+				stroke-width={8 * scale}
+				stroke-linejoin="round"
 				filter="url(#topLight)"
 				mask={`url(#mask-path-${i})`}
 			/>
 		{/each}
 	</g>
-	<g filter="url(#glow)" display="block">
+	<g filter="url(#glow)" display="none">
 		{#each lineSegmentIntersections as [lineSegmentIndexPair, point], i}
 			<circle cx={point.x} cy={point.y} r={2 * scale} fill="yellow" />
 			<text display="none" x={point.x} y={point.y} fill="yellow" font-size={`${1 * scale}em`}
