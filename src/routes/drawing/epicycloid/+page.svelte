@@ -5,7 +5,7 @@
 	import { petalPath, type PathIntersectionIndices } from './petalPath';
 	import chroma from 'chroma-js';
 
-	const scale = 0.5;
+	const scale = 0.1;
 	const width = 1920 * scale;
 	const height = 1080 * scale;
 
@@ -21,8 +21,8 @@
 	}
 
 	const epicycloidPoint = (angle: number): Point => ({
-		x: Number((R * (k + 1) * Math.cos(angle) - R * Math.cos((k + 1) * angle)).toFixed(1)),
-		y: Number((R * (k + 1) * Math.sin(angle) - R * Math.sin((k + 1) * angle)).toFixed(1)),
+		x: Number((R * (k + 1) * Math.cos(angle) - R * Math.cos((k + 1) * angle)).toFixed(2)),
+		y: Number((R * (k + 1) * Math.sin(angle) - R * Math.sin((k + 1) * angle)).toFixed(2)),
 	});
 
 	const epicycloidPoints: Point[] = angles.map((a) => epicycloidPoint(a));
