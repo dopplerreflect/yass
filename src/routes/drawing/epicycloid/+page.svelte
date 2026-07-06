@@ -15,7 +15,7 @@
 	const k = n / d;
 
 	const angles: number[] = [];
-	for (let x = 0; x <= Math.PI * d * 2; x += 0.13) {
+	for (let x = 0; x <= Math.PI * d * 2; x += 0.082) {
 		angles.push(x);
 	}
 
@@ -44,7 +44,7 @@
 			.join('') +
 		'Z';
 
-	const petalPaths = [
+	const petalPathsPoints = [
 		[0, 1, 10, 11, 18, 19, 24, 25, 28, 29],
 		[0, 1, 9, 29],
 		[28, 29, 26, 25],
@@ -74,28 +74,80 @@
 	].map((a) =>
 		petalPath(a as PathIntersectionIndices, lineSegmentIntersections, epicycloidLineSegments),
 	);
+
+	const innermostRadius = Math.hypot(petalPathsPoints[0][0].x, petalPathsPoints[0][0].y);
+	const outermostRadius = Math.hypot(
+		petalPathsPoints[petalPathsPoints.length - 1][0].x,
+		petalPathsPoints[petalPathsPoints.length - 1][0].y,
+	);
+	const radiusDelta = outermostRadius - innermostRadius;
+
+	const petalPaths = petalPathsPoints.map((pathPoints, i) => {
+		const d = `M${pathPoints.map((p) => pointToString(p)).join(' ')}Z`;
+
+		const thisRadius = outermostRadius - Math.hypot(pathPoints[0].x, pathPoints[0].y);
+
+		let l = 0.0 + (0.35 / radiusDelta) * thisRadius;
+		if (i === 0) l = 0.4;
+
+		let c = 0.185 + (0.185 / radiusDelta) * thisRadius;
+
+		const fill = chroma.oklch(l, c, 300).hex();
+		return { d, fill };
+	});
 </script>
 
 <DrSvg {...{ width, height }}>
+	<defs>
+		<filter id="glow">
+			<feMorphology operator="dilate" radius={1} />
+			<feGaussianBlur stdDeviation={4} />
+			<feMerge>
+				<feMergeNode />
+				<feMergeNode in="SourceGraphic" />
+			</feMerge>
+		</filter>
+		<filter id="topLight" x="-20%" y="-20%" width="140%" height="140%">
+			<feMorphology in="SourceAlpha" operator="erode" radius={3} />
+			<feGaussianBlur stdDeviation={10} result="blur" />
+			<feDiffuseLighting
+				in="blur"
+				surfaceScale={1}
+				diffuseConstant={2}
+				lighting-color="#ffffff"
+				result="light"
+			>
+				<feDistantLight azimuth={-90} elevation={5} />
+			</feDiffuseLighting>
+			<feComposite
+				in="SourceGraphic"
+				in2="light"
+				operator="arithmetic"
+				k1={0}
+				k2={1}
+				k3={0.8}
+				k4={0}
+			/>
+		</filter>
+		{#each petalPaths as { d }, i}
+			<path id={`path-${i}`} {d} />
+			<mask id={`mask-path-${i}`}>
+				<use href={`#path-${i}`} fill="white" />
+			</mask>
+		{/each}
+	</defs>
 	<rect x={-width / 2} y={-height / 2} {...{ width, height }} fill="oklch(0% 0% 300)" />
-	<path d={epicycloidPath} stroke="red" fill="none" />
-	{#each petalPaths as d, i}
-		<path
-			d={`M${d.map((p) => pointToString(p)).join(' ')}Z`}
-			stroke="black"
-			fill={i === 0
-				? chroma.oklch(0.2, 0.37, 150).hex()
-				: chroma.oklch(0.5, 0.37, 210 + (90 / (petalPaths.length + 1)) * i).hex()}
-		/>
+	{#each petalPaths as { d, fill }, i}
+		<use href={`#path-${i}`} {fill} filter="url(#topLight)" mask={`url(#mask-path-${i})`} />
 	{/each}
-	<!--
-	{#each lineSegmentIntersections as [lineSegmentIndexPair, point], i}
-		<circle cx={point.x} cy={point.y} r={2} fill="yellow" />
-		<text x={point.x} y={point.y} fill="yellow">{i} {lineSegmentIndexPair}</text>
-	{/each}
-	{#each epicycloidPoints as point, i}
-		<circle cx={point.x} cy={point.y} r={1} fill="orange" stroke="black" stroke-width="0.25" />
-		<text display="none" x={point.x} y={point.y} fill="yellow" font-size="0.5em">{i}</text>
-	{/each}
-	-->
+	<g filter="url(#glow)" display="none">
+		{#each lineSegmentIntersections as [lineSegmentIndexPair, point], i}
+			<circle cx={point.x} cy={point.y} r={2} fill="yellow" />
+			<text display="none" x={point.x} y={point.y} fill="yellow">{i} {lineSegmentIndexPair}</text>
+		{/each}
+		{#each epicycloidPoints as point, i}
+			<circle cx={point.x} cy={point.y} r={1} fill={chroma.oklch(1, 0.37, 210).hex()} />
+			<text display="none" x={point.x} y={point.y} fill="yellow" font-size="0.5em">{i}</text>
+		{/each}
+	</g>
 </DrSvg>
