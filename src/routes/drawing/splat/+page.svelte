@@ -247,7 +247,8 @@
 			<!--<path d={p0} fill="url(#gradient0)" fill-rule="evenodd" filter="url(#shadow)" />-->
 			<path display="none" d={p0} fill="darkblue" fill-rule="evenodd" />
 		</g>
-		<g id="circles1-c1" display="none">
+		<g id="circles1-c1" display="block">
+			<!--
 			<path
 				display="block"
 				d={p1}
@@ -255,6 +256,8 @@
 				fill-rule="evenodd"
 				filter="url(#shadow)"
 			/>
+			-->
+			<path d={p1} fill="darkblue" fill-rule="evenodd" />
 		</g>
 		<g id="circles" display="none" fill="url(#gradient2)" filter="url(#shadow)">
 			<path d={p2} fill="url(#gradient2)" />
@@ -269,8 +272,7 @@
 	<g id="inner-circles-intersection-indices" display="block">
 		{#each c1 as c, i}
 			<circle r={3 * scale} cx={c.x} cy={c.y} fill="yellow" />
-			<text display="inline" x={c.x} y={c.y} font-size={`${0.75 * scale}em`} fill="yellow">{i}</text
-			>
+			<text display="none" x={c.x} y={c.y} font-size={`${0.75 * scale}em`} fill="yellow">{i}</text>
 		{/each}
 	</g>
 </DrSvg>
