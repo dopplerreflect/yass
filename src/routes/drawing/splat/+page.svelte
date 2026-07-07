@@ -15,7 +15,7 @@
 	const height = 1080 * scale;
 	const r = height / 4;
 	const radii = [...Array(4).keys()].map((i) => r * phi ** i);
-	// radii.splice(1, 0, radii[1] + radii[3] * phi);
+	radii.splice(1, 0, radii[1] + radii[3] * phi);
 	const [r0, r1, r2, r3, r4] = radii;
 
 	function arc(radius: number, flags: string, point: Point, cheat?: number): string {
@@ -37,132 +37,130 @@
 
 	const c0: Point[] = findCircleIntersections(circles0);
 
-	const p0: string | null = r4
-		? [
-				`M${pointToString(c0[50])}`,
-				arc(r0, '0 0 1', c0[42]),
-				arc(r0, '0 0 1', c0[65]),
-				arc(r0, '0 0 1', c0[80]),
-				arc(r0, '0 0 1', c0[91]),
-				arc(r0, '0 0 1', c0[102]),
-				arc(r0, '0 0 1', c0[50]),
-				`Z`,
-				`M${pointToString(c0[62])}`,
-				arc(r1, '0 0 1', c0[53]),
-				arc(r0, '0 0 0', c0[4]),
-				arc(r0, '0 0 0', c0[62]),
-				`Z`,
-				`M${pointToString(c0[44])}`,
-				arc(r1, '0 0 1', c0[72]),
-				arc(r0, '0 0 0', c0[1]),
-				arc(r0, '0 0 0', c0[44]),
-				`Z`,
-				`M${pointToString(c0[66])}`,
-				arc(r1, '0 0 1', c0[85]),
-				arc(r0, '0 0 0', c0[5]),
-				arc(r0, '0 0 0', c0[66]),
-				`Z`,
-				`M${pointToString(c0[81])}`,
-				arc(r1, '0 0 1', c0[96]),
-				arc(r0, '0 0 0', c0[8]),
-				arc(r0, '0 0 0', c0[81]),
-				`Z`,
-				`M${pointToString(c0[92])}`,
-				arc(r1, '0 0 1', c0[105]),
-				arc(r0, '0 0 0', c0[11]),
-				arc(r0, '0 0 0', c0[92]),
-				`Z`,
-				`M${pointToString(c0[103])}`,
-				arc(r1, '0 0 1', c0[52]),
-				arc(r0, '0 0 0', c0[0]),
-				arc(r0, '0 0 0', c0[103]),
-				`Z`,
-				`M${pointToString(c0[64])}`,
-				arc(r1, '0 0 1', c0[17]),
-				arc(r0, '0 0 0', c0[2]),
-				arc(r0, '0 0 1', c0[64]),
-				`Z`,
-				`M${pointToString(c0[55])}`,
-				arc(r1, '0 0 1', c0[3]),
-				arc(r0, '0 0 0', c0[6]),
-				arc(r0, '0 0 1', c0[55]),
-				`Z`,
-				`M${pointToString(c0[74])}`,
-				arc(r1, '0 0 1', c0[7]),
-				arc(r0, '0 0 0', c0[9]),
-				arc(r0, '0 0 1', c0[74]),
-				`Z`,
-				`M${pointToString(c0[87])}`,
-				arc(r1, '0 0 1', c0[10]),
-				arc(r0, '0 0 0', c0[12]),
-				arc(r0, '0 0 1', c0[87]),
-				`Z`,
-				`M${pointToString(c0[98])}`,
-				arc(r1, '0 0 1', c0[13]),
-				arc(r0, '0 0 0', c0[14]),
-				arc(r0, '0 0 1', c0[98]),
-				`Z`,
-				`M${pointToString(c0[107])}`,
-				arc(r1, '0 0 1', c0[15]),
-				arc(r0, '0 0 0', c0[16]),
-				arc(r0, '0 0 1', c0[107]),
-				`Z`,
-				`M${pointToString(c0[20])}`,
-				arc(r1, '0 0 1', c0[41]),
-				arc(r0, '0 0 0', c0[71]),
-				arc(r0, '0 0 0', c0[70]),
-				arc(r0, '0 0 1', c0[63]),
-				arc(r0, '0 0 1', c0[59]),
-				arc(r0, '0 0 0', c0[60]),
-				arc(r0, '0 0 1', c0[20]),
-				`Z`,
-				`M${pointToString(c0[24])}`,
-				arc(r1, '0 0 1', c0[21]),
-				arc(r0, '0 0 0', c0[57]),
-				arc(r0, '0 0 0', c0[58]),
-				arc(r0, '0 0 1', c0[56]),
-				arc(r0, '0 0 1', c0[78]),
-				arc(r0, '0 0 0', c0[79]),
-				arc(r0, '0 0 1', c0[24]),
-				`Z`,
-				`M${pointToString(c0[28])}`,
-				arc(r1, '0 0 1', c0[25]),
-				arc(r0, '0 0 0', c0[76]),
-				arc(r0, '0 0 0', c0[77]),
-				arc(r0, '0 0 1', c0[75]),
-				arc(r0, '0 0 1', c0[47]),
-				arc(r0, '0 0 0', c0[46]),
-				arc(r0, '0 0 1', c0[28]),
-				`Z`,
-				`M${pointToString(c0[32])}`,
-				arc(r1, '0 0 1', c0[29]),
-				arc(r0, '0 0 0', c0[89]),
-				arc(r0, '0 0 0', c0[90]),
-				arc(r0, '0 0 1', c0[88]),
-				arc(r0, '0 0 1', c0[69]),
-				arc(r0, '0 0 0', c0[68]),
-				arc(r0, '0 0 1', c0[32]),
-				`Z`,
-				`M${pointToString(c0[36])}`,
-				arc(r1, '0 0 1', c0[33]),
-				arc(r0, '0 0 0', c0[100]),
-				arc(r0, '0 0 0', c0[101]),
-				arc(r0, '0 0 1', c0[99]),
-				arc(r0, '0 0 1', c0[84]),
-				arc(r0, '0 0 0', c0[83]),
-				arc(r0, '0 0 1', c0[36]),
-				`Z`,
-				`M${pointToString(c0[40])}`,
-				arc(r1, '0 0 1', c0[37]),
-				arc(r0, '0 0 0', c0[49]),
-				arc(r0, '0 0 0', c0[48]),
-				arc(r0, '0 0 1', c0[108]),
-				arc(r0, '0 0 1', c0[95]),
-				arc(r0, '0 0 0', c0[94]),
-				arc(r0, '0 0 1', c0[40]),
-				`Z`,
-			].join('')
-		: null;
+	const p0: string = [
+		`M${pointToString(c0[50])}`,
+		arc(r0, '0 0 1', c0[42]),
+		arc(r0, '0 0 1', c0[65]),
+		arc(r0, '0 0 1', c0[80]),
+		arc(r0, '0 0 1', c0[91]),
+		arc(r0, '0 0 1', c0[102]),
+		arc(r0, '0 0 1', c0[50]),
+		`Z`,
+		`M${pointToString(c0[62])}`,
+		arc(r1, '0 0 1', c0[53]),
+		arc(r0, '0 0 0', c0[4]),
+		arc(r0, '0 0 0', c0[62]),
+		`Z`,
+		`M${pointToString(c0[44])}`,
+		arc(r1, '0 0 1', c0[72]),
+		arc(r0, '0 0 0', c0[1]),
+		arc(r0, '0 0 0', c0[44]),
+		`Z`,
+		`M${pointToString(c0[66])}`,
+		arc(r1, '0 0 1', c0[85]),
+		arc(r0, '0 0 0', c0[5]),
+		arc(r0, '0 0 0', c0[66]),
+		`Z`,
+		`M${pointToString(c0[81])}`,
+		arc(r1, '0 0 1', c0[96]),
+		arc(r0, '0 0 0', c0[8]),
+		arc(r0, '0 0 0', c0[81]),
+		`Z`,
+		`M${pointToString(c0[92])}`,
+		arc(r1, '0 0 1', c0[105]),
+		arc(r0, '0 0 0', c0[11]),
+		arc(r0, '0 0 0', c0[92]),
+		`Z`,
+		`M${pointToString(c0[103])}`,
+		arc(r1, '0 0 1', c0[52]),
+		arc(r0, '0 0 0', c0[0]),
+		arc(r0, '0 0 0', c0[103]),
+		`Z`,
+		`M${pointToString(c0[64])}`,
+		arc(r1, '0 0 1', c0[17]),
+		arc(r0, '0 0 0', c0[2]),
+		arc(r0, '0 0 1', c0[64]),
+		`Z`,
+		`M${pointToString(c0[55])}`,
+		arc(r1, '0 0 1', c0[3]),
+		arc(r0, '0 0 0', c0[6]),
+		arc(r0, '0 0 1', c0[55]),
+		`Z`,
+		`M${pointToString(c0[74])}`,
+		arc(r1, '0 0 1', c0[7]),
+		arc(r0, '0 0 0', c0[9]),
+		arc(r0, '0 0 1', c0[74]),
+		`Z`,
+		`M${pointToString(c0[87])}`,
+		arc(r1, '0 0 1', c0[10]),
+		arc(r0, '0 0 0', c0[12]),
+		arc(r0, '0 0 1', c0[87]),
+		`Z`,
+		`M${pointToString(c0[98])}`,
+		arc(r1, '0 0 1', c0[13]),
+		arc(r0, '0 0 0', c0[14]),
+		arc(r0, '0 0 1', c0[98]),
+		`Z`,
+		`M${pointToString(c0[107])}`,
+		arc(r1, '0 0 1', c0[15]),
+		arc(r0, '0 0 0', c0[16]),
+		arc(r0, '0 0 1', c0[107]),
+		`Z`,
+		`M${pointToString(c0[20])}`,
+		arc(r1, '0 0 1', c0[41]),
+		arc(r0, '0 0 0', c0[71]),
+		arc(r0, '0 0 0', c0[70]),
+		arc(r0, '0 0 1', c0[63]),
+		arc(r0, '0 0 1', c0[59]),
+		arc(r0, '0 0 0', c0[60]),
+		arc(r0, '0 0 1', c0[20]),
+		`Z`,
+		`M${pointToString(c0[24])}`,
+		arc(r1, '0 0 1', c0[21]),
+		arc(r0, '0 0 0', c0[57]),
+		arc(r0, '0 0 0', c0[58]),
+		arc(r0, '0 0 1', c0[56]),
+		arc(r0, '0 0 1', c0[78]),
+		arc(r0, '0 0 0', c0[79]),
+		arc(r0, '0 0 1', c0[24]),
+		`Z`,
+		`M${pointToString(c0[28])}`,
+		arc(r1, '0 0 1', c0[25]),
+		arc(r0, '0 0 0', c0[76]),
+		arc(r0, '0 0 0', c0[77]),
+		arc(r0, '0 0 1', c0[75]),
+		arc(r0, '0 0 1', c0[47]),
+		arc(r0, '0 0 0', c0[46]),
+		arc(r0, '0 0 1', c0[28]),
+		`Z`,
+		`M${pointToString(c0[32])}`,
+		arc(r1, '0 0 1', c0[29]),
+		arc(r0, '0 0 0', c0[89]),
+		arc(r0, '0 0 0', c0[90]),
+		arc(r0, '0 0 1', c0[88]),
+		arc(r0, '0 0 1', c0[69]),
+		arc(r0, '0 0 0', c0[68]),
+		arc(r0, '0 0 1', c0[32]),
+		`Z`,
+		`M${pointToString(c0[36])}`,
+		arc(r1, '0 0 1', c0[33]),
+		arc(r0, '0 0 0', c0[100]),
+		arc(r0, '0 0 0', c0[101]),
+		arc(r0, '0 0 1', c0[99]),
+		arc(r0, '0 0 1', c0[84]),
+		arc(r0, '0 0 0', c0[83]),
+		arc(r0, '0 0 1', c0[36]),
+		`Z`,
+		`M${pointToString(c0[40])}`,
+		arc(r1, '0 0 1', c0[37]),
+		arc(r0, '0 0 0', c0[49]),
+		arc(r0, '0 0 0', c0[48]),
+		arc(r0, '0 0 1', c0[108]),
+		arc(r0, '0 0 1', c0[95]),
+		arc(r0, '0 0 0', c0[94]),
+		arc(r0, '0 0 1', c0[40]),
+		`Z`,
+	].join('');
 
 	const circles1: Circle[] = [
 		...radii.slice(2, 4).map((r) => ({ x: 0, y: 0, r })),
@@ -244,31 +242,26 @@
 	{#each circles as c}
 		<circle cx={c.x} cy={c.y} r={c.r} stroke="#ffffff" stroke-width={1 * scale} fill="none" />
 	{/each}
+	<g id="paths" display="block">
+		<g id="circles0-c0" display="block">
+			<!--<path d={p0} fill="url(#gradient0)" fill-rule="evenodd" filter="url(#shadow)" />-->
+			<path d={p0} fill="darkblue" fill-rule="evenodd" />
+		</g>
+		<g id="circles1-c1" display="none">
+			<path
+				display="block"
+				d={p1}
+				fill="url(#gradient1)"
+				fill-rule="evenodd"
+				filter="url(#shadow)"
+			/>
+		</g>
+		<g id="circles" display="none" fill="url(#gradient2)" filter="url(#shadow)">
+			<path d={p2} fill="url(#gradient2)" />
+		</g>
+	</g>
 	{#each c0 as c, i}
 		<circle r={3 * scale} cx={c.x} cy={c.y} fill="yellow" />
-		<text x={c.x} y={c.y} font-size={`${0.75 * scale}em`} fill="yellow">{i}</text>
+		<text display="none" x={c.x} y={c.y} font-size={`${0.75 * scale}em`} fill="yellow">{i}</text>
 	{/each}
-	<g id="paths" display="none">
-		{#if p0}
-			<g id="circles0-c0" display="block">
-				<path d={p0} fill="url(#gradient0)" fill-rule="evenodd" filter="url(#shadow)" />
-			</g>
-		{/if}
-		{#if p1}
-			<g id="circles1-c1" display="block">
-				<path
-					display="block"
-					d={p1}
-					fill="url(#gradient1)"
-					fill-rule="evenodd"
-					filter="url(#shadow)"
-				/>
-			</g>
-		{/if}
-		{#if p2}
-			<g id="circles" fill="url(#gradient2)" filter="url(#shadow)">
-				<path d={p2} fill="url(#gradient2)" />
-			</g>
-		{/if}
-	</g>
 </DrSvg>
