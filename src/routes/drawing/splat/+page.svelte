@@ -244,6 +244,10 @@
 	{#each circles as c}
 		<circle cx={c.x} cy={c.y} r={c.r} stroke="#ffffff" stroke-width={1 * scale} fill="none" />
 	{/each}
+	{#each c0 as c, i}
+		<circle r={3 * scale} cx={c.x} cy={c.y} fill="yellow" />
+		<text x={c.x} y={c.y} font-size={`${0.75 * scale}em`} fill="yellow">{i}</text>
+	{/each}
 	<g id="paths" display="none">
 		{#if p0}
 			<g id="circles0-c0" display="block">
