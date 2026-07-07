@@ -236,19 +236,28 @@
 		<filter id="shadow">
 			<feDropShadow stdDeviation={20 * scale} dy={10 * scale} />
 		</filter>
+		<filter id="glow">
+			<feMorphology operator="dilate" radius={1 * scale} />
+			<feGaussianBlur stdDeviation={3 * scale} />
+			<feMerge>
+				<feMergeNode />
+				<feMergeNode in="SourceGraphic" />
+			</feMerge>
+		</filter>
 	</defs>
 	<path d={`M${-width / 2} ${-height / 2}H${width}V${height}H${-width}Z`} fill="black" />
 
-	{#each circles as c}
-		<circle cx={c.x} cy={c.y} r={c.r} stroke="#ffffff" stroke-width={1 * scale} fill="none" />
-	{/each}
+	<g id="circles" filter="url(#glow)">
+		{#each circles as c}
+			<circle cx={c.x} cy={c.y} r={c.r} stroke="#400080" stroke-width={1 * scale} fill="none" />
+		{/each}
+	</g>
 	<g id="paths" display="block">
 		<g id="circles0-c0" display="block">
-			<!--<path d={p0} fill="url(#gradient0)" fill-rule="evenodd" filter="url(#shadow)" />-->
-			<path display="block" d={p0} fill="#444444" fill-rule="evenodd" />
+			<path d={p0} fill="url(#gradient0)" fill-rule="evenodd" filter="url(#shadow)" />
+			<path display="none" d={p0} fill="#444444" fill-rule="evenodd" />
 		</g>
 		<g id="circles1-c1" display="block">
-			<!--
 			<path
 				display="block"
 				d={p1}
@@ -256,11 +265,10 @@
 				fill-rule="evenodd"
 				filter="url(#shadow)"
 			/>
-			-->
-			<path display="block" d={p1} fill="#aaaaaa" fill-rule="evenodd" />
+			<path display="none" d={p1} fill="#aaaaaa" fill-rule="evenodd" />
 		</g>
-		<g id="circles" display="block" fill="url(#gradient)" filter="url(#shado)">
-			<path d={p2} fill="#ffffff" />
+		<g id="innercircles" display="block" fill="url(#gradient2)" filter="url(#shadow)">
+			<path d={p2} />
 		</g>
 	</g>
 	<g id="outer-circles-intersection-indices" display="none">
