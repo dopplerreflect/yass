@@ -257,10 +257,10 @@
 				filter="url(#shadow)"
 			/>
 			-->
-			<path d={p1} fill="darkblue" fill-rule="evenodd" />
+			<path display="none" d={p1} fill="darkblue" fill-rule="evenodd" />
 		</g>
-		<g id="circles" display="none" fill="url(#gradient2)" filter="url(#shadow)">
-			<path d={p2} fill="url(#gradient2)" />
+		<g id="circles" display="block" fill="url(#gradient2)" filter="url(#shadow)">
+			<path d={p2} fill="darkblue" />
 		</g>
 	</g>
 	<g id="outer-circles-intersection-indices" display="none">
@@ -269,7 +269,7 @@
 			<text display="none" x={c.x} y={c.y} font-size={`${0.75 * scale}em`} fill="yellow">{i}</text>
 		{/each}
 	</g>
-	<g id="inner-circles-intersection-indices" display="block">
+	<g id="inner-circles-intersection-indices" display="none">
 		{#each c1 as c, i}
 			<circle r={3 * scale} cx={c.x} cy={c.y} fill="yellow" />
 			<text display="none" x={c.x} y={c.y} font-size={`${0.75 * scale}em`} fill="yellow">{i}</text>
