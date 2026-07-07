@@ -245,7 +245,7 @@
 	<g id="paths" display="block">
 		<g id="circles0-c0" display="block">
 			<!--<path d={p0} fill="url(#gradient0)" fill-rule="evenodd" filter="url(#shadow)" />-->
-			<path d={p0} fill="darkblue" fill-rule="evenodd" />
+			<path display="none" d={p0} fill="darkblue" fill-rule="evenodd" />
 		</g>
 		<g id="circles1-c1" display="none">
 			<path
@@ -260,8 +260,17 @@
 			<path d={p2} fill="url(#gradient2)" />
 		</g>
 	</g>
-	{#each c0 as c, i}
-		<circle r={3 * scale} cx={c.x} cy={c.y} fill="yellow" />
-		<text display="none" x={c.x} y={c.y} font-size={`${0.75 * scale}em`} fill="yellow">{i}</text>
-	{/each}
+	<g id="outer-circles-intersection-indices" display="none">
+		{#each c0 as c, i}
+			<circle r={3 * scale} cx={c.x} cy={c.y} fill="yellow" />
+			<text display="none" x={c.x} y={c.y} font-size={`${0.75 * scale}em`} fill="yellow">{i}</text>
+		{/each}
+	</g>
+	<g id="inner-circles-intersection-indices" display="block">
+		{#each c1 as c, i}
+			<circle r={3 * scale} cx={c.x} cy={c.y} fill="yellow" />
+			<text display="inline" x={c.x} y={c.y} font-size={`${0.75 * scale}em`} fill="yellow">{i}</text
+			>
+		{/each}
+	</g>
 </DrSvg>
