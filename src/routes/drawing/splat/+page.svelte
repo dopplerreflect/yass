@@ -9,6 +9,7 @@
 		type Circle,
 		type Point,
 	} from '@dopplerreflect/geometry';
+	import chroma from 'chroma-js';
 
 	const scale = 1;
 	const width = 1080 * scale;
@@ -221,31 +222,43 @@
 
 <DrSvg {...{ width, height }}>
 	<defs>
+		<radialGradient
+			id="bgGradient"
+			gradientUnits="userSpaceOnUse"
+			cx={0}
+			cy={0}
+			r={Math.hypot(width / 2, height / 2)}
+		>
+			<stop offset="0" stop-color={chroma.oklch(0.25, 0.0925, 300).hex()} />
+			<stop offset="1" stop-color={chroma.oklch(0.0, 0.0925, 300).hex()} />
+		</radialGradient>
 		<radialGradient id="gradient0">
-			<stop offset="0" stop-color="darkblue" />
-			<stop offset="1" stop-color="#ffffff00" />
+			<stop offset="0" stop-color={chroma.oklch(0.0, 0.37, 210).hex()} />
+			<stop offset="1" stop-color={chroma.oklch(0.5, 0.37, 210, 0.0).hex()} />
 		</radialGradient>
 		<radialGradient id="gradient1">
-			<stop offset="0" stop-color="white" />
-			<stop offset="1" stop-color="#ffffff00" />
+			<stop offset="0" stop-color={chroma.oklch(1, 0.17, 150, 0.5).hex()} />
+			<stop offset="1" stop-color={chroma.oklch(0, 0.37, 300, 0.0).hex()} />
 		</radialGradient>
 		<radialGradient id="gradient2">
-			<stop offset="0" stop-color="darkred" />
-			<stop offset="1" stop-color="#ffffff00" />
+			<stop offset="0" stop-color={chroma.oklch(1, 0.37, 90).hex()} />
+			<stop offset="1" stop-color={chroma.oklch(0.7, 0.37, 90, 0.15).hex()} />
 		</radialGradient>
 		<filter id="shadow">
 			<feDropShadow stdDeviation={20 * scale} dy={10 * scale} />
 		</filter>
 		<filter id="glow">
-			<feMorphology operator="dilate" radius={1 * scale} />
-			<feGaussianBlur stdDeviation={3 * scale} />
+			<feDropShadow stdDeviation={8 * scale} dy={8 * scale} result="shadow" />
+			<feMorphology in="SourceGraphic" operator="dilate" radius={3 * scale} />
+			<feGaussianBlur stdDeviation={6 * scale} result="glow" />
 			<feMerge>
-				<feMergeNode />
+				<feMergeNode in="shadow" />
+				<feMergeNode in="glow" />
 				<feMergeNode in="SourceGraphic" />
 			</feMerge>
 		</filter>
 	</defs>
-	<path d={`M${-width / 2} ${-height / 2}H${width}V${height}H${-width}Z`} fill="black" />
+	<path d={`M${-width / 2} ${-height / 2}H${width}V${height}H${-width}Z`} fill="url(#bgGradient)" />
 
 	<g id="circles" filter="url(#glow)">
 		{#each circles as c}
@@ -253,11 +266,11 @@
 		{/each}
 	</g>
 	<g id="paths" display="block">
-		<g id="circles0-c0" display="block">
+		<g display="block" id="circles0-c0">
 			<path d={p0} fill="url(#gradient0)" fill-rule="evenodd" filter="url(#shadow)" />
 			<path display="none" d={p0} fill="#444444" fill-rule="evenodd" />
 		</g>
-		<g id="circles1-c1" display="block">
+		<g display="block" id="circles1-c1" filter="url(#glow)">
 			<path
 				display="block"
 				d={p1}
@@ -267,11 +280,11 @@
 			/>
 			<path display="none" d={p1} fill="#aaaaaa" fill-rule="evenodd" />
 		</g>
-		<g id="innercircles" display="block" fill="url(#gradient2)" filter="url(#shadow)">
+		<g display="block" id="innercircles" fill="url(#gradient2)" filter="url(#glow)">
 			<path d={p2} />
 		</g>
 	</g>
-	<g id="outer-circles-intersection-indices" display="none">
+	<g display="none" id="outer-circles-intersection-indices">
 		{#each c0 as c, i}
 			<circle r={3 * scale} cx={c.x} cy={c.y} fill="yellow" />
 			<text display="none" x={c.x} y={c.y} font-size={`${0.75 * scale}em`} fill="yellow">{i}</text>
