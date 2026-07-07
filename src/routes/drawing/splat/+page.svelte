@@ -245,7 +245,7 @@
 	<g id="paths" display="block">
 		<g id="circles0-c0" display="block">
 			<!--<path d={p0} fill="url(#gradient0)" fill-rule="evenodd" filter="url(#shadow)" />-->
-			<path display="none" d={p0} fill="darkblue" fill-rule="evenodd" />
+			<path display="block" d={p0} fill="#444444" fill-rule="evenodd" />
 		</g>
 		<g id="circles1-c1" display="block">
 			<!--
@@ -257,10 +257,10 @@
 				filter="url(#shadow)"
 			/>
 			-->
-			<path display="none" d={p1} fill="darkblue" fill-rule="evenodd" />
+			<path display="block" d={p1} fill="#aaaaaa" fill-rule="evenodd" />
 		</g>
-		<g id="circles" display="block" fill="url(#gradient2)" filter="url(#shadow)">
-			<path d={p2} fill="darkblue" />
+		<g id="circles" display="block" fill="url(#gradient)" filter="url(#shado)">
+			<path d={p2} fill="#ffffff" />
 		</g>
 	</g>
 	<g id="outer-circles-intersection-indices" display="none">
