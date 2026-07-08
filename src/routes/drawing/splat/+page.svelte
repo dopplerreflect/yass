@@ -9,10 +9,11 @@
 		type Circle,
 		type Point,
 	} from '@dopplerreflect/geometry';
+	import AlphaGradientTrianglePattern from '$lib/components/AlphaGradientTrianglePattern.svelte';
 	import chroma from 'chroma-js';
 
 	const scale = 1;
-	const width = 1920 * scale;
+	const width = 1080 * scale;
 	const height = 1080 * scale;
 	const r = height / 4;
 	const radii = [...Array(4).keys()].map((i) => r * phi ** i);
@@ -222,6 +223,28 @@
 
 <DrSvg {...{ width, height }}>
 	<defs>
+		<AlphaGradientTrianglePattern id="agtp" size={radii[0] / 3} />
+		<filter id="lighting">
+			<feDiffuseLighting
+				in="SourceAlpha"
+				result="light"
+				diffuseConstant="1"
+				surfaceScale="4"
+				lighting-color={chroma.oklch(0.05, 0.37, 240).hex()}
+			>
+				<feDistantLight azimuth="-120" elevation="15" />
+			</feDiffuseLighting>
+			<feComposite
+				in="SourceGraphic"
+				in2="light"
+				operator="arithmetic"
+				k1={0.95}
+				k2={0.1}
+				k3={1}
+				k4={0}
+			/>
+			<feGaussianBlur stdDeviation="2" />
+		</filter>
 		<radialGradient
 			id="bgGradient"
 			gradientUnits="userSpaceOnUse"
@@ -235,7 +258,7 @@
 		<radialGradient id="gradient0">
 			<stop offset="0%" stop-color="white" />
 			<stop offset={`${100 * phi ** 3}%`} stop-color={chroma.oklch(1, 0.37, 90).hex()} />
-			<stop offset="100%" stop-color={chroma.oklch(0, 0.185, 300, 0.5).hex()} />
+			<stop offset="100%" stop-color={chroma.oklch(0, 0.37, 90, 0.05).hex()} />
 		</radialGradient>
 		<radialGradient id="gradient1">
 			<stop offset="0" stop-color={chroma.oklch(1, 0.17, 300, 1.0).hex()} />
@@ -252,21 +275,38 @@
 		<filter id="glow">
 			<feMorphology in="SourceGraphic" operator="dilate" radius={2 * scale} />
 			<feGaussianBlur stdDeviation={8 * scale} result="glow" />
+			<feComposite
+				in="SourceGraphic"
+				in2="glow"
+				operator="arithmetic"
+				k1={0}
+				k2={0.25}
+				k3={1}
+				k4={0}
+			/>
+			<!--
 			<feMerge>
 				<feMergeNode />
 				<feMergeNode in="SourceGraphic" />
 			</feMerge>
+			-->
 		</filter>
 	</defs>
-	<path d={`M${-width / 2} ${-height / 2}H${width}V${height}H${-width}Z`} fill="url(#bgGradient)" />
+	<path d={`M${-width / 2} ${-height / 2}H${width}V${height}H${-width}Z`} fill="#000000" />
+	<path
+		d={`M${-width / 2} ${-height / 2}H${width}V${height}H${-width}Z`}
+		fill="url(#agtp)"
+		filter="url(#lighting)"
+	/>
 
-	<g id="circles" filter="url(#glow)">
+	<g id="circles" filter="url(#glo)">
 		{#each circles as c}
 			<circle
 				cx={c.x}
 				cy={c.y}
 				r={c.r}
-				stroke={chroma.oklch(0.5, 0.37, 300).hex()}
+				stroke={chroma.oklch(1.0, 0.0925, 90, 0.95).hex()}
+				stroke-dasharray={`${1 * scale} ${7 * scale}`}
 				stroke-width={1 * scale}
 				fill="none"
 			/>
@@ -275,7 +315,7 @@
 	<g id="paths" display="block">
 		<g display="block" id="circles0-c0">
 			<path d={p0} fill="url(#gradient0)" fill-rule="evenodd" filter="url(#shadow)" />
-			<path display="none" d={p0} fill="#444444" fill-rule="evenodd" />
+			<path d={p0} fill="none" stroke={chroma.oklch(1, 0.185, 90).hex()} filter="url(#glow)" />
 		</g>
 		<g display="block" id="circles1-c1">
 			<path
@@ -285,10 +325,17 @@
 				fill-rule="evenodd"
 				filter="url(#shadow)"
 			/>
-			<path display="none" d={p1} fill="#aaaaaa" fill-rule="evenodd" />
 		</g>
+		<path
+			display="block"
+			d={p1}
+			fill="none"
+			stroke={chroma.oklch(0.25, 0.37, 300).hex()}
+			filter="url(#glow)"
+		/>
 		<g display="block" id="innercircles" fill="url(#gradient2)">
 			<path d={p2} filter="url(#shadow)" />
+			<path d={p2} fill="none" stroke={chroma.oklch(1, 0.37, 90).hex()} filter="url(#glow)" />
 		</g>
 	</g>
 	<g display="none" id="outer-circles-intersection-indices">
