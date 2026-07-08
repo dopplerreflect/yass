@@ -12,7 +12,7 @@
 	import chroma from 'chroma-js';
 
 	const scale = 1;
-	const width = 1080 * scale;
+	const width = 1920 * scale;
 	const height = 1080 * scale;
 	const r = height / 4;
 	const radii = [...Array(4).keys()].map((i) => r * phi ** i);
@@ -229,31 +229,31 @@
 			cy={0}
 			r={Math.hypot(width / 2, height / 2)}
 		>
-			<stop offset="0" stop-color={chroma.oklch(0.25, 0.0925, 300).hex()} />
-			<stop offset="1" stop-color={chroma.oklch(0.0, 0.0925, 300).hex()} />
+			<stop offset="0" stop-color={chroma.oklch(1.0, 0.37, 0).hex()} />
+			<stop offset="1" stop-color={chroma.oklch(0.1, 0.0925, 90).hex()} />
 		</radialGradient>
 		<radialGradient id="gradient0">
-			<stop offset="0" stop-color={chroma.oklch(0.0, 0.37, 210).hex()} />
-			<stop offset="1" stop-color={chroma.oklch(0.5, 0.37, 210, 0.0).hex()} />
+			<stop offset="0%" stop-color="white" />
+			<stop offset={`${100 * phi ** 3}%`} stop-color={chroma.oklch(1, 0.37, 90).hex()} />
+			<stop offset="100%" stop-color={chroma.oklch(0, 0.185, 300, 0.5).hex()} />
 		</radialGradient>
 		<radialGradient id="gradient1">
-			<stop offset="0" stop-color={chroma.oklch(1, 0.17, 150, 0.5).hex()} />
-			<stop offset="1" stop-color={chroma.oklch(0, 0.37, 300, 0.0).hex()} />
+			<stop offset="0" stop-color={chroma.oklch(1, 0.17, 300, 1.0).hex()} />
+			<stop offset="1" stop-color={chroma.oklch(0, 0.37, 300, 0.25).hex()} />
 		</radialGradient>
 		<radialGradient id="gradient2">
-			<stop offset="0" stop-color={chroma.oklch(1, 0.37, 90).hex()} />
-			<stop offset="1" stop-color={chroma.oklch(0.7, 0.37, 90, 0.15).hex()} />
+			<stop offset="0%" stop-color="white" />
+			<stop offset={`${100 * phi ** 2}%`} stop-color={chroma.oklch(1, 0.37, 90).hex()} />
+			<stop offset="1" stop-color={chroma.oklch(0.7, 0.37, 90, 0.5).hex()} />
 		</radialGradient>
 		<filter id="shadow">
-			<feDropShadow stdDeviation={20 * scale} dy={10 * scale} />
+			<feDropShadow stdDeviation={8 * scale} dy={5 * scale} />
 		</filter>
 		<filter id="glow">
-			<feDropShadow stdDeviation={8 * scale} dy={8 * scale} result="shadow" />
-			<feMorphology in="SourceGraphic" operator="dilate" radius={3 * scale} />
-			<feGaussianBlur stdDeviation={6 * scale} result="glow" />
+			<feMorphology in="SourceGraphic" operator="dilate" radius={2 * scale} />
+			<feGaussianBlur stdDeviation={8 * scale} result="glow" />
 			<feMerge>
-				<feMergeNode in="shadow" />
-				<feMergeNode in="glow" />
+				<feMergeNode />
 				<feMergeNode in="SourceGraphic" />
 			</feMerge>
 		</filter>
@@ -262,7 +262,14 @@
 
 	<g id="circles" filter="url(#glow)">
 		{#each circles as c}
-			<circle cx={c.x} cy={c.y} r={c.r} stroke="#400080" stroke-width={1 * scale} fill="none" />
+			<circle
+				cx={c.x}
+				cy={c.y}
+				r={c.r}
+				stroke={chroma.oklch(0.5, 0.37, 300).hex()}
+				stroke-width={1 * scale}
+				fill="none"
+			/>
 		{/each}
 	</g>
 	<g id="paths" display="block">
@@ -270,7 +277,7 @@
 			<path d={p0} fill="url(#gradient0)" fill-rule="evenodd" filter="url(#shadow)" />
 			<path display="none" d={p0} fill="#444444" fill-rule="evenodd" />
 		</g>
-		<g display="block" id="circles1-c1" filter="url(#glow)">
+		<g display="block" id="circles1-c1">
 			<path
 				display="block"
 				d={p1}
@@ -280,8 +287,8 @@
 			/>
 			<path display="none" d={p1} fill="#aaaaaa" fill-rule="evenodd" />
 		</g>
-		<g display="block" id="innercircles" fill="url(#gradient2)" filter="url(#glow)">
-			<path d={p2} />
+		<g display="block" id="innercircles" fill="url(#gradient2)">
+			<path d={p2} filter="url(#shadow)" />
 		</g>
 	</g>
 	<g display="none" id="outer-circles-intersection-indices">
