@@ -1,3 +1,5 @@
+<svelte:options namespace="svg" />
+
 <script lang="ts">
 	import {
 		anglesArray,
@@ -15,6 +17,7 @@
 		id: string;
 		theme?: GoldenHexCirclePatternTheme;
 		hexRadius?: number;
+		scale?: number;
 	};
 
 	const defaultTheme: GoldenHexCirclePatternTheme = {
@@ -27,7 +30,7 @@
 		g2: 'goldenrod',
 	};
 
-	const { id, theme = defaultTheme, hexRadius = 50 }: Props = $props();
+	const { id, theme = defaultTheme, hexRadius = 50, scale = 1 }: Props = $props();
 	const hexWidth = $derived(hexRadius * Math.sqrt(3));
 
 	const angles = anglesArray(6, 0);
@@ -83,23 +86,29 @@
 		p('3.0-4.2:1'),
 		ar21,
 		p('4.2-5.0:1'),
-		`ZM${p('4.2-5.1:0')}`,
-		ar01,
+		`ZM${p('c.0-4.2:0')}`,
+		ar21,
 		p('4.2-t.0:1'),
 		ar01,
 		p('c.0-t.0:0'),
-		`ZM${p('4.1-5.2:0')}`,
+		ar01,
+		p(`c.0-4.2:0`),
+		`ZM${p('c.0-4.1:0')}`,
 		ar11,
 		p('4.1-t.0:1'),
 		ar01,
 		p('5.1-t.0:1'),
 		ar11,
-		p('4.2-5.1:0'),
+		p('c.0-5.1:0'),
+		ar11,
+		p('c.0-4.1:0'),
 		`ZM${p('c.0-t.0:1')}`,
 		ar01,
 		p('5.2-t.0:1'),
 		ar21,
-		p('4.1-5.2:0'),
+		p('c.0-5.2:0'),
+		ar01,
+		p('c.0-t.0:1'),
 		`ZM${p('4.1-5.1:1')}`,
 		ar11,
 		p('c.1-5.1:0'),
@@ -168,83 +177,129 @@
 	].join('');
 </script>
 
-<pattern
-	{id}
-	width={hexWidth}
-	height={hexRadius * 3}
-	viewBox={`${-hexWidth / 2} ${-hexRadius * 1.5} ${hexWidth} ${hexRadius * 3}`}
-	patternUnits="userSpaceOnUse"
-	patternTransform={`translate(${-hexWidth / 2} ${-hexRadius * 1.5})`}
->
-	<use href="#g0" />
-	<use href="#g1" />
-	<use href="#g2" />
-	<g id="strokedCircles" filter="url(#shadow)">
-		{#each circles as c}
-			<circle
-				r={c.r}
-				cx={c.x}
-				cy={c.y}
-				stroke={typeof theme.circle === 'string' ? theme.circle : theme.circle[c.ri]}
-				stroke-width={theme.circleStrokeWidth}
-				fill="none"
-			/>
-		{/each}
-	</g>
-	<g id="hexLines" filter="url(#shadow)">
-		<polygon
-			points={polygonPointString(polygon(6, hexRadius))}
-			stroke={theme.hex}
-			stroke-width={theme.hexStrokeWidth}
-			fill="none"
-		/>
-		<path
-			d={`M0 ${-hexRadius * 2}v${hexRadius}M0 ${hexRadius}v${hexRadius}`}
-			stroke={theme.hex}
-			stroke-width={theme.hexStrokeWidth}
-		/>
-	</g>
-
-	<defs>
-		<path id="p0" d={p0} fill={theme.g0} stroke="none" />
-		<g id="g0">
-			{#each angles as a}
-				<use href="#p0" transform={`rotate(${a})`} />
-			{/each}
+<defs>
+	<pattern
+		{id}
+		width={hexWidth}
+		height={hexRadius * 3}
+		viewBox={`${-hexWidth / 2} ${-hexRadius * 1.5} ${hexWidth} ${hexRadius * 3}`}
+		patternUnits="userSpaceOnUse"
+		patternTransform={`translate(${-hexWidth / 2} ${-hexRadius * 1.5})`}
+	>
+		<g id={`${id}-paths`}>
+			<use href={`#${id}-g0`} />
+			<use href={`#${id}-g1`} />
+			<use href={`#${id}-g2`} />
+			<g display="none" id="strokedCircles" filter="url(#shado)">
+				{#each circles as c}
+					<circle
+						r={c.r}
+						cx={c.x}
+						cy={c.y}
+						stroke={typeof theme.circle === 'string' ? theme.circle : theme.circle[c.ri]}
+						stroke-width={theme.circleStrokeWidth * scale}
+						fill="none"
+					/>
+				{/each}
+			</g>
+			<g display="none" id="hexLines" filter="url(#shadow)">
+				<polygon
+					points={polygonPointString(polygon(6, hexRadius))}
+					stroke={theme.hex}
+					stroke-width={theme.hexStrokeWidth * scale}
+					fill="none"
+				/>
+				<path
+					d={`M0 ${-hexRadius * 2}v${hexRadius}M0 ${hexRadius}v${hexRadius}`}
+					stroke={theme.hex}
+					stroke-width={theme.hexStrokeWidth * scale}
+				/>
+			</g>
+			<g display="none">
+				{#each c as [s, p], i}
+					<circle cx={p.x} cy={p.y} r={1 * scale} fill="blue" />
+					<text x={p.x} y={p.y} fill="orange" font-size={`${0.15 * scale}em`} font-weight="bold"
+						>{s}</text
+					>
+				{/each}
+			</g>
 		</g>
-		<path id="p1" d={p1} fill={theme.g1} stroke="none" fill-rule="evenodd" />
-		<g id="g1">
-			{#each angles as a}
-				<use href="#p1" transform={`rotate(${a})`} />
-			{/each}
-		</g>
-		<path id="p2" d={p2} fill={theme.g2} stroke="none" />
-		<g id="g2">
-			{#each angles as a}
-				<use href="#p2" transform={`rotate(${a})`} />
-			{/each}
-		</g>
-		<filter id="shadow">
-			<feGaussianBlur result="blur" in="SourceAlpha" stdDeviation={theme.hexStrokeWidth * 1} />
-			<feOffset dx={0} dy={theme.hexStrokeWidth * 3} result="blackOffset" />
-			<feColorMatrix
-				values="1 0 0 0.0  0
+		<defs>
+			<filter id={`${id}-bumpmap`}>
+				<feMorphology in="SourceGraphic" operator="erode" radius={2 * scale} />
+				<feGaussianBlur stdDeviation={1 * scale} result="blur" />
+			</filter>
+			<path id={`${id}-p0`} d={p0} />
+			<mask id={`${id}-mask0`}>
+				<use href={`#${id}-p0`} fill="white" />
+			</mask>
+			<g id={`${id}-g0`}>
+				{#each angles as a}
+					<use
+						href={`#${id}-p0`}
+						fill={theme.g0}
+						filter={`url(#${id}-bumpmap)`}
+						mask={`url(#${id}-mask0)`}
+						transform={`rotate(${a})`}
+					/>
+				{/each}
+			</g>
+			<path id={`${id}-p1`} d={p1} fill-rule="evenodd" />
+			<mask id={`${id}-maskp1`}>
+				<use href={`#${id}-p1`} fill="white" />
+			</mask>
+			<g id={`${id}-g1`}>
+				{#each angles as a}
+					<use
+						href={`#${id}-p1`}
+						fill={theme.g1}
+						filter={`url(#${id}-bumpmap)`}
+						mask={`url(#${id}-maskp1)`}
+						transform={`rotate(${a})`}
+					/>
+				{/each}
+			</g>
+			<path id={`${id}-p2`} d={p2} />
+			<mask id={`${id}-maskp2`}>
+				<use href={`#${id}-p2`} fill="white" />
+			</mask>
+			<g id={`${id}-g2`}>
+				{#each angles as a}
+					<use
+						href={`#${id}-p2`}
+						fill={theme.g2}
+						filter={`url(#${id}-bumpmap)`}
+						mask={`url(#${id}-maskp2)`}
+						transform={`rotate(${a})`}
+					/>
+				{/each}
+			</g>
+			<filter id="shadow">
+				<feGaussianBlur
+					result="blur"
+					in="SourceAlpha"
+					stdDeviation={theme.hexStrokeWidth * 1 * scale}
+				/>
+				<feOffset dx={0} dy={theme.hexStrokeWidth * 3 * scale} result="blackOffset" />
+				<feColorMatrix
+					values="1 0 0 0.0  0
 								0 1 0 0.0  0
 								0 0 1 0.0  0
 								0 0 0 0.3  0"
-			/>
-			<feMerge>
-				<feMergeNode />
-				<feMergeNode in="SourceGraphic" />
-			</feMerge>
-		</filter>
-		<filter id="shadow2">
-			<feGaussianBlur in="SourceAlpha" stdDeviation={theme.hexStrokeWidth / 2} />
-			<feOffset dx={0} dy={theme.hexStrokeWidth * 1} />
-			<feMerge>
-				<feMergeNode />
-				<feMergeNode in="SourceGraphic" />
-			</feMerge>
-		</filter>
-	</defs>
-</pattern>
+				/>
+				<feMerge>
+					<feMergeNode />
+					<feMergeNode in="SourceGraphic" />
+				</feMerge>
+			</filter>
+			<filter id="shadow2">
+				<feGaussianBlur in="SourceAlpha" stdDeviation={(theme.hexStrokeWidth / 2) * scale} />
+				<feOffset dx={0} dy={theme.hexStrokeWidth * 1 * scale} />
+				<feMerge>
+					<feMergeNode />
+					<feMergeNode in="SourceGraphic" />
+				</feMerge>
+			</filter>
+		</defs>
+	</pattern>
+</defs>
