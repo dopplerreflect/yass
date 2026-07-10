@@ -7,7 +7,7 @@
 	const height = 1080 * scale;
 	// const width = (height / Math.sqrt(3)) * 2;
 	const hexRadius = height / 6;
-	const theme = themes.e;
+	const theme = themes.d;
 </script>
 
 <DrSvg {...{ width, height }}>
@@ -17,11 +17,11 @@
 			<feDiffuseLighting
 				in="SourceGraphic"
 				surfaceScale={2 * scale}
-				diffuseConstant={1.5 * scale}
-				lighting-color={theme.g1}
+				diffuseConstant={theme.diffuseConstant * scale}
+				lighting-color={theme.lighting}
 				result="light"
 			>
-				<feDistantLight azimuth="-90" elevation="10" />
+				<feDistantLight azimuth="-90" elevation="5" />
 			</feDiffuseLighting>
 			<feComposite
 				in="SourceGraphic"
