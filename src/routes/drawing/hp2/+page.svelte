@@ -18,7 +18,7 @@
 				in="SourceGraphic"
 				surfaceScale={2 * scale}
 				diffuseConstant={1.5 * scale}
-				lighting-color={theme.g0}
+				lighting-color={theme.g1}
 				result="light"
 			>
 				<feDistantLight azimuth="-90" elevation="10" />
@@ -67,8 +67,8 @@
 	<mask id="hp-paths-mask">
 		<circle r={hexRadius * Math.sqrt(3)} fill="white" />
 	</mask>
-	<use display="block" href="#hp-paths" filter="url(#glowshadow)" />
-	<use display="block" href="#hp-paths" mask="url(#hp-paths-mask)" filter="url(#lighting)" />
+	<use display="none" href="#hp-paths" filter="url(#glowshadow)" />
+	<use display="none" href="#hp-paths" mask="url(#hp-paths-mask)" filter="url(#lighting)" />
 	<use display="none" href="#hp-g0" />
 	<use display="none" href="#hp-g1" />
 	<use display="none" href="#hp-g2" />

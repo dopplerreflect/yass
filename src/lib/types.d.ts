@@ -18,4 +18,5 @@ export type GoldenHexCirclePatternTheme = {
 	g0: string;
 	g1: string;
 	g2: string;
+	lighting: string;
 };
