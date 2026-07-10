@@ -90,6 +90,8 @@
 </script>
 
 <svg
+	data-image-width={width}
+	data-image-height={height}
 	data-thumbnail-width={width * thumbnailRatio}
 	data-thumbnail-height={height * thumbnailRatio}
 	bind:this={svgElement}
