@@ -182,7 +182,7 @@
 		{id}
 		width={hexWidth}
 		height={hexRadius * 3}
-		viewBox={`${-hexWidth / 2} ${-hexRadius * 1.5} ${hexWidth} ${hexRadius * 3}`}
+		viewBox={`${Math.round(-hexWidth / 2)} ${Math.round(-hexRadius * 1.5)} ${Math.round(hexWidth)} ${Math.round(hexRadius * 3)}`}
 		patternUnits="userSpaceOnUse"
 		patternTransform={`translate(${-hexWidth / 2} ${-hexRadius * 1.5})`}
 	>
@@ -190,44 +190,11 @@
 			<use href={`#${id}-g0`} />
 			<use href={`#${id}-g1`} />
 			<use href={`#${id}-g2`} />
-			<g display="none" id="strokedCircles" filter="url(#shado)">
-				{#each circles as c}
-					<circle
-						r={c.r}
-						cx={c.x}
-						cy={c.y}
-						stroke={typeof theme.circle === 'string' ? theme.circle : theme.circle[c.ri]}
-						stroke-width={theme.circleStrokeWidth * scale}
-						fill="none"
-					/>
-				{/each}
-			</g>
-			<g display="none" id="hexLines" filter="url(#shadow)">
-				<polygon
-					points={polygonPointString(polygon(6, hexRadius))}
-					stroke={theme.hex}
-					stroke-width={theme.hexStrokeWidth * scale}
-					fill="none"
-				/>
-				<path
-					d={`M0 ${-hexRadius * 2}v${hexRadius}M0 ${hexRadius}v${hexRadius}`}
-					stroke={theme.hex}
-					stroke-width={theme.hexStrokeWidth * scale}
-				/>
-			</g>
-			<g display="none">
-				{#each c as [s, p], i}
-					<circle cx={p.x} cy={p.y} r={1 * scale} fill="blue" />
-					<text x={p.x} y={p.y} fill="orange" font-size={`${0.15 * scale}em`} font-weight="bold"
-						>{s}</text
-					>
-				{/each}
-			</g>
 		</g>
 		<defs>
-			<filter id={`${id}-bumpmap`}>
-				<feMorphology in="SourceGraphic" operator="erode" radius={2 * scale} />
-				<feGaussianBlur stdDeviation={1 * scale} result="blur" />
+			<filter id={`${id}-bumpmap`} x="-20%" y="-20%" width="140%" height="140%">
+				<feMorphology in="SourceGraphic" operator="erode" radius={1 * scale} />
+				<feGaussianBlur stdDeviation={3 * scale} result="blur" />
 			</filter>
 			<path id={`${id}-p0`} d={p0} />
 			<mask id={`${id}-mask0`}>
@@ -274,32 +241,47 @@
 					/>
 				{/each}
 			</g>
-			<filter id="shadow">
-				<feGaussianBlur
-					result="blur"
-					in="SourceAlpha"
-					stdDeviation={theme.hexStrokeWidth * 1 * scale}
+			<g display="none" id="strokedCircles">
+				{#each circles as c}
+					<circle
+						r={c.r}
+						cx={c.x}
+						cy={c.y}
+						stroke={typeof theme.circle === 'string' ? theme.circle : theme.circle[c.ri]}
+						stroke-width={theme.circleStrokeWidth * scale}
+						fill="none"
+					/>
+				{/each}
+			</g>
+			<g display="none" id="hexLines">
+				<polygon
+					points={polygonPointString(polygon(6, hexRadius))}
+					stroke={theme.hex}
+					stroke-width={theme.hexStrokeWidth * scale}
+					fill="none"
 				/>
-				<feOffset dx={0} dy={theme.hexStrokeWidth * 3 * scale} result="blackOffset" />
-				<feColorMatrix
-					values="1 0 0 0.0  0
-								0 1 0 0.0  0
-								0 0 1 0.0  0
-								0 0 0 0.3  0"
+				<path
+					d={`M0 ${-hexRadius * 2}v${hexRadius}M0 ${hexRadius}v${hexRadius}`}
+					stroke={theme.hex}
+					stroke-width={theme.hexStrokeWidth * scale}
 				/>
-				<feMerge>
-					<feMergeNode />
-					<feMergeNode in="SourceGraphic" />
-				</feMerge>
-			</filter>
-			<filter id="shadow2">
-				<feGaussianBlur in="SourceAlpha" stdDeviation={(theme.hexStrokeWidth / 2) * scale} />
-				<feOffset dx={0} dy={theme.hexStrokeWidth * 1 * scale} />
-				<feMerge>
-					<feMergeNode />
-					<feMergeNode in="SourceGraphic" />
-				</feMerge>
-			</filter>
+			</g>
+			<g id={`${id}-guide`}>
+				<rect
+					x={-hexWidth / 2}
+					y={-hexRadius * 1.5}
+					width={hexWidth}
+					height={hexRadius * 3}
+					stroke="yellow"
+					fill="none"
+				/>
+				{#each c as [s, p], i}
+					<circle cx={p.x} cy={p.y} r={1 * scale} fill="blue" />
+					<text x={p.x} y={p.y} fill="orange" font-size={`${0.15 * scale}em`} font-weight="bold"
+						>{s}</text
+					>
+				{/each}
+			</g>
 		</defs>
 	</pattern>
 </defs>
