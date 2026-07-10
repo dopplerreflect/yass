@@ -6,7 +6,7 @@
 	const width = 1920 * scale;
 	const height = 1080 * scale;
 	// const width = (height / Math.sqrt(3)) * 2;
-	const hexRadius = height / 12;
+	const hexRadius = height / 6;
 	const theme = themes.e;
 </script>
 
