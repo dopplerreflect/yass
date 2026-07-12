@@ -10,7 +10,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	await saveFile(`/tmp/${name}.svg`, body.replace(/data-thumbnail-/g, ''));
 	await runCommand(
 		// `magick ./static/drawings/svg/${name}.svg -gravity center -crop '%[fx:min(w,h)]x%[fx:min(w,h)]+0x0' -resize 512x ./static/drawings/webp/${name}.webp`,
-		`magick /tmp/${name}.svg -gravity center -crop '%[fx:min(w,h)]x%[fx:min(w,h)]+0x0' -resize 512x ./static/drawings/webp/${name}.webp`,
+		`magick rsvg:/tmp/${name}.svg -gravity center -crop '%[fx:min(w,h)]x%[fx:min(w,h)]+0x0' -resize 512x ./static/drawings/webp/${name}.webp`,
 	);
 	return new Response(JSON.stringify('whatever'));
 };
