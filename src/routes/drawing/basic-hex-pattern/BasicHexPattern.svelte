@@ -40,7 +40,7 @@
 		.map((a) => radialPointString(a, hexRadius))
 		.join(' ');
 
-	const radii = [...Array(3).keys()].map((k) => hexRadius * Math.sqrt(3) * phi ** k).slice(0, 1);
+	const radii = [...Array(3).keys()].map((k) => hexRadius * Math.sqrt(3) * phi ** k).slice(0, 3);
 
 	const angles = anglesArray(6, 0);
 
@@ -64,8 +64,6 @@
 			id={`${id}-hex`}
 			d={`M0 ${y} 0 ${-hexRadius}ZM0 ${hexRadius} 0 ${hexRadius * 1.5}ZM${hexPoints}Z`}
 			fill="none"
-			stroke={hexStroke}
-			stroke-width={hexStrokeWidth}
 		/>
 		<path id={`${id}-fill`} d={`M${hexPoints}Z`} fill={hexFill} filter={fillFilter} />
 		<g id={`${id}-fillg`}>
@@ -74,13 +72,19 @@
 				<use href={`#${id}-fill`} transform={`translate(${t})`} />
 			{/each}
 		</g>
-		<g id={`${id}-cg`} stroke={circleStroke} fill="none" filter={circleStrokeFilter}>
+		<g id={`${id}-cg`}>
 			{#each circles as c}
 				<circle cx={c.x} cy={c.y} r={c.r} />
 			{/each}
 		</g>
 	</defs>
 	<use display="block" href={`#${id}-fillg`} />
-	<use display="block" href={`#${id}-hex`} stroke-width={hexStrokeWidth} />
-	<use href={`#${id}-cg`} />
+	<use display="block" href={`#${id}-hex`} stroke={hexStroke} stroke-width={hexStrokeWidth} />
+	<use
+		display="block"
+		href={`#${id}-cg`}
+		stroke={circleStroke}
+		fill="none"
+		filter={circleStrokeFilter}
+	/>
 </pattern>
