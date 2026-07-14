@@ -6,7 +6,7 @@
 	import chroma from 'chroma-js';
 	const width = 1920;
 	const height = 1080;
-	const hexRadius = 1920 / 21;
+	const hexRadius = 1920 / 55;
 </script>
 
 <DrSvg {...{ width, height }}>
@@ -21,7 +21,7 @@
 			<feDiffuseLighting
 				lighting-color={chroma.oklch(1, 0.37, 60).hex()}
 				surfaceScale={3}
-				diffuseConstant={1.5}
+				diffuseConstant={2.5}
 				result="light"
 			>
 				<feDistantLight azimuth="-105" elevation="10" />
@@ -58,8 +58,6 @@
 			{hexRadius}
 			hexFill={chroma.oklch(0.75, 0.37, 90).hex()}
 			fillFilter="url(#bhp-filter)"
-			circleStroke={chroma.oklch(1.0, 0.185, 300).hex()}
-			circleStrokeFilter="url(#bhp-strokeFilter)"
 			hexStroke={chroma.oklch(0.0, 0.185, 300).hex()}
 			hexStrokeWidth={hexRadius * 0.115}
 		/>

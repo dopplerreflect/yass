@@ -40,7 +40,7 @@
 		.map((a) => radialPointString(a, hexRadius))
 		.join(' ');
 
-	const radii = [...Array(3).keys()].map((k) => hexRadius * Math.sqrt(3) * phi ** k).slice(0, 3);
+	const radii = [...Array(3).keys()].map((k) => hexRadius * Math.sqrt(3) * phi ** k).slice(0, 1);
 
 	const angles = anglesArray(6, 0);
 
