@@ -1,21 +1,13 @@
 <svelte:options namespace="svg" />
 
 <script lang="ts">
-	import {
-		anglesArray,
-		phi,
-		radialPoint,
-		radialPointString,
-		type Circle,
-	} from '@dopplerreflect/geometry';
+	import { anglesArray, radialPointString } from '@dopplerreflect/geometry';
 
 	type Props = {
 		id: string;
 		hexRadius: number;
 		hexFill?: string;
 		fillFilter?: string;
-		circleStroke?: string;
-		circleStrokeFilter?: string;
 		hexStroke?: string;
 		hexStrokeWidth?: number;
 	};
@@ -25,8 +17,6 @@
 		hexRadius,
 		hexFill = 'none',
 		fillFilter = '',
-		circleStroke = 'none',
-		circleStrokeFilter = '',
 		hexStroke = '',
 		hexStrokeWidth = 1,
 	}: Props = $props();
@@ -39,18 +29,6 @@
 	const hexPoints = anglesArray(6, 30)
 		.map((a) => radialPointString(a, hexRadius))
 		.join(' ');
-
-	const radii = [...Array(3).keys()].map((k) => hexRadius * Math.sqrt(3) * phi ** k).slice(0, 1);
-
-	const angles = anglesArray(6, 0);
-
-	const circles: Circle[] = $derived([
-		...radii.map((r) => ({ r, x: 0, y: 0 })),
-		...angles
-			.map((a) => radii.map((r) => ({ r, ...radialPoint(a, hexRadius * Math.sqrt(3)) })))
-			.flat(),
-		...[-hexRadius * 3, hexRadius * 3].map((y) => radii.map((r) => ({ r, x: 0, y }))).flat(),
-	]);
 </script>
 
 <pattern
@@ -81,19 +59,7 @@
 				/>
 			{/each}
 		</g>
-		<g id={`${id}-cg`}>
-			{#each circles as c}
-				<circle cx={c.x} cy={c.y} r={c.r} />
-			{/each}
-		</g>
 	</defs>
 	<use display="block" href={`#${id}-fillg`} />
 	<use display="block" href={`#${id}-hex`} stroke={hexStroke} stroke-width={hexStrokeWidth} />
-	<use
-		display="block"
-		href={`#${id}-cg`}
-		stroke={circleStroke}
-		fill="none"
-		filter={circleStrokeFilter}
-	/>
 </pattern>
