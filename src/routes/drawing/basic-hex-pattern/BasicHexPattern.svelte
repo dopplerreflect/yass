@@ -65,11 +65,20 @@
 			d={`M0 ${y} 0 ${-hexRadius}ZM0 ${hexRadius} 0 ${hexRadius * 1.5}ZM${hexPoints}Z`}
 			fill="none"
 		/>
-		<path id={`${id}-fill`} d={`M${hexPoints}Z`} fill={hexFill} filter={fillFilter} />
+		<path id={`${id}-fill`} d={`M${hexPoints}Z`} />
+		<mask id={`${id}-fillMask`}>
+			<use href={`#${id}-fill`} fill="white" />
+		</mask>
 		<g id={`${id}-fillg`}>
-			<use href={`#${id}-fill`} />
+			<use href={`#${id}-fill`} fill={hexFill} filter={fillFilter} mask={`url(#${id}-fillMask)`} />
 			{#each [60, 120, 240, 300].map((a) => radialPointString(a, hexRadius * Math.sqrt(3))) as t}
-				<use href={`#${id}-fill`} transform={`translate(${t})`} />
+				<use
+					href={`#${id}-fill`}
+					transform={`translate(${t})`}
+					fill={hexFill}
+					filter={fillFilter}
+					mask={`url(#${id}-fillMask)`}
+				/>
 			{/each}
 		</g>
 		<g id={`${id}-cg`}>
