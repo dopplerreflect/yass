@@ -1,3 +1,5 @@
+<svelte:options namespace="svg" />
+
 <script lang="ts">
 	import DrSvg from '$lib/components/DrSvg.svelte';
 	const width = 1920;
