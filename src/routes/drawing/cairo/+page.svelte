@@ -12,6 +12,8 @@
 	const oklch = chroma.oklch;
 	const width = 1920;
 	const height = 1080;
+	const hue = 75;
+	const lightness = 1;
 	const unit = 50;
 	const unitb = unit * Math.sqrt(3) - unit;
 	const vb = [-unit * Math.sqrt(3), -unit - unitb, unit * Math.sqrt(3) * 2, (unit + unitb) * 2];
@@ -101,16 +103,16 @@
 		stroke="black"
 		fill="#ff000088"
 		patternUnits="userSpaceOnUse"
-		patternTransform={`translate(${-vb[0]} ${-vb[1]}) rotate(15)`}
+		patternTransform={`translate(${-vb[0]} ${-vb[1]}) rotate(30)`}
 	>
 		<defs>
 			<linearGradient id="lg0">
-				<stop offset={0} stop-color={oklch(0.25, 0.37, 300).hex()} />
-				<stop offset={1} stop-color={oklch(0.0, 0.0925, 300).hex()} />
+				<stop offset={0} stop-color={oklch(lightness, 0.0, hue).hex()} />
+				<stop offset={1} stop-color={oklch(0.0, 0.0925, hue, 0).hex()} />
 			</linearGradient>
 			<linearGradient id="lg1" gradientTransform="rotate(90)">
-				<stop offset={0} stop-color={oklch(0.0, 0.0925, 300).hex()} />
-				<stop offset={1} stop-color={oklch(0.25, 0.37, 300).hex()} />
+				<stop offset={0} stop-color={oklch(0.0, 0.0925, hue, 0).hex()} />
+				<stop offset={1} stop-color={oklch(lightness, 0.0, hue).hex()} />
 			</linearGradient>
 			<filter id="glow">
 				<feMorphology operator="dilate" radius={1} />
@@ -119,6 +121,26 @@
 					<feMergeNode />
 					<feMergeNode in="SourceGraphic" />
 				</feMerge>
+			</filter>
+			<filter id="light">
+				<feDiffuseLighting
+					in="SourceGraphic"
+					result="light"
+					lighting-color={oklch(0.75, 0.37, 90).hex()}
+					surfaceScale="3"
+					diffuseConstant="3"
+				>
+					<feDistantLight azimuth="-90" elevation="10" />
+				</feDiffuseLighting>
+				<feComposite
+					in="SourceGraphic"
+					in2="light"
+					operator="arithmetic"
+					k1="1"
+					k2="0"
+					k3="0.25"
+					k4="0"
+				/>
 			</filter>
 		</defs>
 		<g id="c" stroke="none">
@@ -147,7 +169,12 @@
 			href="#c"
 			transform={`translate(${unit * Math.sqrt(3)} ${unit + unitb})`}
 		/>
-		<g stroke={oklch(0.5, 0.37, 300).hex()} fill="none" filter="url(#glow)">
+		<g
+			display="none"
+			stroke={oklch(lightness * 1.5, 0.37, hue).hex()}
+			fill="none"
+			filter="url(#glow)"
+		>
 			<path d={ppath} />
 			<path d={qpath} />
 		</g>
@@ -161,5 +188,6 @@
 		display="block"
 		d={`M${-width / 2} ${-height / 2}h${width}v${height}h${-width}Z`}
 		fill="url(#pattern)"
+		filter="url(#light)"
 	/>
 </DrSvg>
