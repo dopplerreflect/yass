@@ -2,18 +2,22 @@
 
 <script lang="ts">
 	import DrSvg from '$lib/components/DrSvg.svelte';
-	import CairoPattern from '$lib/components/CairoPattern.svelte';
+	import SnubSquareTilingPattern from '$lib/components/SnubSquareTilingPattern.svelte';
 	import chroma from 'chroma-js';
 	const oklch = chroma.oklch;
 
 	const width = 1920;
 	const height = 1080;
-	const unit = 50;
+	const colors = [
+		oklch(0.75, 0.0925, 210).hex(),
+		oklch(0.25, 0.0925, 210).hex(),
+		oklch(0.5, 0.0925, 210).hex(),
+	] as [string, string, string];
+	const unit = 20;
 </script>
 
 <DrSvg {...{ width, height }}>
-	<CairoPattern {unit} rotate={15} />
-	<CairoPattern {unit} id="cp2" rotate={105} hue={210} lightness={0.75} azimuth={-120} />
+	<SnubSquareTilingPattern {...{ unit, colors }} erode={unit / 30} rotate={15} />
 	<path
 		display="block"
 		d={`M${-width / 2} ${-height / 2}h${width}v${height}h${-width}Z`}
@@ -22,14 +26,7 @@
 	<path
 		display="block"
 		d={`M${-width / 2} ${-height / 2}h${width}v${height}h${-width}Z`}
-		fill="url(#CairoPattern)"
-		filter="url(#CairoPattern-light)"
-	/>
-	<path
-		display="block"
-		d={`M${-width / 2} ${-height / 2}h${width}v${height}h${-width}Z`}
-		fill="url(#cp2)"
-		filter="url(#cp2-light)"
-		opacity="0.5"
+		fill="url(#SnubSquareTilingPattern)"
+		filter="url(#light)"
 	/>
 </DrSvg>
