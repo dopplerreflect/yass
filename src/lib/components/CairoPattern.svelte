@@ -19,27 +19,54 @@
 		azimuth = -90,
 	}: Props = $props();
 
-	import { polygonPointString, radialPoint, type Point } from '@dopplerreflect/geometry';
+	import { pointToString, radialPoint, type Point } from '@dopplerreflect/geometry';
 	import chroma from 'chroma-js';
 	const oklch = chroma.oklch;
 
 	let d = $derived.by(() => {
 		let unitb = unit * Math.sqrt(3) - unit;
 		let vb = [-unit * Math.sqrt(3), -unit - unitb, unit * Math.sqrt(3) * 2, (unit + unitb) * 2];
-		let cl = unitb * Math.sqrt(3);
-		let points0: Point[] = [{ x: unitb / 2, y: 0 }];
-		points0.push(radialPoint(-60, unit, { center: points0[0] }));
-		points0.push(radialPoint(30, unit, { center: points0[1] }));
-		points0.push(radialPoint(90, unit * Math.sqrt(3) - unit, { center: points0[2] }));
-		points0.push(radialPoint(150, unit, { center: points0[3] }));
 
-		let points1: Point[] = [{ x: unitb / 2, y: 0 }];
-		points1.push(radialPoint(-60, unit, { center: points1[0] }));
-		points1.push(radialPoint(-150, unit, { center: points1[1] }));
-		points1.push(radialPoint(-210, unit, { center: points1[2] }));
-		points1.push(radialPoint(60, unit, { center: points1[3] }));
+		const a = { x: -unitb / 2, y: 0 };
+		const b = { x: unitb / 2, y: 0 };
+		const c = radialPoint(300, unit, { center: b });
+		const d = radialPoint(210, unit, { center: c });
+		const e = radialPoint(240, unit, { center: a });
+		const f = radialPoint(120, unit, { center: a });
+		const g = radialPoint(30, unit, { center: f });
+		const h = radialPoint(60, unit, { center: b });
+		const i = radialPoint(330, unit, { center: h });
+		const j = radialPoint(30, unit, { center: c });
+		const k = radialPoint(150, unit, { center: e });
+		const l = radialPoint(210, unit, { center: f });
+		const p = {
+			a,
+			b,
+			c,
+			d,
+			e,
+			f,
+			g,
+			h,
+			i,
+			j,
+			k,
+			l,
+		};
 
-		return { unitb, vb, cl, points0, points1 };
+		let s = Object.fromEntries(Object.entries(p).map(([k, v]) => [k, pointToString(v)])) as Record<
+			keyof typeof p,
+			string
+		>;
+
+		const paths = [
+			`M${s.a} ${s.b} ${s.c} ${s.d} ${s.e}Z`,
+			`M${s.a} ${s.f} ${s.g} ${s.h} ${s.b}Z`,
+			`M${s.a} ${s.e} ${s.k} ${s.l} ${s.f}Z`,
+			`M${s.b} ${s.c} ${s.j} ${s.i} ${s.h}Z`,
+		];
+		let guidePoints: [string, Point][] = Object.entries(p).map(([k, v]) => [k, v]);
+		return { unitb, vb, guidePoints, paths };
 	});
 </script>
 
@@ -52,59 +79,62 @@
 	patternTransform={`translate(${-d.vb[0]} ${-d.vb[1]}) rotate(${rotate})`}
 >
 	<defs>
-		<linearGradient id={`${id}-lg0`}>
-			<stop offset={0} stop-color={oklch(lightness, 0.0, hue).hex()} />
-			<stop offset={1} stop-color={oklch(0.0, 0.0925, hue, 0).hex()} />
+		<linearGradient id={`${id}-lg0`} x1="50%" y1="100%" x2="50%" y2="0%">
+			<stop offset={0} stop-color={oklch(lightness, 0.37, hue).hex()} />
+			<stop offset={1} stop-color={oklch(0.5, 0.185, hue, 0.5).hex()} />
 		</linearGradient>
-		<linearGradient id={`${id}-lg1`} gradientTransform="rotate(90)">
-			<stop offset={0} stop-color={oklch(0.0, 0.0925, hue, 0).hex()} />
-			<stop offset={1} stop-color={oklch(lightness, 0.0, hue).hex()} />
+		<linearGradient id={`${id}-lg1`} x1="50%" y1="0%" x2="50%" y2="100%">
+			<stop offset={0} stop-color={oklch(lightness, 0.37, hue).hex()} />
+			<stop offset={1} stop-color={oklch(0.5, 0.185, hue, 0.5).hex()} />
 		</linearGradient>
-		<filter id={`${id}-light`}>
-			<feDiffuseLighting
-				in="SourceGraphic"
-				result="light"
-				lighting-color={oklch(lightness * 0.75, 0.37, hue).hex()}
-				surfaceScale="3"
-				diffuseConstant="3"
-			>
-				<feDistantLight {azimuth} elevation="10" />
-			</feDiffuseLighting>
-			<feComposite
-				in="SourceGraphic"
-				in2="light"
-				operator="arithmetic"
-				k1="1"
-				k2="0"
-				k3="0.25"
-				k4="0"
-			/>
-		</filter>
+		<linearGradient id={`${id}-lg2`}>
+			<stop offset={0} stop-color={oklch(0.5, 0.185, hue, 0.5).hex()} />
+			<stop offset={1} stop-color={oklch(lightness, 0.37, hue).hex()} />
+		</linearGradient>
+		<linearGradient id={`${id}-lg3`} x1="100%" y1="50%" x2="0%" y2="50%">
+			<stop offset={0} stop-color={oklch(0.5, 0.185, hue, 0.5).hex()} />
+			<stop offset={1} stop-color={oklch(lightness, 0.37, hue).hex()} />
+		</linearGradient>
+		<g id={`${id}-guide`}>
+			<rect x={d.vb[0]} y={d.vb[1]} width={d.vb[2]} height={d.vb[3]} fill="none" />
+			{#each d.guidePoints as [i, p]}
+				<text x={p.x} y={p.y} stroke="none">{i}</text>
+			{/each}
+		</g>
+		<g id={`${id}-paths`}>
+			{#each d.paths as path, i}
+				<path d={path} fill={`url(#${id}-lg${i})`} />
+			{/each}
+		</g>
 	</defs>
-	<g id="c" stroke="none">
-		<polygon id="p0" points={polygonPointString(d.points0)} fill={`url(#${id}-lg0)`} />
-		<use href="#p0" transform={`rotate(180)`} />
-		<polygon id="p1" points={polygonPointString(d.points1)} fill={`url(#${id}-lg1)`} />
-		<use href="#p1" transform={`rotate(180)`} />
-	</g>
+	<use display="none" href={`#${id}-paths`} stroke="white" fill="none" />
+	<use display="none" href={`#${id}-paths`} stroke="white" fill="none" transform="rotate(90)" />
+	<use display="block" href={`#${id}-paths`} stroke="none" fill={`url(#${id}-lg0)`} />
 	<use
 		display="block"
-		href="#c"
+		href={`#${id}-paths`}
+		stroke="none"
 		transform={`translate(${-unit * Math.sqrt(3)} ${-unit - d.unitb})`}
 	/>
 	<use
 		display="block"
-		href="#c"
+		href={`#${id}-paths`}
+		stroke="none"
+		fill="none"
 		transform={`translate(${unit * Math.sqrt(3)} ${-unit - d.unitb})`}
 	/>
 	<use
 		display="block"
-		href="#c"
+		href={`#${id}-paths`}
+		stroke="none"
+		fill="none"
 		transform={`translate(${-unit * Math.sqrt(3)} ${unit + d.unitb})`}
 	/>
 	<use
 		display="block"
-		href="#c"
+		href={`#${id}-paths`}
+		stroke="none"
+		fill="none"
 		transform={`translate(${unit * Math.sqrt(3)} ${unit + d.unitb})`}
 	/>
 </pattern>
