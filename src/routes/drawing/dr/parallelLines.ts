@@ -1,5 +1,5 @@
-type Point = { x: number; y: number };
-type Line = [Point, Point];
+// created with perplexity.ai
+import type { Point, Line } from '@dopplerreflect/geometry';
 type ViewBox = [number, number, number, number]; // [x, y, width, height]
 
 /**
@@ -8,7 +8,6 @@ type ViewBox = [number, number, number, number]; // [x, y, width, height]
  */
 export function parallelLinesToViewBox(line: Line, radius: number, viewBox: ViewBox): [Line, Line] {
 	const [p1, p2] = line;
-	const [vx, vy, vw, vh] = viewBox;
 
 	const dx = p2.x - p1.x;
 	const dy = p2.y - p1.y;
@@ -35,12 +34,12 @@ export function parallelLinesToViewBox(line: Line, radius: number, viewBox: View
 	const offsetLine1 = [
 		{ x: p1.x + ox1, y: p1.y + oy1 },
 		{ x: p2.x + ox1, y: p2.y + oy1 },
-	];
+	] as Line;
 
 	const offsetLine2 = [
 		{ x: p1.x + ox2, y: p1.y + oy2 },
 		{ x: p2.x + ox2, y: p2.y + oy2 },
-	];
+	] as Line;
 
 	const line1 = clipLineToViewBox(offsetLine1, viewBox);
 	const line2 = clipLineToViewBox(offsetLine2, viewBox);

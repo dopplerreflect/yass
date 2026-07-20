@@ -1,8 +1,4 @@
-// Type definitions
-// type Point = { x: number; y: number };
-// type Line = [Point, Point];
-// type Circle = { x: number; y: number; r: number };
-
+// created with perplexity.ai
 import type { Point, Line, Circle } from '@dopplerreflect/geometry';
 /**
  * Finds the intersection points between a line segment and a circle.
@@ -11,7 +7,7 @@ import type { Point, Line, Circle } from '@dopplerreflect/geometry';
  * @param circle - Object with x, y (center) and r (radius)
  * @returns Array of intersection points (0, 1, or 2 points)
  */
-function lineCircleIntersection(line: Line, circle: Circle): Point[] {
+export function lineCircleIntersection(line: Line, circle: Circle): Point[] {
 	const [p1, p2] = line;
 	const { x: cx = 0, y: cy = 0, r } = circle;
 
@@ -71,15 +67,3 @@ function lineCircleIntersection(line: Line, circle: Circle): Point[] {
 
 	return intersections;
 }
-
-// Example usage:
-const line: Line = [
-	{ x: 0, y: 0 },
-	{ x: 10, y: 10 },
-];
-const circle: Circle = { x: 5, y: 5, r: 3 };
-const points = lineCircleIntersection(line, circle);
-console.log(points);
-// Output: [{ x: 2.88, y: 2.88 }, { x: 7.12, y: 7.12 }]
-
-export { lineCircleIntersection };
