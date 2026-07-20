@@ -5,7 +5,9 @@
 	import {
 		anglesArray,
 		lineIntersection,
+		lineCircleIntersection,
 		midpoint,
+		parallelLinesToViewBox,
 		phi,
 		pointToString,
 		radialPoint,
@@ -13,8 +15,6 @@
 		type Line,
 		type Point,
 	} from '@dopplerreflect/geometry';
-	import { parallelLinesToViewBox } from './parallelLines';
-	import { lineCircleIntersection } from './lineCircleIntersection';
 	const width = 1080;
 	const height = 1080;
 	const viewBox: [number, number, number, number] = [-width / 2, -height / 2, width, height];
