@@ -1,5 +1,4 @@
 <script lang="ts">
-	import chroma from 'chroma-js';
 	import { width, height, scale } from './setup';
 	import { brightLines } from './lines';
 	import { getDots } from './dots';
@@ -10,7 +9,6 @@
 	const delaunay = Delaunay.from(dots.map((d) => [d.x, d.y]));
 	const voronoi = delaunay.voronoi([-width / 2, -height / 2, width, height]);
 	const voronoiPath = voronoi.render();
-	console.log(voronoiPath);
 </script>
 
 <defs>
