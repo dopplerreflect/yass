@@ -11,7 +11,6 @@ export class DRsvgObjectTracker {
 	_circles = new Set<Circle>();
 	_points = new Set<string>();
 
-	add(object: Point): void;
 	add(object: Line): void;
 	add(object: Circle): void;
 
@@ -21,12 +20,12 @@ export class DRsvgObjectTracker {
 			[...this._lines]
 				.map((l) => lineIntersection(object, l))
 				.filter((e) => e !== null)
-				.forEach((i) => this.add(i));
+				.forEach((i) => this.addPoint(i));
 			[...this._circles]
 				.map((c) => lineCircleIntersection(object, c))
 				.filter((a) => a.length > 0)
 				.flat()
-				.forEach((e) => this.add(e));
+				.forEach((e) => this.addPoint(e));
 			this._lines.add(object);
 			return;
 		}
@@ -37,23 +36,25 @@ export class DRsvgObjectTracker {
 				.map((l) => lineCircleIntersection(l, object))
 				.filter((a) => a.length > 0)
 				.flat()
-				.forEach((e) => this.add(e));
-			findCircleIntersections([object, ...this._circles]).forEach((c) => this.add(c));
+				.forEach((e) => this.addPoint(e));
+			findCircleIntersections([object, ...this._circles]).forEach((c) => this.addPoint(c));
 			this._circles.add(object);
-			return;
-		}
-
-		if (!Array.isArray(object) && 'x' in object && 'y' in object) {
-			console.log('adding point', object);
-			this._points.add(JSON.stringify(object));
 			return;
 		}
 		console.log("what's this?", object);
 	}
 
-	findIntersections(object: Point | Line | Circle): void {}
+	addPoint(object: Point): void {
+		let { x, y } = object;
+		const roundedObject: Point = { x: Math.ceil(x), y: Math.ceil(y) };
+		const o = JSON.stringify(roundedObject);
+		if (!this._points.has(o)) {
+			this._points.add(o);
+			console.log('adding point:', roundedObject);
+		}
+	}
+
 	get lines(): Line[] {
-		console.log([...this._lines]);
 		return [...this._lines].map((v) => v);
 	}
 
