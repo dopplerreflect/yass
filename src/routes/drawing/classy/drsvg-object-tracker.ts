@@ -1,0 +1,62 @@
+import {
+	type Point,
+	type Line,
+	type Circle,
+	lineIntersection,
+	lineCircleIntersection,
+} from '@dopplerreflect/geometry';
+export class DRsvgObjectTracker {
+	_lines = new Set<Line>();
+	_circles = new Set<Circle>();
+	_points = new Set<string>();
+
+	add(object: Point): void;
+	add(object: Line): void;
+	add(object: Circle): void;
+
+	add(object: Point | Line | Circle): void {
+		if (Array.isArray(object) && object.length === 2) {
+			console.log('adding line', object);
+			[...this._lines]
+				.map((l) => lineIntersection(object, l))
+				.filter((e) => e !== null)
+				.forEach((i) => this.add(i));
+			const c = [...this._circles].map((c) => lineCircleIntersection(object, c)).flat();
+			console.log('c', c);
+			this._lines.add(object);
+			return;
+		}
+
+		if (!Array.isArray(object) && 'r' in object) {
+			console.log('adding circle', object);
+			[...this._lines]
+				.map((l) => lineCircleIntersection(l, object))
+				.filter((a) => a.length > 0)
+				.flat()
+				.forEach((e) => this.add(e));
+			this._circles.add(object);
+			return;
+		}
+
+		if (!Array.isArray(object) && 'x' in object && 'y' in object) {
+			console.log('adding point', object);
+			this._points.add(JSON.stringify(object));
+			return;
+		}
+		console.log("what's this?", object);
+	}
+
+	findIntersections(object: Point | Line | Circle): void {}
+	get lines(): Line[] {
+		console.log([...this._lines]);
+		return [...this._lines].map((v) => v);
+	}
+
+	get circles(): Circle[] {
+		return [...this._circles].map((v) => v);
+	}
+
+	get points(): Point[] {
+		return [...this._points].map((v) => JSON.parse(v));
+	}
+}
