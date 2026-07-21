@@ -19,14 +19,21 @@
 	]);
 	ot.add([
 		{ x: 0, y: 200 },
-		{ x: 0, y: 0 },
+		{ x: 0, y: -200 },
 	]);
 	ot.add({ x: 0, y: 0, r: 200 });
 	ot.add({ x: 0, y: 0, r: 200 * phi });
+	ot.add({ x: -200, y: 0, r: 200 * phi ** 2 });
+	ot.add({ x: -200, y: 0, r: 200 });
+	ot.add([
+		{ x: -200, y: -200 },
+		{ x: 0, y: -200 },
+	]);
 
 	const lines = ot.lines;
 	const circles = ot.circles;
 	const points = ot.points;
+	console.log('points', points.length);
 </script>
 
 <DrSvg {...{ width, height }}>

@@ -4,6 +4,7 @@ import {
 	type Circle,
 	lineIntersection,
 	lineCircleIntersection,
+	findCircleIntersections,
 } from '@dopplerreflect/geometry';
 export class DRsvgObjectTracker {
 	_lines = new Set<Line>();
@@ -21,8 +22,11 @@ export class DRsvgObjectTracker {
 				.map((l) => lineIntersection(object, l))
 				.filter((e) => e !== null)
 				.forEach((i) => this.add(i));
-			const c = [...this._circles].map((c) => lineCircleIntersection(object, c)).flat();
-			console.log('c', c);
+			[...this._circles]
+				.map((c) => lineCircleIntersection(object, c))
+				.filter((a) => a.length > 0)
+				.flat()
+				.forEach((e) => this.add(e));
 			this._lines.add(object);
 			return;
 		}
@@ -34,6 +38,7 @@ export class DRsvgObjectTracker {
 				.filter((a) => a.length > 0)
 				.flat()
 				.forEach((e) => this.add(e));
+			findCircleIntersections([object, ...this._circles]).forEach((c) => this.add(c));
 			this._circles.add(object);
 			return;
 		}
