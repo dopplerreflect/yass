@@ -19,9 +19,7 @@
 	const lines = () => ot.lines;
 	const circles = () => ot.circles;
 
-	ot.add([points()[73], points()[17]]);
-	console.log('points', points.length);
-	console.log(points()[73], points()[17]);
+	console.log(Object.entries(points()).length);
 </script>
 
 <DrSvg {...{ width, height }}>
@@ -32,8 +30,8 @@
 	{#each circles() as c}
 		<circle cx={c.x} cy={c.y} r={c.r} stroke="white" fill="none" />
 	{/each}
-	{#each points() as p, i}
+	{#each Object.entries(points()) as [k, p], i}
 		<circle cx={p.x} cy={p.y} r={3} fill="yellow" />
-		<text x={p.x} y={p.y} fill="yellow">{i}</text>
+		<text x={p.x} y={p.y} fill="yellow">{k}</text>
 	{/each}
 </DrSvg>

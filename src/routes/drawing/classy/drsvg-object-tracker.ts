@@ -9,14 +9,14 @@ import {
 export class DRsvgObjectTracker {
 	_lines = new Set<Line>();
 	_circles = new Set<Circle>();
-	_points = new Set<string>();
+	_points = new Set<Point>();
 
 	add(object: Line): void;
 	add(object: Circle): void;
 
 	add(object: Point | Line | Circle): void {
 		if (Array.isArray(object) && object.length === 2) {
-			console.log('adding line', object);
+			// console.log('adding line', object);
 			[...this._lines]
 				.map((l) => lineIntersection(object, l))
 				.filter((e) => e !== null)
@@ -31,7 +31,7 @@ export class DRsvgObjectTracker {
 		}
 
 		if (!Array.isArray(object) && 'r' in object) {
-			console.log('adding circle', object);
+			// console.log('adding circle', object);
 			[...this._lines]
 				.map((l) => lineCircleIntersection(l, object))
 				.filter((a) => a.length > 0)
@@ -41,16 +41,13 @@ export class DRsvgObjectTracker {
 			this._circles.add(object);
 			return;
 		}
-		console.log("what's this?", object);
+		// console.log("what's this?", object);
 	}
 
 	addPoint(object: Point): void {
-		let { x, y } = object;
-		const roundedObject: Point = { x: Math.ceil(x), y: Math.ceil(y) };
-		const o = JSON.stringify(roundedObject);
-		if (!this._points.has(o)) {
-			this._points.add(o);
-			console.log('adding point:', roundedObject);
+		if (!this.findNearbyPoint(object, [...this._points], 1)) {
+			this._points.add(object);
+			// console.log('adding point:', object);
 		}
 	}
 
@@ -62,7 +59,22 @@ export class DRsvgObjectTracker {
 		return [...this._circles].map((v) => v);
 	}
 
-	get points(): Point[] {
-		return [...this._points].map((v) => JSON.parse(v));
+	get points(): Record<string, Point> {
+		return Object.fromEntries([...this._points].map((v, i) => [`p${i}`, v]))
+	}
+
+	private findNearbyPoint(target: Point, existingPoints: Point[], distance: number): Point | null {
+		const maxDistSq = distance * distance;
+
+		for (const p of existingPoints) {
+			const dx = p.x - target.x;
+			const dy = p.y - target.y;
+			const distSq = dx * dx + dy * dy;
+
+			if (distSq <= maxDistSq) {
+				return p;
+			}
+		}
+		return null;
 	}
 }
