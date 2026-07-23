@@ -5,7 +5,6 @@
 	import { anglesArray, arrayMap, goldenCircles, phi, type Line } from '@dopplerreflect/geometry';
 	import { rotateLineAroundOrigin } from './rotateLineAroundOrigin';
 	import { DRsvgObjectTracker } from './drsvg-object-tracker';
-	import Style from './style.css?raw';
 	const width = 1080;
 	const height = 1080;
 
@@ -51,25 +50,35 @@
 
 <DrSvg {...{ width, height }}>
 	<defs>
-		<svelte:element this={"style"}>
-			{@html Style}
-		</svelte:element>
+		<style>
+			.circles {
+				fill: none;
+				stroke: #a0a0ff;
+			}
+			.lines {
+				stroke: #a0a0a0;
+			}
+			.guide {
+				display: none;
+				fill: yellow;
+			}
+		</style>
 	</defs>
 	<rect x={-width / 2} y={-height / 2} {...{ width, height }} fill="#202020" />
 	<g class="lines">
 		{#each lines() as l}
-			<line x1={l[0].x} y1={l[0].y} x2={l[1].x} y2={l[1].y} stroke="white" />
+			<line x1={l[0].x} y1={l[0].y} x2={l[1].x} y2={l[1].y} />
 		{/each}
 	</g>
 	<g class="circles">
 		{#each circles() as c}
-			<circle cx={c.x} cy={c.y} r={c.r} stroke="white" fill="none" />
+			<circle cx={c.x} cy={c.y} r={c.r} />
 		{/each}
 	</g>
 	<g class="guide">
 		{#each Object.entries(points()) as [k, p], i}
-			<circle cx={p.x} cy={p.y} r={1} fill="yellow" />
-			<text x={p.x} y={p.y} fill="yellow" font-size="0.5em">{k}</text>
+			<circle cx={p.x} cy={p.y} r={1} />
+			<text x={p.x} y={p.y} font-size="0.5em">{k}</text>
 		{/each}
 	</g>
 </DrSvg>
