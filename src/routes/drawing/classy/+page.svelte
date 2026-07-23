@@ -13,6 +13,9 @@
 	} from '@dopplerreflect/geometry';
 	import { rotateLineAroundOrigin } from './rotateLineAroundOrigin';
 	import { DRsvgObjectTracker } from './drsvg-object-tracker';
+	import chroma from 'chroma-js';
+	const oklch = chroma.oklch;
+	const hue = 270;
 	const width = 1080;
 	const height = 1080;
 
@@ -146,10 +149,12 @@
 	<defs>
 		<style>
 			.circles {
+				display: none;
 				fill: none;
 				stroke: #a0a0ff;
 			}
 			.lines {
+				display: none;
 				stroke: #a0a0a0;
 			}
 			.guide {
@@ -157,6 +162,8 @@
 				fill: yellow;
 			}
 		</style>
+		<path id="path1" d={path1} />
+		<path id="path2" d={path2} />
 	</defs>
 	<rect x={-width / 2} y={-height / 2} {...{ width, height }} fill="#202020" />
 	<g class="lines">
@@ -175,6 +182,12 @@
 			<text x={p.x} y={p.y} font-size="0.5em">{k}</text>
 		{/each}
 	</g>
-	<path d={path1} fill="#ff000040" />
-	<path d={path2} fill="#0000ff40" />
+	<g stroke={oklch(0.5, 0.185, 90, 0.5).hex()}>
+		<use href="#path1" fill={oklch(1.0, 0.37, hue, 0.85).hex()} />
+		<use href="#path2" fill={oklch(0.95, 0.37, hue, 0.85).hex()} />
+		<use href="#path1" fill={oklch(0.8, 0.37, hue, 0.85).hex()} transform="rotate(120)" />
+		<use href="#path2" fill={oklch(0.9, 0.37, hue, 0.85).hex()} transform="rotate(120)" />
+		<use href="#path1" fill={oklch(0.85, 0.37, hue, 0.85).hex()} transform="rotate(240)" />
+		<use href="#path2" fill={oklch(0.75, 0.37, hue, 0.85).hex()} transform="rotate(240)" />
+	</g>
 </DrSvg>
