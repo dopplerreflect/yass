@@ -7,17 +7,9 @@
 		hue?: number;
 		lightness?: number;
 		rotate?: number;
-		azimuth?: number;
 	};
 
-	let {
-		id = 'CairoPattern',
-		unit = 100,
-		hue = 300,
-		lightness = 0.5,
-		rotate = 0,
-		azimuth = -90,
-	}: Props = $props();
+	let { id = 'CairoPattern', unit = 100, hue = 300, lightness = 0.5, rotate = 0 }: Props = $props();
 
 	import { pointToString, radialPoint, type Point } from '@dopplerreflect/geometry';
 	import chroma from 'chroma-js';

@@ -13,6 +13,7 @@
 	} from '@dopplerreflect/geometry';
 	import { rotateLineAroundOrigin } from './rotateLineAroundOrigin';
 	import { DRsvgObjectTracker } from './drsvg-object-tracker';
+	import CairoPattern from '$lib/components/CairoPattern.svelte';
 	import chroma from 'chroma-js';
 	const oklch = chroma.oklch;
 	const hue = 270;
@@ -147,15 +148,39 @@
 
 <DrSvg {...{ width, height }}>
 	<defs>
+		<CairoPattern hue={hue + 0} unit={radii[0] / 2} lightness={0.95} />
+		<filter id="topLight" x="-20%" y="-20%" width="140%" height="140%">
+			<feMorphology in="SourceAlpha" operator="erode" radius={2}></feMorphology>
+			<feGaussianBlur stdDeviation={1} result="blur" />
+			<feDiffuseLighting
+				in="blur"
+				surfaceScale={3}
+				diffuseConstant={1}
+				lighting-color={oklch(1, 0.37, hue).hex()}
+				result="light"
+			>
+				<feDistantLight azimuth="90" elevation="5" />
+			</feDiffuseLighting>
+			<feComposite
+				in="SourceGraphic"
+				in2="light"
+				operator="arithmetic"
+				k1="1"
+				k2="1"
+				k3="1"
+				k4="0"
+			/>
+			<feGaussianBlur stdDeviation={0} />
+		</filter>
 		<style>
 			.circles {
-				display: none;
+				display: block;
 				fill: none;
-				stroke: #a0a0ff;
+				stroke: #000000;
 			}
 			.lines {
-				display: none;
-				stroke: #a0a0a0;
+				display: block;
+				stroke: #ffffff;
 			}
 			.guide {
 				display: none;
@@ -166,6 +191,13 @@
 		<path id="path2" d={path2} />
 	</defs>
 	<rect x={-width / 2} y={-height / 2} {...{ width, height }} fill="#202020" />
+	<rect
+		x={-width / 2}
+		y={-height / 2}
+		{...{ width, height }}
+		fill="url(#CairoPattern)"
+		filter="url(#topLight)"
+	/>
 	<g class="lines">
 		{#each lines() as l}
 			<line x1={l[0].x} y1={l[0].y} x2={l[1].x} y2={l[1].y} />
@@ -182,12 +214,12 @@
 			<text x={p.x} y={p.y} font-size="0.5em">{k}</text>
 		{/each}
 	</g>
-	<g stroke={oklch(0.5, 0.185, 90, 0.5).hex()}>
-		<use href="#path1" fill={oklch(1.0, 0.37, hue, 0.85).hex()} />
-		<use href="#path2" fill={oklch(0.95, 0.37, hue, 0.85).hex()} />
-		<use href="#path1" fill={oklch(0.8, 0.37, hue, 0.85).hex()} transform="rotate(120)" />
-		<use href="#path2" fill={oklch(0.9, 0.37, hue, 0.85).hex()} transform="rotate(120)" />
-		<use href="#path1" fill={oklch(0.85, 0.37, hue, 0.85).hex()} transform="rotate(240)" />
-		<use href="#path2" fill={oklch(0.75, 0.37, hue, 0.85).hex()} transform="rotate(240)" />
+	<g stroke={oklch(0.95, 0.185, 90, 0.5).hex()}>
+		<use href="#path1" fill={oklch(0.75, 0.37, hue, 0.75).hex()} />
+		<use href="#path2" fill={oklch(0.7, 0.37, hue, 0.75).hex()} />
+		<use href="#path1" fill={oklch(0.5, 0.37, hue, 0.75).hex()} transform="rotate(120)" />
+		<use href="#path2" fill={oklch(0.65, 0.37, hue, 0.75).hex()} transform="rotate(120)" />
+		<use href="#path1" fill={oklch(0.6, 0.37, hue, 0.75).hex()} transform="rotate(240)" />
+		<use href="#path2" fill={oklch(0.55, 0.37, hue, 0.75).hex()} transform="rotate(240)" />
 	</g>
 </DrSvg>
