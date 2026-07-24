@@ -59,89 +59,120 @@
 		[points().p218, points().p41],
 	]);
 
-	type PathSegments = (string | Point)[];
+	type PathSegments = (string | number)[];
 	function segmentsToPath(segments: PathSegments) {
-		return segments.map((s) => (typeof s === 'string' ? s : pointToString(s))).join(' ');
+		return segments
+			.map((s) => (typeof s === 'string' ? s : pointToString(points()[`p${s}`])))
+			.join(' ');
 	}
-
+	// prettier ignore
 	const path1Segments: PathSegments = [
 		'M',
-		points().p155,
-		points().p222,
-		points().p21,
-		points().p390,
-		points().p187,
-		points().p156,
-		points().p193,
-		points().p420,
-		points().p123,
-		points().p219,
+		155,
+		222,
+		21,
+		390,
+		187,
+		156,
+		193,
+		420,
+		123,
+		219,
 		'Z',
 		'M',
-		points().p218,
-		points().p350,
-		points().p293,
-		points().p163,
+		218,
+		350,
+		293,
+		163,
 		'Z',
 		'M',
-		points().p188,
-		points().p565,
-		points().p41,
-		points().p13,
+		188,
+		565,
+		41,
+		13,
 		'Z',
 		'M',
-		points().p366,
-		points().p223,
-		points().p157,
-		points().p260,
+		366,
+		223,
+		157,
+		260,
 		'Z',
 	];
 	const path2Segments: PathSegments = [
 		'M',
-		points().p193,
-		points().p188,
-		points().p13,
-		points().p149,
-		points().p115,
-		points().p154,
-		points().p207,
-		points().p244,
-		points().p163,
-		points().p293,
+		193,
+		188,
+		13,
+		149,
+		115,
+		154,
+		207,
+		244,
+		163,
+		293,
 		'Z',
 		'M',
-		points().p218,
-		points().p123,
-		points().p420,
-		points().p193,
-		points().p350,
+		218,
+		123,
+		420,
+		193,
+		350,
 		'Z',
 		'M',
-		points().p156,
-		points().p187,
-		points().p41,
-		points().p565,
+		156,
+		187,
+		41,
+		565,
 		'Z',
 		'M',
-		points().p20,
-		points().p38,
-		points().p64,
-		points().p90,
+		20,
+		38,
+		64,
+		90,
 		'Z',
 		'M',
-		points().p537,
-		points().p112,
-		points().p183,
-		points().p162,
+		537,
+		112,
+		183,
+		162,
 		'Z',
 		'M',
-		points().p410,
-		points().p128,
-		points().p215,
-		points().p351,
-		points().p207,
+		410,
+		128,
+		215,
+		351,
+		207,
 		'Z',
 	];
+	const maskPath = segmentsToPath([
+		'M',
+		155,
+		222,
+		21,
+		223,
+		157,
+		227,
+		47,
+		228,
+		226,
+		232,
+		73,
+		231,
+		160,
+		210,
+		98,
+		211,
+		209,
+		214,
+		128,
+		215,
+		163,
+		218,
+		123,
+		219,
+		'Z',
+	]);
+
 	const path1 = segmentsToPath(path1Segments);
 	const path2 = segmentsToPath(path2Segments);
 </script>
@@ -176,7 +207,7 @@
 			.circles {
 				display: block;
 				fill: none;
-				stroke: #000000;
+				stroke: #ffffff;
 			}
 			.lines {
 				display: block;
@@ -186,9 +217,13 @@
 				display: none;
 				fill: yellow;
 			}
+			#stardodeca {
+				display: block;
+			}
 		</style>
 		<path id="path1" d={path1} />
 		<path id="path2" d={path2} />
+		<path id="maskPath" d={maskPath} />
 	</defs>
 	<rect x={-width / 2} y={-height / 2} {...{ width, height }} fill="#202020" />
 	<rect
@@ -214,12 +249,12 @@
 			<text x={p.x} y={p.y} font-size="0.5em">{k}</text>
 		{/each}
 	</g>
-	<g stroke={oklch(0.95, 0.185, 90, 0.5).hex()}>
-		<use href="#path1" fill={oklch(0.75, 0.37, hue, 0.75).hex()} />
-		<use href="#path2" fill={oklch(0.7, 0.37, hue, 0.75).hex()} />
-		<use href="#path1" fill={oklch(0.5, 0.37, hue, 0.75).hex()} transform="rotate(120)" />
-		<use href="#path2" fill={oklch(0.65, 0.37, hue, 0.75).hex()} transform="rotate(120)" />
-		<use href="#path1" fill={oklch(0.6, 0.37, hue, 0.75).hex()} transform="rotate(240)" />
-		<use href="#path2" fill={oklch(0.55, 0.37, hue, 0.75).hex()} transform="rotate(240)" />
+	<g id="stardodeca" stroke={oklch(0.95, 0.185, 90, 0.5).hex()}>
+		<use href="#path1" fill={oklch(0.75, 0.09, hue, 0.85).hex()} />
+		<use href="#path2" fill={oklch(0.7, 0.09, hue, 0.85).hex()} />
+		<use href="#path1" fill={oklch(0.5, 0.09, hue, 0.85).hex()} transform="rotate(120)" />
+		<use href="#path2" fill={oklch(0.65, 0.09, hue, 0.85).hex()} transform="rotate(120)" />
+		<use href="#path1" fill={oklch(0.6, 0.09, hue, 0.85).hex()} transform="rotate(240)" />
+		<use href="#path2" fill={oklch(0.55, 0.09, hue, 0.85).hex()} transform="rotate(240)" />
 	</g>
 </DrSvg>
