@@ -9,7 +9,6 @@
 		phi,
 		pointToString,
 		type Line,
-		type Point,
 	} from '@dopplerreflect/geometry';
 	import { rotateLineAroundOrigin } from './rotateLineAroundOrigin';
 	import { DRsvgObjectTracker } from './drsvg-object-tracker';
@@ -32,31 +31,36 @@
 	const lines = () => ot.lines;
 	const circles = () => ot.circles;
 
-	function rotateAndAddLines(lines: Line[]) {
-		lines.forEach((line) =>
-			angles.forEach((angle) => ot.add(rotateLineAroundOrigin(line, angle - 90))),
-		);
+	type PseudoLine = [number, number];
+
+	function rotateAndAddLines(lines: (Line | PseudoLine)[]) {
+		lines.forEach((input) => {
+			let line: Line | null = null;
+			if (typeof input[0] === 'object' && typeof input[1] === 'object') line = input as Line;
+			else line = input.map((n) => points()[`p${n}`]) as Line;
+			return angles.forEach((angle) => ot.add(rotateLineAroundOrigin(line, angle - 90)));
+		});
 	}
 	rotateAndAddLines([
 		[
 			{ x: 0, y: 0 },
 			{ x: 0, y: radii[0] + radii[1] },
 		],
-		[points().p123, points().p21],
-		[points().p21, points().p73],
+		[123, 21],
+		[21, 73],
 	]);
 	rotateAndAddLines([
-		[points().p155, points().p157],
-		[points().p157, points().p13],
-		[points().p157, points().p64],
-		[points().p187, points().p201],
-		[points().p73, points().p201],
-		[points().p199, points().p47],
-		[points().p187, points().p205],
+		[155, 157],
+		[157, 13],
+		[157, 64],
+		[187, 201],
+		[73, 201],
+		[199, 47],
+		[187, 205],
 	]);
 	rotateAndAddLines([
-		[points().p223, points().p188],
-		[points().p218, points().p41],
+		[223, 188],
+		[218, 41],
 	]);
 
 	type PathSegments = (string | number)[];
