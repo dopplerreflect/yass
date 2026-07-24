@@ -15,8 +15,8 @@
 	import CairoPattern from '$lib/components/CairoPattern.svelte';
 	import chroma from 'chroma-js';
 	const oklch = chroma.oklch;
-	const hue = 270;
-	const width = 1080;
+	const hue = 60;
+	const width = 1920;
 	const height = 1080;
 
 	const baseRadius = height / 4;
@@ -183,13 +183,13 @@
 
 <DrSvg {...{ width, height }}>
 	<defs>
-		<CairoPattern hue={hue + 0} unit={radii[0] / 2} lightness={0.95} />
+		<CairoPattern hue={hue + 30} unit={radii[0] / 2} lightness={0.95} />
 		<filter id="topLight" x="-20%" y="-20%" width="140%" height="140%">
 			<feMorphology in="SourceAlpha" operator="erode" radius={2}></feMorphology>
 			<feGaussianBlur stdDeviation={1} result="blur" />
 			<feDiffuseLighting
 				in="blur"
-				surfaceScale={3}
+				surfaceScale={5}
 				diffuseConstant={1}
 				lighting-color={oklch(1, 0.37, hue).hex()}
 				result="light"
@@ -201,11 +201,19 @@
 				in2="light"
 				operator="arithmetic"
 				k1="1"
-				k2="1"
+				k2="0.15"
 				k3="1"
 				k4="0"
 			/>
 			<feGaussianBlur stdDeviation={0} />
+		</filter>
+		<filter id="glow">
+			<feMorphology operator="dilate" radius={1} />
+			<feGaussianBlur stdDeviation={3} />
+			<feMerge>
+				<feMergeNode />
+				<feMergeNode in="SourceGraphic" />
+			</feMerge>
 		</filter>
 		<style>
 			.circles {
@@ -215,11 +223,14 @@
 			}
 			.lines {
 				display: block;
-				stroke: #ffffff;
+				stroke: yellow;
 			}
 			.guide {
 				display: none;
 				fill: yellow;
+			}
+			#background {
+				display: block;
 			}
 			#stardodeca {
 				display: block;
@@ -227,22 +238,25 @@
 		</style>
 		<path id="path1" d={path1} />
 		<path id="path2" d={path2} />
-		<path id="maskPath" d={maskPath} />
+		<mask id="dodecaMask">
+			<path id="maskPath" d={maskPath} fill="white" />
+		</mask>
 	</defs>
 	<rect x={-width / 2} y={-height / 2} {...{ width, height }} fill="#202020" />
 	<rect
+		id="background"
 		x={-width / 2}
 		y={-height / 2}
 		{...{ width, height }}
 		fill="url(#CairoPattern)"
 		filter="url(#topLight)"
 	/>
-	<g class="lines">
+	<g class="lines" filter="url(#glow)">
 		{#each lines() as l}
 			<line x1={l[0].x} y1={l[0].y} x2={l[1].x} y2={l[1].y} />
 		{/each}
 	</g>
-	<g class="circles">
+	<g class="circles" filter="url(#glow)">
 		{#each circles() as c}
 			<circle cx={c.x} cy={c.y} r={c.r} />
 		{/each}
@@ -253,12 +267,20 @@
 			<text x={p.x} y={p.y} font-size="0.5em">{k}</text>
 		{/each}
 	</g>
-	<g id="stardodeca" stroke={oklch(0.95, 0.185, 90, 0.5).hex()}>
-		<use href="#path1" fill={oklch(0.75, 0.09, hue, 0.85).hex()} />
-		<use href="#path2" fill={oklch(0.7, 0.09, hue, 0.85).hex()} />
-		<use href="#path1" fill={oklch(0.5, 0.09, hue, 0.85).hex()} transform="rotate(120)" />
-		<use href="#path2" fill={oklch(0.65, 0.09, hue, 0.85).hex()} transform="rotate(120)" />
-		<use href="#path1" fill={oklch(0.6, 0.09, hue, 0.85).hex()} transform="rotate(240)" />
-		<use href="#path2" fill={oklch(0.55, 0.09, hue, 0.85).hex()} transform="rotate(240)" />
+	<g id="stardodeca-fill">
+		<use href="#path1" fill={oklch(0.75, 0.13875, hue, 0.85).hex()} />
+		<use href="#path2" fill={oklch(0.7, 0.13875, hue, 0.85).hex()} />
+		<use href="#path1" fill={oklch(0.5, 0.13875, hue, 0.85).hex()} transform="rotate(120)" />
+		<use href="#path2" fill={oklch(0.65, 0.13875, hue, 0.85).hex()} transform="rotate(120)" />
+		<use href="#path1" fill={oklch(0.6, 0.13875, hue, 0.85).hex()} transform="rotate(240)" />
+		<use href="#path2" fill={oklch(0.55, 0.13875, hue, 0.85).hex()} transform="rotate(240)" />
+	</g>
+	<g id="stardodeca-stroke" fill="none" stroke={oklch(0.75, 0.37, 90).hex()} filter="url(#glow)">
+		<use href="#path1" />
+		<use href="#path2" />
+		<use href="#path1" transform="rotate(120)" />
+		<use href="#path2" transform="rotate(120)" />
+		<use href="#path1" transform="rotate(240)" />
+		<use href="#path2" transform="rotate(240)" />
 	</g>
 </DrSvg>
